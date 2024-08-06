@@ -1,1 +1,1 @@
-echo Hello World
+npx lint-staged
