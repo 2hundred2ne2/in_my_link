@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 interface TabsContextType {
   value: string | null;
+  label?: string;
   onChange: (value: string | null) => void;
 }
 
@@ -14,6 +15,7 @@ const [useTabs, TabsProvider] = createSafeContext<TabsContextType>();
 
 export interface TabsProps {
   defaultValue: string | null;
+  label?: string;
   children: ReactNode;
   className?: string;
   onChange?: (value: string | null) => void;
@@ -57,7 +59,16 @@ export interface TabListProps {
 }
 
 export function TabList({ children, className }: TabListProps) {
-  return <div className={cn("flex items-center gap-2.5", className)}>{children}</div>;
+  const { label } = useTabs();
+  return (
+    <div
+      role="tablist"
+      aria-label={label ?? "tab-list"}
+      className={cn("flex items-center gap-2.5", className)}
+    >
+      {children}
+    </div>
+  );
 }
 
 export interface TabProps {
@@ -69,11 +80,16 @@ export interface TabProps {
 export const Tab = forwardRef<HTMLButtonElement, TabProps>(
   ({ value, children, className }: TabProps, ref) => {
     const { value: currentValue, onChange } = useTabs();
+    const isSelected = currentValue === value;
 
     return (
       <button
         ref={ref}
         type="button"
+        role="tab"
+        aria-selected={isSelected}
+        aria-controls={`tabpanel-${value}`}
+        tabIndex={isSelected ? 0 : -1}
         className={cn(
           "text-sm font-medium py-2 px-4 rounded-[10px]",
           currentValue === value ? "bg-foreground border border-foreground text-white" : "border",
@@ -96,9 +112,14 @@ export interface TabPanelProps {
 export function TabPanel({ value, children, className }: TabPanelProps) {
   const { value: currentValue } = useTabs();
 
-  if (currentValue !== value) {
-    return null;
-  }
-
-  return <div className={className}>{children}</div>;
+  return (
+    <div
+      role="tabpanel"
+      aria-labelledby={`tab-${value}`}
+      tabIndex={0}
+      className={cn(currentValue !== value && "sr-only", className)}
+    >
+      {children}
+    </div>
+  );
 }
