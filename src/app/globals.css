@@ -1,3 +1,38 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 255 255 255; /* white */
+    --background-muted: 244 244 245; /* zinc-100 */
+    --foreground: 24 24 27; /* zinc-900 */
+    --foreground-muted: 24 24 27; /* zinc-900 */
+    --foreground-disabled: 24 24 27; /* zinc-900 */
+    --border: ; /* zinc-300 */
+    --accent: ; /* sky-500 */
+    --danger: ; /* red-500 */
+  }
+
+  .dark {
+    --background: 24 24 27; /* zinc-900 */
+    --background-muted: 63 63 70; /* zinc-700 */
+    --foreground: 244 244 255; /* zinc-100 */
+    --foreground-muted: 244 244 255 / 0.55; /* zinc-100 */
+    --foreground-disabled: 244 244 255 / 0.4; /* zinc-100 */
+    --border: ; /* zinc-500 */
+    --accent: ; /* sky-600 */
+    --danger: ; /* red-500 */
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
