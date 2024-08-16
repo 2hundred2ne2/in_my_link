@@ -12,7 +12,7 @@ const variants = {
 };
 
 export function Card({ variant = "muted", className, children, ...rest }: CardProps) {
-  const classNames = `${variants[variant]} inline-flex p-2 ${className || ""}`;
+  const classNames = `${variants[variant]} inline-flex p-2 ${className}`;
   return (
     <div className={classNames} {...rest}>
       {children}
