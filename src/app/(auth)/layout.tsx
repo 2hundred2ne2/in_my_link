@@ -7,7 +7,7 @@ export default function AuthLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="mx-auto max-w-screen-sm min-h-dvh">
+    <>
       {children}
       <div className="relative flex justify-center">
         <Button
@@ -19,6 +19,6 @@ export default function AuthLayout({
         </Button>
       </div>
       <MobileNavigation />
-    </div>
+    </>
   );
 }
