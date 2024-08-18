@@ -7,7 +7,7 @@ const variants = {
   body2: "text-xs md:text-sm",
 } as const;
 
-interface TextProps<T extends ElementType = "span"> {
+export interface TextProps<T extends ElementType = "span"> {
   as?: T;
   variant?: keyof typeof variants;
   children?: ReactNode;
