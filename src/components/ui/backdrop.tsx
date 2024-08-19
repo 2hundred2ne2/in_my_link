@@ -32,7 +32,7 @@ interface BackDropProps extends ComponentPropsWithoutRef<"div"> {
 }
 
 export function BackDrop({ className = "", children, ...rest }: BackDropProps) {
-  className = "fixed inset-0 flex items-center justify-center bg-dimmed  opacity-65";
+  className = "fixed inset-0 flex items-center justify-center bg-dimmed";
   return (
     <div className={className} {...rest}>
       {children}
