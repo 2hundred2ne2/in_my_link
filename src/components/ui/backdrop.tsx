@@ -1,10 +1,9 @@
 "use client";
-import { useState } from "react";
+import { ComponentPropsWithoutRef } from "react";
 
-import { BackDrop } from "@/components/ui/backdrop";
-
-export default function HomePage() {
-  const [isOpen, setIsOpen] = useState(false);
+/**
+@example
+ const [isOpen, setIsOpen] = useState(false);
 
   return (
     <>
@@ -25,5 +24,18 @@ export default function HomePage() {
         )}
       </div>
     </>
+  ); 
+ */
+interface BackDropProps extends ComponentPropsWithoutRef<"div"> {
+  className?: string;
+  children?: React.ReactNode;
+}
+
+export function BackDrop({ className = "", children, ...rest }: BackDropProps) {
+  className = "fixed inset-0 flex items-center justify-center bg-dimmed  opacity-65";
+  return (
+    <div className={className} {...rest}>
+      {children}
+    </div>
   );
 }

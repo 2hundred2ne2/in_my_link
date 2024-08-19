@@ -24,6 +24,7 @@ const config: Config = {
         border: "rgb(var(--border) / <alpha-value>)",
         accent: "rgb(var(--accent) / <alpha-value>)",
         danger: "rgb(var(--danger) / <alpha-value>)",
+        dimmed: "rgb(var(--dimmed) / 0.65)",
       },
     },
   },

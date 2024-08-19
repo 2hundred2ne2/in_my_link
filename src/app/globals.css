@@ -12,6 +12,7 @@
     --border: ; /* zinc-300 */
     --accent: ; /* sky-500 */
     --danger: ; /* red-500 */
+    --dimmed: 0 0 0;
   }
 
   .dark {
