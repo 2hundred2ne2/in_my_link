@@ -5,12 +5,12 @@ import { cn } from "@/lib/utils";
 
 // 공통 스타일
 const baseButtonStyles =
-  "inline-flex items-center justify-center rounded-md font-medium text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 disabled:pointer-events-none";
+  "inline-flex items-center justify-center rounded-md font-medium text-sm transition-colors disabled:opacity-50 disabled:pointer-events-none";
 
 const buttonVariants = {
-  primary: "bg-zinc-900 text-white hover:bg-zinc-800 focus:ring-zinc-700",
-  secondary: "bg-white border border-zinc-300 text-zinc-900 hover:bg-zinc-100 focus:ring-zinc-300",
-  text: "text-zinc-900 hover:bg-zinc-100 focus:ring-zinc-300",
+  primary: "bg-zinc-900 text-white hover:bg-zinc-800 ",
+  secondary: "bg-white border border-zinc-300 text-zinc-900 hover:bg-zinc-100 ",
+  text: "text-zinc-900 hover:bg-zinc-100 ",
 };
 
 const buttonSizes = {
@@ -95,6 +95,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           buttonRadii[radius],
           className,
           isDisabled && "opacity-50 pointer-events-none",
+          "active:scale-[0.98] duration-100 transition-transform",
         )}
         disabled={isDisabled}
         aria-disabled={isDisabled}
