@@ -15,6 +15,7 @@ const config: Config = {
         background: {
           DEFAULT: "rgb(var(--background) / <alpha-value>)",
           muted: "rgb(var(--background-muted) / <alpha-value>)",
+          disabled: "rgb(var(--background-disabled) / <alpha-value>)",
         },
         foreground: {
           DEFAULT: "rgb(var(--foreground) / <alpha-value>)",
@@ -24,6 +25,7 @@ const config: Config = {
         border: "rgb(var(--border) / <alpha-value>)",
         accent: "rgb(var(--accent) / <alpha-value>)",
         danger: "rgb(var(--danger) / <alpha-value>)",
+        dimmed: "rgb(var(--dimmed) / 0.65)",
       },
     },
   },
