@@ -1,5 +1,7 @@
 import { SignOut } from "@phosphor-icons/react/dist/ssr";
 
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { Tab, TabList, TabPanel, Tabs } from "@/components/ui/tabs";
 
@@ -136,11 +138,46 @@ export default function DesignPage() {
             </section>
           </TabPanel>
           <TabPanel value="폰트">
-            <section className="px-3">
+            <section className="px-3 space-y-2 md:space-y-3">
               <h1 className="sr-only">폰트 편집</h1>
-              <Heading variant="subtitle2" order={2} className="font-medium">
-                TODO
-              </Heading>
+              <div>
+                <Heading variant="subtitle2" order={2} className="font-medium">
+                  종류
+                </Heading>
+                <div className="flex gap-2 mt-2">
+                  <Button type="button" variant="primary">
+                    폰트 A
+                  </Button>
+                  <Button type="button" variant="secondary">
+                    폰트 B
+                  </Button>
+                  <Button type="button" variant="secondary">
+                    폰트 C
+                  </Button>
+                </div>
+              </div>
+              <div>
+                <Heading variant="subtitle2" order={2} className="font-medium">
+                  사이즈
+                </Heading>
+                <div className="flex gap-2 mt-2">
+                  <Button type="button" variant="primary" className="text-xs">
+                    작게
+                  </Button>
+                  <Button type="button" variant="secondary" className="text-sm">
+                    보통
+                  </Button>
+                  <Button type="button" variant="secondary" className="text-base">
+                    크게
+                  </Button>
+                </div>
+              </div>
+              <div>
+                <h1 className="sr-only">폰트 미리보기</h1>
+                <Card className="flex items-center justify-center w-full h-32 mt-10 rounded-2xl">
+                  가나다 ABC
+                </Card>
+              </div>
             </section>
           </TabPanel>
         </Tabs>
