@@ -7,6 +7,20 @@ export interface AppHeaderProps {
   className?: string;
 }
 
+/**
+  @example
+  <AppHeader>
+    <AppHeaderLeft>
+      left
+    </AppHeaderLeft>
+    <AppHeaderCenter>
+      center
+    </AppHeaderCenter>
+    <AppHeaderRight>
+      right
+    </AppHeaderRight>
+  </AppHeader>
+ */
 export function AppHeader({ children, className }: AppHeaderProps) {
   return (
     <header
