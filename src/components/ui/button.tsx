@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 
 // 공통 스타일
 const baseButtonStyles =
-  "items-center justify-center rounded-md font-medium text-sm transition-colors";
+  "inline-flex items-center justify-center rounded-md font-medium text-sm transition-colors";
 
 const buttonVariants = {
   primary: "bg-zinc-900 text-white hover:bg-zinc-800",

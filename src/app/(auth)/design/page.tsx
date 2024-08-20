@@ -1,5 +1,11 @@
 import { SignOut } from "@phosphor-icons/react/dist/ssr";
 
+import {
+  AppHeader,
+  AppHeaderLeft,
+  AppHeaderCenter,
+  AppHeaderRight,
+} from "@/components/ui/app-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
@@ -8,18 +14,18 @@ import { Tab, TabList, TabPanel, Tabs } from "@/components/ui/tabs";
 export default function DesignPage() {
   return (
     <>
-      <header className="fixed top-0 bg-background grid grid-cols-[1fr_50vw_1fr] h-16 w-full px-3 max-w-screen-sm">
-        <div></div>
-        <div className="flex justify-center items-center">
+      <AppHeader>
+        <AppHeaderLeft />
+        <AppHeaderCenter>
           <span className="w-8 h-8 bg-primary-300 rounded-full"></span>
-        </div>
-        <div className="flex justify-end items-center">
-          <button type="button" className="w-7 h-7 inline-flex items-center justify-center">
+        </AppHeaderCenter>
+        <AppHeaderRight>
+          <button type="button" className="w-7 h-7 -mr-2 inline-flex items-center justify-center">
             <SignOut size={20} />
             <span className="sr-only">로그아웃</span>
           </button>
-        </div>
-      </header>
+        </AppHeaderRight>
+      </AppHeader>
 
       <main className="min-h-dvh pt-16 pb-[68px]">
         <h1 className="sr-only">디자인</h1>
