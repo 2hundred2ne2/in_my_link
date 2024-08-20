@@ -17,7 +17,7 @@ const links = [
   {
     id: "링크",
     href: "/links",
-    title: "디자인",
+    title: "링크",
     icon: StackSimple,
   },
   {
