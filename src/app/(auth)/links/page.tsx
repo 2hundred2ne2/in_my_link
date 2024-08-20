@@ -7,6 +7,12 @@ import {
   Trash,
 } from "@phosphor-icons/react/dist/ssr";
 
+import {
+  AppHeader,
+  AppHeaderCenter,
+  AppHeaderLeft,
+  AppHeaderRight,
+} from "@/components/ui/app-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
@@ -15,18 +21,18 @@ import { Text } from "@/components/ui/text";
 export default function LinksPage() {
   return (
     <>
-      <header className="fixed top-0 bg-background grid grid-cols-[1fr_50vw_1fr] h-16 w-full px-3 max-w-screen-sm">
-        <div></div>
-        <div className="flex justify-center items-center">
+      <AppHeader>
+        <AppHeaderLeft />
+        <AppHeaderCenter>
           <span className="w-8 h-8 bg-primary-300 rounded-full"></span>
-        </div>
-        <div className="flex justify-end items-center">
-          <button type="button" className="w-7 h-7 inline-flex items-center justify-center">
+        </AppHeaderCenter>
+        <AppHeaderRight>
+          <button type="button" className="w-7 h-7 -mr-2 inline-flex items-center justify-center">
             <SignOut size={20} />
             <span className="sr-only">로그아웃</span>
           </button>
-        </div>
-      </header>
+        </AppHeaderRight>
+      </AppHeader>
 
       <main className="min-h-dvh pt-16 pb-[68px]">
         <div className="flex flex-col items-center pt-12 px-3">
@@ -51,12 +57,17 @@ export default function LinksPage() {
               <Card variant="default" className="rounded-2xl flex flex-col p-0">
                 {/* header */}
                 <div className="flex items-center pl-6 py-4 pr-3">
-                  <button type="button">
-                    <span className="min-w-8 min-h-8 block bg-primary-300 rounded-xl"></span>
-                  </button>
-                  <button type="button" className="bg-danger min-w-4.5 min-h-4.5">
-                    <Trash size={14} />
-                  </button>
+                  <div className="relative flex items-center">
+                    <button type="button">
+                      <span className="min-w-8 min-h-8 block bg-primary-300 rounded-xl"></span>
+                    </button>
+                    <button
+                      type="button"
+                      className="absolute inline-flex text-foreground-inverted items-center justify-center bg-danger min-w-[18px] min-h-[18px] rounded-full -right-1 -bottom-1"
+                    >
+                      <Trash size={14} />
+                    </button>
+                  </div>
 
                   <input type="text" placeholder="Title" className="w-full" />
 
