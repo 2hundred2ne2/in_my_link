@@ -21,6 +21,7 @@ const config: Config = {
           DEFAULT: "rgb(var(--foreground) / <alpha-value>)",
           muted: "rgb(var(--foreground-muted) / 0.55)",
           disabled: "rgb(var(--foreground-disabled) / 0.4)",
+          inverted: "rgb(var(--foreground-inverted) / <alpha-value>)",
         },
         border: "rgb(var(--border) / <alpha-value>)",
         accent: "rgb(var(--accent) / <alpha-value>)",
