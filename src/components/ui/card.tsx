@@ -1,4 +1,6 @@
-import { ComponentPropsWithoutRef } from "react";
+import { ComponentPropsWithoutRef, forwardRef } from "react";
+
+import { cn } from "@/lib/utils";
 
 interface CardProps extends ComponentPropsWithoutRef<"div"> {
   variant?: "default" | "muted";
@@ -11,12 +13,12 @@ const variants = {
   muted: "bg-background-muted border border-transparent",
 };
 
-export function Card({ variant = "default", className, children, ...rest }: CardProps) {
-  const classNames = `${variants[variant]} ${className} inline-flex`;
-  return (
-    <div className={classNames} {...rest}>
-      {children}
-    </div>
-  );
-}
-// className 으로 padding 값 전달.
+export const Card = forwardRef<HTMLDivElement, CardProps>(
+  ({ variant = "default", className, children, ...rest }: CardProps, ref) => {
+    return (
+      <div ref={ref} className={cn(variants[variant], className)} {...rest}>
+        {children}
+      </div>
+    );
+  },
+);
