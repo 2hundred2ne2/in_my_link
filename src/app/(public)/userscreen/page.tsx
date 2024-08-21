@@ -1,4 +1,4 @@
-const page = () => {
+export default function UserScreenPage() {
   return (
     <>
       <div className="mx-auto max-w-screen-sm min-h-dvh flex flex-col items-center">
@@ -34,5 +34,4 @@ const page = () => {
       </div>
     </>
   );
-};
-export default page;
+}
