@@ -10,8 +10,9 @@
     --foreground: 24 24 27; /* zinc-900 */
     --foreground-muted: 24 24 27; /* zinc-900 */
     --foreground-disabled: 24 24 27; /* zinc-900 */
+    --foreground-inverted: 255 255 255; /* white */
     --border: 212 212 216; /* zinc-300 */
-    --accent: 141 165 233; /* sky-500 */
+    --accent: 14 165 233; /* sky-500 */
     --danger: 239 68 68; /* red-500 */
     --dimmed: 0 0 0;
   }
@@ -23,6 +24,7 @@
     --foreground: 244 244 255; /* zinc-100 */
     --foreground-muted: 244 244 255 / 0.55; /* zinc-100 */
     --foreground-disabled: 244 244 255 / 0.4; /* zinc-100 */
+    --foreground-inverted: 244 244 255; /* zinc-100 */
     --border: 113 113 122; /* zinc-500 */
     --accent: 2 132 199; /* sky-600 */
     --danger: 239 68 68; /* red-500 */

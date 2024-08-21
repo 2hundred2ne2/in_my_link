@@ -64,7 +64,7 @@ export function TabList({ children, className }: TabListProps) {
     <div
       role="tablist"
       aria-label={label ?? "tab-list"}
-      className={cn("flex items-center gap-2.5", className)}
+      className={cn("flex items-center gap-2.5 overflow-x-auto", className)}
     >
       {children}
     </div>
@@ -91,7 +91,7 @@ export const Tab = forwardRef<HTMLButtonElement, TabProps>(
         aria-controls={`tabpanel-${value}`}
         tabIndex={isSelected ? 0 : -1}
         className={cn(
-          "text-sm font-medium py-2 px-4 rounded-[10px] active:scale-[0.96] duration-100 transition-transform",
+          "text-sm font-medium py-2 px-4 rounded-[10px] flex-shrink-0 active:scale-[0.96] duration-100 transition-transform",
           currentValue === value ? "bg-foreground border border-foreground text-white" : "border",
           className,
         )}

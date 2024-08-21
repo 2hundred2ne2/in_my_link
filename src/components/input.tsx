@@ -8,7 +8,8 @@ interface InputProps extends ComponentPropsWithoutRef<"input"> {
 }
 
 const variants = {
-  default: "h-14 p-4 rounded-xl bg-background-muted",
+  default:
+    "h-14 p-4 rounded-xl bg-background-muted border border-transparent focus-visible:border-border focus-visible:outline-none",
 };
 
 const statuss = {
