@@ -25,71 +25,61 @@ export default function RegisterLinksPage() {
             <Text>사용하실 웹사이트 링크를 연결해보세요</Text>
           </div>
           <section>
-            <ul className="flex flex-row gap-4 px-2">
+            <ul className="flex flex-row gap-4 px-3">
               <li>
-                <div className="flex flex-col items-center">
+                <button type="button" className="flex flex-col items-center">
                   <Card
                     variant="muted"
                     className="rounded-2xl w-16 h-16 flex flex-col items-center"
                   >
-                    <button type="button">
-                      <span className="min-w-10 min-h-10 block bg-primary-300 rounded-xl mt-0.5"></span>
-                    </button>
+                    <span className="min-w-10 min-h-10 block bg-primary-300 rounded-xl mt-0.5"></span>
                   </Card>
                   <span>커스텀</span>
-                </div>
+                </button>
               </li>
               <li>
-                <div className="flex flex-col items-center">
+                <button type="button" className="flex flex-col items-center">
                   <Card
                     variant="muted"
                     className="rounded-2xl w-16 h-16 flex flex-col items-center"
                   >
-                    <button type="button">
-                      <span className="min-w-10 min-h-10 block bg-primary-300 rounded-xl mt-0.5"></span>
-                    </button>
+                    <span className="min-w-10 min-h-10 block bg-primary-300 rounded-xl mt-0.5"></span>
                   </Card>
                   <span>커스텀</span>
-                </div>
+                </button>
               </li>
               <li>
-                <div className="flex flex-col items-center">
+                <button type="button" className="flex flex-col items-center">
                   <Card
                     variant="muted"
                     className="rounded-2xl w-16 h-16 flex flex-col items-center"
                   >
-                    <button type="button">
-                      <span className="min-w-10 min-h-10 block bg-primary-300 rounded-xl mt-0.5"></span>
-                    </button>
+                    <span className="min-w-10 min-h-10 block bg-primary-300 rounded-xl mt-0.5"></span>
                   </Card>
                   <span>커스텀</span>
-                </div>
+                </button>
               </li>
               <li>
-                <div className="flex flex-col items-center">
+                <button type="button" className="flex flex-col items-center">
                   <Card
                     variant="muted"
                     className="rounded-2xl w-16 h-16 flex flex-col items-center"
                   >
-                    <button type="button">
-                      <span className="min-w-10 min-h-10 block bg-primary-300 rounded-xl mt-0.5"></span>
-                    </button>
+                    <span className="min-w-10 min-h-10 block bg-primary-300 rounded-xl mt-0.5"></span>
                   </Card>
                   <span>커스텀</span>
-                </div>
+                </button>
               </li>
               <li>
-                <div className="flex flex-col items-center">
+                <button type="button" className="flex flex-col items-center">
                   <Card
                     variant="muted"
                     className="rounded-2xl w-16 h-16 flex flex-col items-center"
                   >
-                    <button type="button">
-                      <span className="min-w-10 min-h-10 block bg-primary-300 rounded-xl mt-0.5"></span>
-                    </button>
+                    <span className="min-w-10 min-h-10 block bg-primary-300 rounded-xl mt-0.5"></span>
                   </Card>
                   <span>커스텀</span>
-                </div>
+                </button>
               </li>
             </ul>
             <ul className="flex flex-col gap-4 px-2 mt-10">
@@ -179,11 +169,11 @@ export default function RegisterLinksPage() {
                 </Card>
               </li>
             </ul>
-            <div className="flex flex-col gap-4 px-2 mt-20">
+            <div className="flex flex-col gap-2 px-2 mt-20">
               <Button variant="primary" size="large">
                 다음
               </Button>
-              <Button variant="secondary" size="large">
+              <Button variant="text" size="large">
                 건너뛰기
               </Button>
             </div>
