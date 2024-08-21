@@ -3,6 +3,24 @@
 import { useEffect, useRef, useState } from "react";
 
 import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+  TouchSensor,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
   CaretDown,
   CaretUp,
   DotsSixVertical,
@@ -100,6 +118,11 @@ function LinkInput({ label, value = "", className, onChange }: LinkInputProps) {
 
 interface LinkBlockProps {
   /**
+   * 링크 id
+   */
+  id: string;
+
+  /**
    * 링크 제목
    */
   title?: string;
@@ -115,13 +138,23 @@ interface LinkBlockProps {
   image?: string;
 }
 
-export function LinkBlock({ title, url, image }: LinkBlockProps) {
+export function LinkBlock({ id, title, url, image }: LinkBlockProps) {
   const [isEdit, setIsEdit] = useState(false);
+
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id });
 
   if (!isEdit) {
     return (
-      <Card variant="default" className="rounded-2xl flex p-0">
-        <div className="flex items-center justify-center">
+      <Card
+        ref={setNodeRef}
+        variant="default"
+        style={{
+          transform: CSS.Transform.toString(transform),
+          transition,
+        }}
+        className="rounded-2xl flex p-0"
+      >
+        <div {...attributes} {...listeners} className="flex items-center justify-center touch-none">
           <button type="button" className="cursor-grab px-2 w-full h-full">
             <DotsSixVertical size={16} />
           </button>
@@ -147,7 +180,7 @@ export function LinkBlock({ title, url, image }: LinkBlockProps) {
   }
 
   return (
-    <Card variant="default" className="rounded-2xl flex flex-col p-0">
+    <Card ref={setNodeRef} variant="default" className="rounded-2xl flex flex-col p-0">
       {/* header */}
       <div className="flex items-center pl-6 py-4 pr-3">
         <div className="relative flex items-center">
@@ -203,7 +236,44 @@ interface LinkEditorProps {
   links: Link[];
 }
 
-export function LinkEditor({ links = [] }: LinkEditorProps) {
+export function LinkEditor({ links: initialLinks = [] }: LinkEditorProps) {
+  const [links, setLinks] = useState(initialLinks);
+
+  const sensors = useSensors(
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
+    }),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  const handleDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
+
+    // 유효한 드롭 영역이 아닌 곳에 놓았을 경우
+    if (!over) {
+      return;
+    }
+
+    if (active.id !== over.id) {
+      setLinks((items) => {
+        const oldIndex = items.findIndex((item) => item.id === active.id);
+        const newIndex = items.findIndex((item) => item.id === over.id);
+
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
+  };
+
   return (
     <>
       <div className="mt-6 px-3">
@@ -213,17 +283,28 @@ export function LinkEditor({ links = [] }: LinkEditorProps) {
           추가하기
         </Button>
       </div>
-      <section className="mt-8">
+      <section className="mt-8 mb-16">
         <h1 className="sr-only">링크 리스트</h1>
 
         {links.length > 0 && (
-          <ul className="flex flex-col gap-2 px-3">
-            {links.map((link) => (
-              <li key={link.id}>
-                <LinkBlock title={link.title} url={link.url} image={link.image} />
-              </li>
-            ))}
-          </ul>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={links.map((link) => link.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <ul className="flex flex-col gap-2 px-3">
+                {links.map((link) => (
+                  <li key={link.id}>
+                    <LinkBlock id={link.id} title={link.title} url={link.url} image={link.image} />
+                  </li>
+                ))}
+              </ul>
+            </SortableContext>
+          </DndContext>
         )}
       </section>
     </>
