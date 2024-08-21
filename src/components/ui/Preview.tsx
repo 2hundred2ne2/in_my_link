@@ -17,19 +17,19 @@ const Preview = () => {
             <div>instargram</div>
           </div>
           <div className="h-[70px] bg-white border border-border rounded-2xl flex flex-row justify-start items-center gap-16 pl-6 cursor-pointer">
-            <div className="h-[45px] rounded-2xl bg-background-muted"></div>
+            <div className="w-[45px] h-[45px] rounded-2xl bg-background-muted"></div>
             <div>kakao</div>
           </div>
           <div className="h-[70px] bg-white border border-border rounded-2xl flex flex-row justify-start items-center gap-16 pl-6 cursor-pointer">
-            <div className="h-[45px] rounded-2xl bg-background-muted"></div>
+            <div className="w-[45px] h-[45px] rounded-2xl bg-background-muted"></div>
             <div>blog</div>
           </div>
           <div className="h-[70px] bg-white border border-border rounded-2xl flex flex-row justify-start items-center gap-16 pl-6 cursor-pointer">
-            <div className="h-[45px] rounded-2xl bg-background-muted"></div>
+            <div className="w-[45px] h-[45px] rounded-2xl bg-background-muted"></div>
             <div>X</div>
           </div>
           <div className="h-[70px] bg-white border border-border rounded-2xl flex flex-row justify-start items-center gap-16 pl-6 cursor-pointer">
-            <div className="h-[45px] rounded-2xl bg-background-muted"></div>
+            <div className="w-[45px] h-[45px] rounded-2xl bg-background-muted"></div>
             <div>http://www.naver.com</div>
           </div>
         </section>
