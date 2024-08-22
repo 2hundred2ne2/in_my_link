@@ -1,1 +1,1 @@
-export default function LinkLayout() {}
+export function LinkLayout() {}
