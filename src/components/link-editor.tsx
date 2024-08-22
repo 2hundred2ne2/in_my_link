@@ -346,14 +346,11 @@ export function LinkEditor({ links: initialLinks = [] }: LinkEditorProps) {
 
       {/* 삭제 확인 모달 */}
       <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
-        <Heading variant="subtitle2" className="font-medium text-center">
+        <Heading variant="heading2" className="text-center">
           링크 삭제 확인
         </Heading>
-        <p className="mt-6 mb-4 text-center">정말로 이 링크를 삭제하시겠습니까?</p>
+        <p className="mt-3 mb-6 text-center">정말로 이 링크를 삭제하시겠습니까?</p>
         <div className="grid gap-2">
-          <Button size="large" variant="secondary" onClick={() => setIsDeleteModalOpen(false)}>
-            취소
-          </Button>
           <Button
             size="large"
             variant="secondary"
@@ -361,6 +358,9 @@ export function LinkEditor({ links: initialLinks = [] }: LinkEditorProps) {
             onClick={handleConfirmDelete}
           >
             삭제
+          </Button>
+          <Button size="large" variant="text" onClick={() => setIsDeleteModalOpen(false)}>
+            취소
           </Button>
         </div>
       </Modal>
