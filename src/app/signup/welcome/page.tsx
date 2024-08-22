@@ -11,7 +11,9 @@ export default function WelcomePage() {
             <span className="inline-block w-32 h-32 rounded-full bg-primary-300"></span>
           </div>
           <div className="inline-block h-7 mt-8 mb-12">
-            <Heading variant="heading3">닉네임님, 환영합니다!</Heading>
+            <Heading variant="subtitle1" className="font-bold">
+              닉네임님, 환영합니다!
+            </Heading>
           </div>
         </div>
         <div className="flex flex-col gap-4 px-2 mt-24">
@@ -20,7 +22,7 @@ export default function WelcomePage() {
               <Text>이제 나만의 페이지를 만들러 가볼까요?</Text>
             </span>
           </div>
-          <Button variant="primary" size="large">
+          <Button variant="primary" size="large" className="h-14 rounded-lg">
             시작하기
           </Button>
         </div>
