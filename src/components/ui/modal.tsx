@@ -6,7 +6,7 @@ import { Portal } from "../portal";
 
 import { BackDrop } from "./backdrop";
 
-const DURATION = 200;
+const DURATION = 300;
 
 interface ModalProps {
   /**
@@ -39,7 +39,7 @@ export function Modal({
   useEffect(() => {
     if (isOpen) {
       setIsRender(true);
-      setTimeout(() => setIsModalOpen(true), 10);
+      setTimeout(() => setIsModalOpen(true), 30);
     } else {
       setIsModalOpen(false);
       setTimeout(() => setIsRender(false), DURATION);
@@ -54,7 +54,7 @@ export function Modal({
     <Portal>
       <BackDrop
         className={cn(
-          `fixed inset-0 flex items-center justify-center p-3 z-20 transition-opacity duration-[${DURATION}ms] ease-in-out`,
+          `fixed inset-0 flex items-center justify-center p-3 z-20 transition-opacity duration-100 ease-in`,
           isModalOpen ? "opacity-100" : "opacity-0",
           !isBackdropVisible && "bg-transparent",
         )}
