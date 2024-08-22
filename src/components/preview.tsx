@@ -1,6 +1,6 @@
 import { X } from "@phosphor-icons/react/dist/ssr";
 
-const Preview = () => {
+export function Preview() {
   return (
     <>
       <div className="mx-auto max-w-screen-sm min-h-dvh flex flex-col items-center">
@@ -41,5 +41,4 @@ const Preview = () => {
       </div>
     </>
   );
-};
-export default Preview;
+}
