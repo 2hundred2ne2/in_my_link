@@ -1,5 +1,9 @@
+"use client";
+import { useState } from "react";
+
 import { SignOut } from "@phosphor-icons/react/dist/ssr";
 
+import { Preview } from "@/components/preview";
 import {
   AppHeader,
   AppHeaderLeft,
@@ -12,6 +16,9 @@ import { Heading } from "@/components/ui/heading";
 import { Tab, TabList, TabPanel, Tabs } from "@/components/ui/tabs";
 
 export default function DesignPage() {
+  const [PreviewOpen, setPreviewOpen] = useState(false);
+
+  const togglePreview = () => setPreviewOpen((prev) => !prev);
   return (
     <>
       <AppHeader>
@@ -186,6 +193,18 @@ export default function DesignPage() {
               </div>
             </section>
           </TabPanel>
+          <div className="relative flex justify-center">
+            <Button
+              variant="text"
+              radius="full"
+              className="fixed bottom-0 mx-auto w-40 mb-20 bg-background border-[0.2px] shadow-md z-10"
+              onClick={togglePreview}
+            >
+              {PreviewOpen ? "닫기" : "미리보기"}
+            </Button>
+
+            {PreviewOpen && <Preview />}
+          </div>
         </Tabs>
       </main>
     </>
