@@ -25,7 +25,7 @@ export default function WelcomePage() {
             </span>
           </div>
           <Button variant="primary" size="large" className="h-14 rounded-lg">
-            <Link href="/userscreen">시작하기</Link>
+            <Link href="/links">시작하기</Link>
           </Button>
         </div>
       </main>
