@@ -27,7 +27,7 @@ export default function DesignPage() {
         </AppHeaderRight>
       </AppHeader>
 
-      <main className="min-h-dvh pt-16 pb-[68px]">
+      <main className="flex-1 pt-16 pb-[68px]">
         <h1 className="sr-only">디자인</h1>
         <Tabs defaultValue="스킨">
           <TabList className="px-4 my-4">

@@ -46,7 +46,7 @@ export default function LinksPage() {
         </AppHeaderRight>
       </AppHeader>
 
-      <main className="min-h-dvh pt-16 pb-[68px]">
+      <main className="flex-1 pt-16 pb-[68px]">
         <div className="flex flex-col items-center pt-12 px-3">
           <div>
             {/* avatar */}
