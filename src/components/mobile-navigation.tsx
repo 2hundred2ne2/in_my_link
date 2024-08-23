@@ -32,7 +32,7 @@ export function MobileNavigation() {
   const path = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 mx-auto max-w-screen-sm bg-background z-10">
+    <nav className="fixed bottom-0 left-0 right-0 mx-auto max-w-lg bg-background z-10">
       <h1 className="sr-only">모바일 네비게이션</h1>
       <ul className="flex justify-around items-center px-5 h-[68px]">
         {links.map((link) => (

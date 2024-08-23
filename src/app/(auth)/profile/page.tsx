@@ -25,7 +25,7 @@ export default function ProfilePage() {
         </AppHeaderRight>
       </AppHeader>
 
-      <main className="min-h-dvh pt-16 pb-[68px]">
+      <main className="flex-1 pt-16 pb-[68px]">
         <div className="flex flex-col items-center pt-12 px-3">
           <button className="relative">
             <span className="sr-only">프로필 변경</span>

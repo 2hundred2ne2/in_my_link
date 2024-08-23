@@ -25,7 +25,7 @@ export function AppHeader({ children, className }: AppHeaderProps) {
   return (
     <header
       className={cn(
-        "fixed top-0 bg-background grid grid-cols-[1fr_minmax(auto,65%)_1fr] h-16 w-full px-3 max-w-screen-sm",
+        "fixed top-0 bg-background grid grid-cols-[1fr_minmax(auto,65%)_1fr] h-16 w-full px-3 max-w-lg",
         className,
       )}
     >
