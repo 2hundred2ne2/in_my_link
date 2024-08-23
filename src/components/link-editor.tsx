@@ -273,6 +273,8 @@ interface LinkEditorProps {
 export function LinkEditor({ links: initialLinks = [] }: LinkEditorProps) {
   // 링크목록
   const [links, setLinks] = useState(initialLinks);
+  // 링크 추가 확인 모달
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   // 링크 삭제 확인 모달
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   // 삭제할 링크 ID
@@ -313,6 +315,18 @@ export function LinkEditor({ links: initialLinks = [] }: LinkEditorProps) {
     }
   };
 
+  const handleAddLink = (type: "instagram") => {
+    setIsAddModalOpen(false);
+    setLinks((links) => [
+      ...links,
+      {
+        id: Date.now().toString(),
+        title: "instagram",
+        url: "https://instagram.com",
+      },
+    ]);
+  };
+
   const handleDeleteClick = (id: string) => {
     setIsDeleteModalOpen(true);
     linkToDeleteIdRef.current = id;
@@ -329,11 +343,25 @@ export function LinkEditor({ links: initialLinks = [] }: LinkEditorProps) {
   return (
     <>
       <div className="mt-6 px-3">
-        {/* TODO: 추가 모달 */}
-        <Button size="large" radius="full" className="w-full">
+        <Button
+          size="large"
+          radius="full"
+          className="w-full"
+          onClick={() => setIsAddModalOpen(true)}
+        >
           <Plus size={16} className="mr-2 -ml-1" />
           추가하기
         </Button>
+        <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
+          <Heading variant="subtitle2" className="text-center mb-6">
+            어떤 링크를 추가할까요?
+          </Heading>
+          <div className="flex items-center justify-center">
+            <button className="w-8 h-8 rounded-xl" onClick={() => handleAddLink("instagram")}>
+              인스타그램
+            </button>
+          </div>
+        </Modal>
       </div>
 
       <section className="mt-8 mb-16">
