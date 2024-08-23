@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { SignOut } from "@phosphor-icons/react/dist/ssr";
 
 import {
@@ -125,7 +127,7 @@ export default function DesignPage() {
             </section>
           </TabPanel>
           <TabPanel value="버튼">
-            <section className="px-3 space-y-2 md:space-y-3">
+            <section className="px-3 space-y-2 md:space-y-3 mb-16">
               <h1 className="sr-only">버튼 편집</h1>
               <div>
                 <Heading variant="subtitle2" order={2} className="font-medium">
@@ -135,9 +137,55 @@ export default function DesignPage() {
                 <div className="space-y-3 mt-2">
                   <button
                     type="button"
-                    className="block h-32 md:h-36 w-full bg-background-muted rounded-xl"
+                    className="block h-32 md:h-36 w-full bg-background-muted/90  rounded-xl"
                   >
-                    <span className="sr-only">기본</span>
+                    <Image
+                      alt="레이아웃 1"
+                      src="/images/layout-1.png"
+                      width={320}
+                      height={320}
+                      className="w-full h-full object-contain"
+                    />
+                    <span className="sr-only">레이아웃 1</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="block h-32 md:h-36 w-full bg-background-muted/90  rounded-xl"
+                  >
+                    <Image
+                      alt="레이아웃 2"
+                      src="/images/layout-2.png"
+                      width={320}
+                      height={320}
+                      className="w-full h-full object-contain"
+                    />
+                    <span className="sr-only">레이아웃 2</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="block h-32 md:h-36 w-full bg-background-muted/90  rounded-xl"
+                  >
+                    <Image
+                      alt="레이아웃 3"
+                      src="/images/layout-3.png"
+                      width={320}
+                      height={320}
+                      className="w-full h-full object-contain"
+                    />
+                    <span className="sr-only">레이아웃 3</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="block h-32 md:h-36 w-full bg-background-muted/90  rounded-xl"
+                  >
+                    <Image
+                      alt="레이아웃 4"
+                      src="/images/layout-4.png"
+                      width={320}
+                      height={320}
+                      className="w-full h-full object-contain"
+                    />
+                    <span className="sr-only">레이아웃 4</span>
                   </button>
                 </div>
               </div>
@@ -180,7 +228,10 @@ export default function DesignPage() {
               </div>
               <div>
                 <h1 className="sr-only">폰트 미리보기</h1>
-                <Card className="flex items-center justify-center w-full h-32 mt-10 rounded-2xl">
+                <Card
+                  variant="muted"
+                  className="flex items-center justify-center w-full h-32 mt-10 rounded-2xl"
+                >
                   가나다 ABC
                 </Card>
               </div>
