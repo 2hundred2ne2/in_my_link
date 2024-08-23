@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
@@ -23,7 +25,7 @@ export default function WelcomePage() {
             </span>
           </div>
           <Button variant="primary" size="large" className="h-14 rounded-lg">
-            시작하기
+            <Link href="/links">시작하기</Link>
           </Button>
         </div>
       </main>
