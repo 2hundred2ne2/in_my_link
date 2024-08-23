@@ -2,6 +2,7 @@ import Image from "next/image";
 
 import { SignOut } from "@phosphor-icons/react/dist/ssr";
 
+import { Logo } from "@/components/logo";
 import {
   AppHeader,
   AppHeaderLeft,
@@ -19,7 +20,7 @@ export default function DesignPage() {
       <AppHeader>
         <AppHeaderLeft />
         <AppHeaderCenter>
-          <span className="w-8 h-8 bg-primary-300 rounded-full"></span>
+          <Logo className="text-xl" />
         </AppHeaderCenter>
         <AppHeaderRight>
           <button type="button" className="w-7 h-7 -mr-2 inline-flex items-center justify-center">
