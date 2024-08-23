@@ -33,6 +33,8 @@ import { cn } from "@/lib/utils";
 
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
+import { Heading } from "./ui/heading";
+import { Modal } from "./ui/modal";
 import { Text } from "./ui/text";
 
 /**
@@ -136,9 +138,14 @@ interface LinkBlockProps {
    * 링크 이미지
    */
   image?: string;
+
+  /**
+   * 삭제 버튼 클릭
+   */
+  onClickDelete: (id: string) => void;
 }
 
-export function LinkBlock({ id, title, url, image }: LinkBlockProps) {
+export function LinkBlock({ id, title, url, image, onClickDelete }: LinkBlockProps) {
   const [isEdit, setIsEdit] = useState(false);
 
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id });
@@ -215,9 +222,13 @@ export function LinkBlock({ id, title, url, image }: LinkBlockProps) {
       </div>
 
       {/* footer */}
-      {/* TODO: 삭제 */}
       <div className="flex justify-end pr-3 py-3">
-        <Button type="button" variant="text" className="p-0 min-w-7 min-h-7 rounded-full">
+        <Button
+          type="button"
+          variant="text"
+          className="p-0 min-w-7 min-h-7 rounded-full"
+          onClick={() => onClickDelete(id)}
+        >
           <Trash size={16} />
         </Button>
       </div>
@@ -237,7 +248,12 @@ interface LinkEditorProps {
 }
 
 export function LinkEditor({ links: initialLinks = [] }: LinkEditorProps) {
+  // 링크목록
   const [links, setLinks] = useState(initialLinks);
+  // 링크 삭제 확인 모달
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  // 삭제할 링크 ID
+  const linkToDeleteIdRef = useRef<string | null>(null);
 
   const sensors = useSensors(
     useSensor(TouchSensor, {
@@ -274,6 +290,19 @@ export function LinkEditor({ links: initialLinks = [] }: LinkEditorProps) {
     }
   };
 
+  const handleDeleteClick = (id: string) => {
+    setIsDeleteModalOpen(true);
+    linkToDeleteIdRef.current = id;
+  };
+
+  const handleConfirmDelete = () => {
+    if (linkToDeleteIdRef.current) {
+      setLinks((prevLinks) => prevLinks.filter((link) => link.id !== linkToDeleteIdRef.current));
+    }
+    setIsDeleteModalOpen(false);
+    linkToDeleteIdRef.current = null;
+  };
+
   return (
     <>
       <div className="mt-6 px-3">
@@ -283,6 +312,7 @@ export function LinkEditor({ links: initialLinks = [] }: LinkEditorProps) {
           추가하기
         </Button>
       </div>
+
       <section className="mt-8 mb-16">
         <h1 className="sr-only">링크 리스트</h1>
 
@@ -299,7 +329,13 @@ export function LinkEditor({ links: initialLinks = [] }: LinkEditorProps) {
               <ul className="flex flex-col gap-2 px-3">
                 {links.map((link) => (
                   <li key={link.id}>
-                    <LinkBlock id={link.id} title={link.title} url={link.url} image={link.image} />
+                    <LinkBlock
+                      id={link.id}
+                      title={link.title}
+                      url={link.url}
+                      image={link.image}
+                      onClickDelete={() => handleDeleteClick(link.id)}
+                    />
                   </li>
                 ))}
               </ul>
@@ -307,6 +343,27 @@ export function LinkEditor({ links: initialLinks = [] }: LinkEditorProps) {
           </DndContext>
         )}
       </section>
+
+      {/* 삭제 확인 모달 */}
+      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
+        <Heading variant="heading2" className="text-center">
+          링크 삭제 확인
+        </Heading>
+        <p className="mt-3 mb-6 text-center">정말로 이 링크를 삭제하시겠습니까?</p>
+        <div className="grid gap-2">
+          <Button
+            size="large"
+            variant="secondary"
+            className="text-danger"
+            onClick={handleConfirmDelete}
+          >
+            삭제
+          </Button>
+          <Button size="large" variant="text" onClick={() => setIsDeleteModalOpen(false)}>
+            취소
+          </Button>
+        </div>
+      </Modal>
     </>
   );
 }
