@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/app-header";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { TextArea } from "@/components/ui/textarea";
 
 export default function ProfilePage() {
   return (
@@ -45,9 +46,8 @@ export default function ProfilePage() {
               20
             </Text>
           </div>
-          <div className="flex flex-col">
-            {/* TODO: textarea로 바꾸기 */}
-            <Input placeholder="자기소개" className="w-full" />
+          <div className="flex flex-col mt-2">
+            <TextArea placeholder="자기소개" maxLength={150} resize="none" className="min-h-32" />
             <Text variant="body2" className="text-foreground-muted mt-1 mr-1 self-end">
               150
             </Text>
