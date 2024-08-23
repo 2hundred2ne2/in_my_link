@@ -148,24 +148,34 @@ interface LinkBlockProps {
 export function LinkBlock({ id, title, url, image, onClickDelete }: LinkBlockProps) {
   const [isEdit, setIsEdit] = useState(false);
 
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id });
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
+    id: id,
+  });
+
+  const style = {
+    transform: transform
+      ? // 드래그 중일 때:
+        // - x, y 좌표만 변경하고 scale은 무시하여 크기 왜곡 방지
+        // - 접힌 블록위로 드래그하면 scaleY가 두배로 되는 문제가있음
+        `translate3d(${transform.x}px, ${transform.y}px, 0)`
+      : // 드래그 종료 또는 미시작: CSS.Transform.toString로 transform 객체를 css 문자열 변환
+        CSS.Transform.toString(transform),
+    transition,
+  };
 
   if (!isEdit) {
     return (
       <Card
         ref={setNodeRef}
         variant="default"
-        style={{
-          transform: CSS.Transform.toString(transform),
-          transition,
-        }}
+        style={style}
         className="relative rounded-2xl flex p-0"
       >
         <div className="absolute flex h-full items-center top-1/2 -translate-y-1/2">
           <div
             {...attributes}
             {...listeners}
-            className="flex items-center justify-center touch-none"
+            className="flex items-center justify-center w-full h-full touch-none"
           >
             <button type="button" className="cursor-grab px-2 w-full h-full">
               <DotsSixVertical size={16} />
@@ -176,7 +186,7 @@ export function LinkBlock({ id, title, url, image, onClickDelete }: LinkBlockPro
           </div>
         </div>
 
-        <div className="flex items-center justify-center px-3 py-4 w-full">
+        <div className="flex items-center justify-center px-3 py-4 w-full min-h-16">
           <Text className="font-medium w-full text-center">{title ?? "Title"}</Text>
         </div>
 
@@ -195,7 +205,12 @@ export function LinkBlock({ id, title, url, image, onClickDelete }: LinkBlockPro
   }
 
   return (
-    <Card ref={setNodeRef} variant="default" className="rounded-2xl flex flex-col p-0">
+    <Card
+      ref={setNodeRef}
+      variant="default"
+      style={style}
+      className="rounded-2xl flex flex-col p-0"
+    >
       {/* header */}
       <div className="flex items-center pl-6 py-4 pr-3">
         <div className="relative flex items-center">
