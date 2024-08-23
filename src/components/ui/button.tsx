@@ -14,14 +14,14 @@ const buttonVariants = {
 };
 
 const buttonSizes = {
-  small: "py-1 px-3 text-sm",
-  medium: "py-2 px-4 text-sm",
-  large: "py-3 px-6 text-base",
+  small: "py-1 px-3 rounded-[10px] text-sm",
+  medium: "py-2 px-4 rounded-[10px] text-sm",
+  large: "py-3 px-6 rounded-xl min-h-14 text-base",
 };
 
 const buttonRadii = {
   none: "rounded-none",
-  default: "rounded-md",
+  default: "",
   full: "rounded-full",
 };
 

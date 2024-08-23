@@ -7,7 +7,7 @@ const variants = {
   body2: "text-xs md:text-sm",
 } as const;
 
-export interface TextProps<T extends ElementType = "span"> {
+export interface TextProps<T extends ElementType> {
   as?: T;
   variant?: keyof typeof variants;
   children?: ReactNode;
@@ -19,7 +19,7 @@ export function Text<T extends ElementType = "span">({
   variant = "body1",
   children,
   className,
-}: TextProps & Omit<ComponentPropsWithoutRef<T>, keyof TextProps<T>>) {
+}: TextProps<T> & Omit<ComponentPropsWithoutRef<T>, keyof TextProps<T>>) {
   const Component = as || "span";
   return <Component className={cn(variants[variant], className)}> {children}</Component>;
 }
