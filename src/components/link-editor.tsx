@@ -159,20 +159,28 @@ export function LinkBlock({ id, title, url, image, onClickDelete }: LinkBlockPro
           transform: CSS.Transform.toString(transform),
           transition,
         }}
-        className="rounded-2xl flex p-0"
+        className="relative rounded-2xl flex p-0"
       >
-        <div {...attributes} {...listeners} className="flex items-center justify-center touch-none">
-          <button type="button" className="cursor-grab px-2 w-full h-full">
-            <DotsSixVertical size={16} />
-          </button>
+        <div className="absolute flex h-full items-center top-1/2 -translate-y-1/2">
+          <div
+            {...attributes}
+            {...listeners}
+            className="flex items-center justify-center touch-none"
+          >
+            <button type="button" className="cursor-grab px-2 w-full h-full">
+              <DotsSixVertical size={16} />
+            </button>
+          </div>
+          <div className="flex items-center">
+            <span className="min-w-8 min-h-8 inline-block bg-primary-300 rounded-xl"></span>
+          </div>
         </div>
 
-        <div className="flex items-center px-3 py-4 w-full">
-          {/* 이미지 */}
-          <span className="min-w-8 min-h-8 inline-block bg-primary-300 rounded-xl"></span>
-
+        <div className="flex items-center justify-center px-3 py-4 w-full">
           <Text className="font-medium w-full text-center">{title ?? "Title"}</Text>
+        </div>
 
+        <div className="absolute flex h-full right-3 items-center top-1/2 -translate-y-1/2">
           <Button
             type="button"
             variant="text"
