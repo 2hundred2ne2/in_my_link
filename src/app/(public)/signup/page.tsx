@@ -6,10 +6,12 @@ import { useState, useRef } from "react";
 
 import { Input } from "@/components/input";
 import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
+import { cn } from "@/lib/utils";
 
 const logo = Lobster({ subsets: ["latin"], weight: ["400"] });
 
-export default function LoginPage() {
+export default function SignUpPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
@@ -69,82 +71,85 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="">
-      <div className="min-h-screen flex items-center justify-center">
-        <div>
-          <div className={logo.className}>
-            <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Linkggu</h2>
-          </div>
-          <form onSubmit={handleSubmit}>
-            <div>
+    <main className="flex-1 flex items-center justify-center px-3 md:px-8 py-8">
+      <div className="w-full max-w-xs">
+        <h1 className={cn(logo.className, "mb-5 text-center text-3xl font-extrabold")}>Linkggu</h1>
+        <form onSubmit={handleSubmit}>
+          <Input
+            type="email"
+            placeholder="이메일"
+            value={email}
+            onChange={handleEmailChange}
+            status={errorEmail ? "error" : "default"}
+            errorMessage={errorEmail}
+            className="w-full"
+          />
+          {showPassword && (
+            <Input
+              type="password"
+              placeholder="비밀번호"
+              value={password}
+              onChange={handlePasswordChange}
+              status={errorPassword ? "error" : "default"}
+              errorMessage={errorPassword}
+              className="w-full"
+            />
+          )}
+          {showPasswordConfirm && (
+            <Input
+              type="password"
+              placeholder="비밀번호 확인"
+              value={passwordConfirm}
+              onChange={handlePasswordConfirmChange}
+              status={errorPasswordConfirm ? "error" : "default"}
+              errorMessage={errorPasswordConfirm}
+              className="w-full"
+            />
+          )}
+          {showEmailCode && (
+            <>
+              <Text as="p" className="mt-8">
+                인증번호를 이메일로 발송했습니다. 메일을 확인해주세요
+              </Text>
               <Input
-                type="email"
-                placeholder="이메일"
-                value={email}
-                onChange={handleEmailChange}
-                status={errorEmail ? "error" : "default"}
-                errorMessage={errorEmail}
+                type="text"
+                placeholder="인증번호"
+                value={emailCode}
+                onChange={handleEmailCodeChange}
+                status={errorEmailCode ? "error" : "default"}
+                errorMessage={errorEmailCode}
+                className="w-full"
               />
-              {showPassword && (
-                <Input
-                  type="password"
-                  placeholder="비밀번호"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  status={errorPassword ? "error" : "default"}
-                  errorMessage={errorPassword}
-                />
-              )}
-              {showPasswordConfirm && (
-                <Input
-                  type="password"
-                  placeholder="비밀번호 확인"
-                  value={passwordConfirm}
-                  onChange={handlePasswordConfirmChange}
-                  status={errorPasswordConfirm ? "error" : "default"}
-                  errorMessage={errorPasswordConfirm}
-                />
-              )}
-              {showEmailCode && (
-                <>
-                  <p className="text-foreground">
-                    인증번호를 이메일로 발송했습니다. 메일을 확인해주세요
-                  </p>
-                  <Input
-                    type="text"
-                    placeholder="인증번호"
-                    value={emailCode}
-                    onChange={handleEmailCodeChange}
-                    status={errorEmailCode ? "error" : "default"}
-                    errorMessage={errorEmailCode}
-                  />
-                </>
-              )}
-              {showDomainInput && (
-                <>
-                  <Input
-                    type="text"
-                    placeholder="inmylink.com/"
-                    value={domain}
-                    onChange={(e) => setDomain(e.target.value)}
-                  />
-                  <div>
-                    <Button type="submit" className="mt-2 w-full" size="large">
-                      다음
-                    </Button>
-                  </div>
-                </>
-              )}
-            </div>
-          </form>
-          <div className="text-center mt-4">
-            <p className="text-foreground">
-              회원이신가요?
-              <Link href="/login" className="text-accent">
+            </>
+          )}
+          {showDomainInput && (
+            <>
+              <Input
+                type="text"
+                placeholder="inmylink.com/"
+                value={domain}
+                onChange={(e) => setDomain(e.target.value)}
+                className="w-full"
+              />
+              <div>
+                <Button type="submit" className="mt-2 w-full" size="large">
+                  다음
+                </Button>
+              </div>
+            </>
+          )}
+        </form>
+
+        <div className="text-center mt-8">
+          <p className="text-foreground">
+            <Text as="span"> 회원이신가요?</Text>
+
+            <Link href="/login" className="text-accent">
+              <Text as="span" className="hover:underline">
                 로그인
-              </Link>
-            </p>
-          </div>
+              </Text>
+            </Link>
+          </p>
         </div>
       </div>
     </main>
