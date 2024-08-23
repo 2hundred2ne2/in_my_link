@@ -1,20 +1,17 @@
 "use client";
 
-import { Lobster } from "next/font/google";
 import Link from "next/link";
 
 import { Input } from "@/components/input";
+import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-import { cn } from "@/lib/utils";
-
-const logo = Lobster({ subsets: ["latin"], weight: ["400"] });
 
 export default function LoginPage() {
   return (
     <main className="flex-1 flex items-center justify-center px-3 md:px-8 py-8">
       <div className="w-full max-w-xs">
-        <h1 className={cn(logo.className, "mb-5 text-center text-3xl font-extrabold")}>Linkggu</h1>
+        <Logo className="mb-5" />
 
         <form>
           <div>
