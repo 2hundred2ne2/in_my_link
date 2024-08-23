@@ -1,3 +1,6 @@
+"use client";
+import { useState } from "react";
+
 import {
   CaretDown,
   CaretUp,
@@ -7,6 +10,7 @@ import {
   Trash,
 } from "@phosphor-icons/react/dist/ssr";
 
+import { Preview } from "@/components/preview";
 import {
   AppHeader,
   AppHeaderCenter,
@@ -19,6 +23,9 @@ import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 
 export default function LinksPage() {
+  const [PreviewOpen, setPreviewOpen] = useState(false);
+
+  const togglePreview = () => setPreviewOpen((prev) => !prev);
   return (
     <>
       <AppHeader>
@@ -212,6 +219,18 @@ export default function LinksPage() {
             </li>
           </ul>
         </section>
+        <div className="relative flex justify-center">
+          <Button
+            variant="text"
+            radius="full"
+            className="fixed bottom-0 mx-auto w-40 mb-20 bg-background border-[0.2px] shadow-md z-10"
+            onClick={togglePreview}
+          >
+            {PreviewOpen ? "닫기" : "미리보기"}
+          </Button>
+
+          {PreviewOpen && <Preview />}
+        </div>
       </main>
     </>
   );
