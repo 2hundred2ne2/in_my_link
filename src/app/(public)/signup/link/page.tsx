@@ -1,4 +1,6 @@
-import { Trash, Link } from "@phosphor-icons/react/dist/ssr";
+import Link from "next/link";
+
+import { Trash, Link as Chain } from "@phosphor-icons/react/dist/ssr";
 
 import {
   AppHeader,
@@ -87,7 +89,7 @@ export default function RegisterLinksPage() {
                 <Card variant="default" className="rounded-2xl flex p-0 items-center">
                   <span className="flex items-center w-8 h-8 mx-3 justify-center">
                     <span className="flex items-center min-w-10 min-h-10 bg-primary-300 rounded-xl mt-0.5 p-1.5">
-                      <Link size={28} />
+                      <Chain size={28} />
                     </span>
                   </span>
                   <input
@@ -104,7 +106,7 @@ export default function RegisterLinksPage() {
                 <Card variant="default" className="rounded-2xl flex p-0 items-center">
                   <span className="flex items-center w-8 h-8 mx-3 justify-center">
                     <span className="flex items-center min-w-10 min-h-10 bg-primary-300 rounded-xl mt-0.5 p-1.5">
-                      <Link size={28} />
+                      <Chain size={28} />
                     </span>
                   </span>
                   <input
@@ -121,7 +123,7 @@ export default function RegisterLinksPage() {
                 <Card variant="default" className="rounded-2xl flex p-0 items-center">
                   <span className="flex items-center w-8 h-8 mx-3 justify-center">
                     <span className="flex items-center min-w-10 min-h-10 bg-primary-300 rounded-xl mt-0.5 p-1.5">
-                      <Link size={28} />
+                      <Chain size={28} />
                     </span>
                   </span>
                   <input
@@ -138,7 +140,7 @@ export default function RegisterLinksPage() {
                 <Card variant="default" className="rounded-2xl flex p-0 items-center">
                   <span className="flex items-center w-8 h-8 mx-3 justify-center">
                     <span className="flex items-center min-w-10 min-h-10 bg-primary-300 rounded-xl mt-0.5 p-1.5">
-                      <Link size={28} />
+                      <Chain size={28} />
                     </span>
                   </span>
                   <input
@@ -155,7 +157,7 @@ export default function RegisterLinksPage() {
                 <Card variant="default" className="rounded-2xl flex p-0 items-center">
                   <span className="flex items-center w-8 h-8 mx-3 justify-center">
                     <span className="flex items-center min-w-10 min-h-10 bg-primary-300 rounded-xl mt-0.5 p-1.5">
-                      <Link size={28} />
+                      <Chain size={28} />
                     </span>
                   </span>
                   <input
@@ -171,10 +173,10 @@ export default function RegisterLinksPage() {
             </ul>
             <div className="flex flex-col gap-2 px-2 mt-20">
               <Button variant="primary" size="large">
-                다음
+                <Link href="/signup/welcome">다음</Link>
               </Button>
               <Button variant="text" size="large">
-                건너뛰기
+                <Link href="/signup/welcome">건너뛰기</Link>
               </Button>
             </div>
           </section>
