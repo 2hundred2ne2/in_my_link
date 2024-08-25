@@ -193,19 +193,27 @@ export default function DesignPage() {
               </div>
             </section>
           </TabPanel>
-          <div className="relative flex justify-center">
-            <Button
-              variant="text"
-              radius="full"
-              className="fixed bottom-0 mx-auto w-40 mb-20 bg-background border-[0.2px] shadow-md z-10"
-              onClick={togglePreview}
-            >
-              {PreviewOpen ? "닫기" : "미리보기"}
-            </Button>
-
-            {PreviewOpen && <Preview />}
-          </div>
         </Tabs>
+        <div className="relative flex justify-center">
+          <Button
+            variant="text"
+            radius="full"
+            className="fixed bottom-0 mx-auto w-40 mb-20 bg-background border-[0.2px] shadow-md z-10"
+            onClick={togglePreview}
+          >
+            {PreviewOpen ? "닫기" : "미리보기"}
+          </Button>
+
+          {PreviewOpen && (
+            <div
+              className={`fixed bottom-[calc(120px+15px)] z-20 ${
+                PreviewOpen ? "animate-slideUp" : "animate-slideDown"
+              }`}
+            >
+              <Preview />
+            </div>
+          )}
+        </div>
       </main>
     </>
   );
