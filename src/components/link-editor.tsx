@@ -47,7 +47,7 @@ interface LinkInputProps {
   className?: string;
   onChange?: (value: string) => void;
 }
-
+// FIXME: 상태제어 잘못됨
 function LinkInput({ label, value = "", className, onChange }: LinkInputProps) {
   const [isEdit, setIsEdit] = useState(false);
   const [inputValue, setInputValue] = useState(value);
