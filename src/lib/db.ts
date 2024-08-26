@@ -44,7 +44,7 @@ export async function query<T>(sql: string, values?: any[]) {
  *
  * @throws 트랜잭션 실행 중 오류가 발생하면 롤백 후 예외를 던집니다.
  */
-export async function trx<T>(callback: (connection: PoolConnection) => Promise<T>): Promise<T> {
+export async function trx<T>(callback: (connection: PoolConnection) => Promise<T>) {
   const connection = await pool.getConnection();
 
   try {

@@ -13,7 +13,7 @@ cp .env.example .env.local
 2. `.env.local` 파일을 열어 실제 설정 값으로 바꾸기
 
 > [!NOTE]
-> MySQL을 사용하고있어요
+> MySQL 8을 사용하고있어요
 
 ```
 DB_HOST=localhost
