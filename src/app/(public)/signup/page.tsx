@@ -21,6 +21,7 @@ export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [showEmailCode, setShowEmailCode] = useState(false);
+  // 인증번호가 전송되었는지 확인하는 값
   const [showDomainInput, setShowDomainInput] = useState(false);
 
   const [errorEmail, setErrorEmail] = useState("");
@@ -74,71 +75,73 @@ export default function SignUpPage() {
     <main className="flex-1 flex items-center justify-center px-3 md:px-8 py-8">
       <div className="w-full max-w-xs">
         <h1 className={cn(logo.className, "mb-5 text-center text-3xl font-extrabold")}>Linkggu</h1>
-        <form onSubmit={handleSubmit}>
-          <Input
-            type="email"
-            placeholder="이메일"
-            value={email}
-            onChange={handleEmailChange}
-            status={errorEmail ? "error" : "default"}
-            errorMessage={errorEmail}
-            className="w-full"
-          />
-          {showPassword && (
+        {!showDomainInput && (
+          <>
             <Input
-              type="password"
-              placeholder="비밀번호"
-              value={password}
-              onChange={handlePasswordChange}
-              status={errorPassword ? "error" : "default"}
-              errorMessage={errorPassword}
+              type="email"
+              placeholder="이메일"
+              value={email}
+              onChange={handleEmailChange}
+              status={errorEmail ? "error" : "default"}
+              errorMessage={errorEmail}
               className="w-full"
             />
-          )}
-          {showPasswordConfirm && (
+            {showPassword && (
+              <Input
+                type="password"
+                placeholder="비밀번호"
+                value={password}
+                onChange={handlePasswordChange}
+                status={errorPassword ? "error" : "default"}
+                errorMessage={errorPassword}
+                className="w-full"
+              />
+            )}
+            {showPasswordConfirm && (
+              <Input
+                type="password"
+                placeholder="비밀번호 확인"
+                value={passwordConfirm}
+                onChange={handlePasswordConfirmChange}
+                status={errorPasswordConfirm ? "error" : "default"}
+                errorMessage={errorPasswordConfirm}
+                className="w-full"
+              />
+            )}
+            {showEmailCode && (
+              <>
+                <Text as="p" className="mt-8">
+                  인증번호를 이메일로 발송했습니다. 메일을 확인해주세요
+                </Text>
+                <Input
+                  type="text"
+                  placeholder="인증번호"
+                  value={emailCode}
+                  onChange={handleEmailCodeChange}
+                  status={errorEmailCode ? "error" : "default"}
+                  errorMessage={errorEmailCode}
+                  className="w-full"
+                />
+              </>
+            )}
+          </>
+        )}
+        {showDomainInput && (
+          <>
             <Input
-              type="password"
-              placeholder="비밀번호 확인"
-              value={passwordConfirm}
-              onChange={handlePasswordConfirmChange}
-              status={errorPasswordConfirm ? "error" : "default"}
-              errorMessage={errorPasswordConfirm}
+              type="text"
+              placeholder="inmylink.com/"
+              value={domain}
+              onChange={(e) => setDomain(e.target.value)}
               className="w-full"
             />
-          )}
-          {showEmailCode && (
-            <>
-              <Text as="p" className="mt-8">
-                인증번호를 이메일로 발송했습니다. 메일을 확인해주세요
-              </Text>
-              <Input
-                type="text"
-                placeholder="인증번호"
-                value={emailCode}
-                onChange={handleEmailCodeChange}
-                status={errorEmailCode ? "error" : "default"}
-                errorMessage={errorEmailCode}
-                className="w-full"
-              />
-            </>
-          )}
-          {showDomainInput && (
-            <>
-              <Input
-                type="text"
-                placeholder="inmylink.com/"
-                value={domain}
-                onChange={(e) => setDomain(e.target.value)}
-                className="w-full"
-              />
-              <div>
-                <Button type="submit" className="mt-2 w-full" size="large">
-                  다음
-                </Button>
-              </div>
-            </>
-          )}
-        </form>
+            <div>
+              <Button className="mt-2 w-full" size="large">
+                다음
+              </Button>
+            </div>
+          </>
+        )}
 
         <div className="text-center mt-8">
           <p className="text-foreground">
