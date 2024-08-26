@@ -3,8 +3,8 @@ import { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const variants = {
-  body1: "text-sm md:text-base",
-  body2: "text-xs md:text-sm",
+  body1: "text-sm", // "text-sm md:text-base",
+  body2: "text-xs", // "text-xs md:text-sm",
 } as const;
 
 export interface TextProps<T extends ElementType> {
