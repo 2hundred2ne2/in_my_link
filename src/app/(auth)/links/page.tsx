@@ -1,6 +1,6 @@
 import { SignOut } from "@phosphor-icons/react/dist/ssr";
 
-import { LinkEditor } from "@/components/link-editor";
+import { LinkListEditor } from "@/components/links/link-list-editor";
 import { Logo } from "@/components/logo";
 import {
   AppHeader,
@@ -9,27 +9,7 @@ import {
   AppHeaderRight,
 } from "@/components/ui/app-header";
 import { Heading } from "@/components/ui/heading";
-
-const links = [
-  {
-    id: "a",
-    title: "insta",
-    url: "https://www.instagram.com/",
-    image: "",
-  },
-  {
-    id: "b",
-    title: "facebook",
-    url: "https://www.facebook.com",
-    image: "",
-  },
-  {
-    id: "c",
-    title: "thread",
-    url: "https://www.threads.net/",
-    image: "",
-  },
-];
+import { Link } from "@/types/link";
 
 export default function LinksPage() {
   return (
@@ -56,7 +36,31 @@ export default function LinksPage() {
           <Heading className="mt-4">Nickname</Heading>
         </div>
 
-        <LinkEditor links={links} />
+        <LinkListEditor
+          links={[
+            {
+              id: 1,
+              title: "insta",
+              url: "https://www.instagram.com/",
+              image: "",
+              type: "instagram",
+            },
+            {
+              id: 2,
+              title: "facebook",
+              url: "https://www.facebook.com",
+              image: "",
+              type: "facebook",
+            },
+            {
+              id: 3,
+              title: "thread",
+              url: "https://www.threads.net/",
+              image: "",
+              type: "threads",
+            },
+          ]}
+        />
       </main>
     </>
   );

@@ -1,6 +1,8 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
+import { LinkType } from "@/types/link";
+
 /**
  * 여러 클래스를 하나로 합칩니다
  * - clsx를 이용한 조건부 클래스를 쉽게 적용가능
@@ -12,4 +14,17 @@ import { twMerge } from "tailwind-merge";
  */
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+export function getSnsUrl(type: LinkType) {
+  switch (type) {
+    case "instagram":
+      return "https://www.instagram.com/";
+    case "facebook":
+      return "https://www.facebook.com/";
+    case "threads":
+      return "https://www.threads.net/";
+    default:
+      return "";
+  }
 }

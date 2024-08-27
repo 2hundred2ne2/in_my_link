@@ -30,7 +30,7 @@ interface User extends RowDataPacket {
  */
 export async function POST(request: Request) {
   const body = await request.json();
-  const { userId, title, image, url } = body;
+  const { userId, type, title, image, url } = body;
 
   // TODO: 유효성검사
   // TODO: 권한
@@ -43,8 +43,8 @@ export async function POST(request: Request) {
   const newOrder = (maxOrderResult[0].maxOrder ?? 0) + 1;
 
   const [insertResult] = await db.query<ResultSetHeader>(
-    "INSERT INTO link (user_id, title, image, url, `order`, create_date, update_date) VALUES (?, ?, ?, ?, ?, NOW(), NOW())",
-    [userId, title, image || null, url, newOrder],
+    "INSERT INTO link (user_id, type, title, image, url, `order`, create_date, update_date) VALUES (?, ?, ?, ?, ?, NOW(), NOW())",
+    [userId, type, title, image || null, url, newOrder],
   );
 
   const [links] = await db.query<Link[]>("SELECT * FROM link WHERE id = ?", [
