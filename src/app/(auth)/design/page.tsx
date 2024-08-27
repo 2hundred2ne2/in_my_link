@@ -1,4 +1,6 @@
+"use client";
 import Image from "next/image";
+import { useState } from "react";
 
 import { SignOut } from "@phosphor-icons/react/dist/ssr";
 
@@ -15,6 +17,12 @@ import { Heading } from "@/components/ui/heading";
 import { Tab, TabList, TabPanel, Tabs } from "@/components/ui/tabs";
 
 export default function DesignPage() {
+  const [activeBackgroundButtonIndex, setActiveBackgroundButtonIndex] = useState<number | null>(0);
+
+  const backgroundButtonClick = (index: number) => {
+    setActiveBackgroundButtonIndex(index);
+  };
+
   return (
     <>
       <AppHeader>
@@ -54,32 +62,37 @@ export default function DesignPage() {
                 <div className="overflow-x-auto">
                   <div className="flex gap-3 mt-2 min-w-max">
                     <button
-                      type="button"
-                      className="flex-shrink-0 w-14 h-14 bg-background rounded-full active:scale-[0.96] duration-100 transition-transform border"
+                      type="button" //여기서부터 버튼
+                      className={`flex-shrink-0 w-14 h-14 bg-background rounded-full active:scale-[0.96] duration-100 transition-transform border ${activeBackgroundButtonIndex === 0 ? "border-black" : "border-transparent"} focus:outline-none`}
+                      onClick={() => backgroundButtonClick(0)}
                     >
                       <span className="sr-only">기본</span>
                     </button>
                     <button
                       type="button"
-                      className="flex-shrink-0 w-14 h-14 bg-background-muted rounded-full active:scale-[0.96] duration-100 transition-transform"
+                      className={`flex-shrink-0 w-14 h-14 bg-background-muted rounded-full active:scale-[0.96] duration-100 transition-transform border ${activeBackgroundButtonIndex === 1 ? "border-black" : "border-transparent"} focus:outline-none`}
+                      onClick={() => backgroundButtonClick(1)}
                     >
                       <span className="sr-only">약함</span>
                     </button>
                     <button
                       type="button"
-                      className="flex-shrink-0 w-14 h-14 bg-green-100 rounded-full active:scale-[0.96] duration-100 transition-transform"
+                      className={`flex-shrink-0 w-14 h-14 bg-green-100 rounded-full active:scale-[0.96] duration-100 transition-transform border ${activeBackgroundButtonIndex === 2 ? "border-black" : "border-transparent"} focus:outline-none`}
+                      onClick={() => backgroundButtonClick(2)}
                     >
                       <span className="sr-only">파스텔 그린</span>
                     </button>
                     <button
                       type="button"
-                      className="flex-shrink-0 w-14 h-14 bg-pink-100 rounded-full active:scale-[0.96] duration-100 transition-transform"
+                      className={`flex-shrink-0 w-14 h-14 bg-pink-100 rounded-full active:scale-[0.96] duration-100 transition-transform border ${activeBackgroundButtonIndex === 3 ? "border-black" : "border-transparent"} focus:outline-none`}
+                      onClick={() => backgroundButtonClick(3)}
                     >
                       <span className="sr-only">파스텔 핑크</span>
                     </button>
                     <button
                       type="button"
-                      className="flex-shrink-0 w-14 h-14 bg-blue-100 rounded-full active:scale-[0.96] duration-100 transition-transform"
+                      className={`flex-shrink-0 w-14 h-14 bg-blue-100 rounded-full active:scale-[0.96] duration-100 transition-transform border ${activeBackgroundButtonIndex === 4 ? "border-black" : "border-transparent"} focus:outline-none`}
+                      onClick={() => backgroundButtonClick(4)}
                     >
                       <span className="sr-only">파스텔 블루</span>
                     </button>
