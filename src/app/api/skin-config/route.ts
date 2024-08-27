@@ -1,25 +1,40 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { RowDataPacket } from "mysql2/promise";
 
 import { db } from "@/lib/db";
 
+// TODO: 분리
 interface SkinConfig extends RowDataPacket {
   id: number;
   userId: number;
   color: string;
 }
 
+interface User extends RowDataPacket {
+  id: number;
+}
+
 /**
  * @see https://github.com/2hundred2ne2/in_my_link/issues/83
  */
-export async function GET() {
-  // TODO: 권한
-  const TEMP_USER_ID = 1;
+export async function GET(request: NextRequest) {
+  const searchParams = request.nextUrl.searchParams;
+  const domain = searchParams.get("domain");
+
+  if (!domain) {
+    return NextResponse.json({ message: "올바른 도메인을 입력해주세요" }, { status: 400 });
+  }
+
+  const [users] = await db.query<User[]>("SELECT id FROM user WHERE domain = ?", [domain]);
+
+  if (users.length < 1) {
+    return NextResponse.json({ message: "존재하지 않는 도메인입니다" }, { status: 404 });
+  }
 
   const [skinConfigs] = await db.query<SkinConfig[]>(
     "SELECT color FROM skin_config WHERE user_id = ?",
-    [TEMP_USER_ID],
+    [users[0].id],
   );
 
   return NextResponse.json(skinConfigs[0], { status: 200 });
