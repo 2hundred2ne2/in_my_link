@@ -26,3 +26,21 @@ export async function GET() {
 
   return NextResponse.json(buttonConfigs[0], { status: 200 });
 }
+
+/**
+ * @see https://github.com/2hundred2ne2/in_my_link/issues/77
+ */
+export async function PATCH(request: Request) {
+  // TODO: 권한
+  const TEMP_USER_ID = 1;
+
+  const body = await request.json();
+  const { layout } = body;
+
+  await db.query("UPDATE button_config SET layout = ?, update_date = NOW() WHERE user_id = ?", [
+    layout,
+    TEMP_USER_ID,
+  ]);
+
+  return NextResponse.json({ message: "버튼 설정이 업데이트 되었습니다" }, { status: 200 });
+}
