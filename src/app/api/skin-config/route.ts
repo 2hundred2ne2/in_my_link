@@ -39,3 +39,21 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json(skinConfigs[0], { status: 200 });
 }
+
+/**
+ * @see https://github.com/2hundred2ne2/in_my_link/issues/84
+ */
+export async function PATCH(request: Request) {
+  // TODO: 권한
+  const TEMP_USER_ID = 1;
+
+  const body = await request.json();
+  const { color } = body;
+
+  await db.query("UPDATE skin_config SET color = ?, update_date = NOW() WHERE user_id = ?", [
+    color,
+    TEMP_USER_ID,
+  ]);
+
+  return NextResponse.json({ message: "스킨 설정이 업데이트 되었습니다" }, { status: 200 });
+}
