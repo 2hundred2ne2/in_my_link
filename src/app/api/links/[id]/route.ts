@@ -48,7 +48,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 /**
  * @see https://github.com/2hundred2ne2/in_my_link/issues/63
  */
-export async function DELETE({ params }: { params: { id: string } }) {
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   // TODO: 유효성검사
   // TODO: 권한
   const TEMP_USER_ID = 1;
