@@ -25,8 +25,8 @@ interface User extends RowDataPacket {
 }
 
 /**
- * 
- @ @see https://github.com/2hundred2ne2/in_my_link/issues/59
+ *
+ * @see https://github.com/2hundred2ne2/in_my_link/issues/59
  */
 export async function POST(request: Request) {
   const body = await request.json();
