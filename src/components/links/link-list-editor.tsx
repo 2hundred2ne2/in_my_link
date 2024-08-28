@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useRef, useState } from "react";
 
 import {
@@ -26,6 +27,7 @@ import { Link, LinkType } from "@/types/link";
 import { Button } from "../ui/button";
 import { Heading } from "../ui/heading";
 import { Modal } from "../ui/modal";
+import { Text } from "../ui/text";
 
 import { LinkListItem } from "./link-list-item";
 
@@ -93,7 +95,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       id: Date.now(),
       title: "",
       url: type === "custom" ? "" : getSnsUrl(type),
-      image: "",
+      image: `/images/${type}-logo.png`,
       isEdit: true,
       type,
     };
@@ -157,18 +159,54 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
           <Heading variant="subtitle2" className="mb-6 text-center">
             어떤 링크를 추가할까요?
           </Heading>
-          <div className="flex items-center justify-center">
-            <button className="h-8 w-8 rounded-xl" onClick={() => handleAddLink("instagram")}>
-              인스타그램
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <button className="grid gap-1" onClick={() => handleAddLink("instagram")}>
+              <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-background-muted">
+                <Image
+                  src="/images/instagram-logo.png"
+                  alt="인스타그램"
+                  width={256}
+                  height={256}
+                  className="h-10 w-10 rounded-xl"
+                />
+              </span>
+              <Text>인스타그램</Text>
             </button>
-            <button className="h-8 w-8 rounded-xl" onClick={() => handleAddLink("facebook")}>
-              페이스북
+            <button className="grid gap-1" onClick={() => handleAddLink("facebook")}>
+              <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-background-muted">
+                <Image
+                  src="/images/facebook-logo.png"
+                  alt="페이스북"
+                  width={256}
+                  height={256}
+                  className="h-10 w-10 rounded-xl"
+                />
+              </span>
+              <Text>페이스북</Text>
             </button>
-            <button className="h-8 w-8 rounded-xl" onClick={() => handleAddLink("threads")}>
-              쓰레드
+            <button className="grid gap-1" onClick={() => handleAddLink("threads")}>
+              <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-background-muted">
+                <Image
+                  src="/images/threads-logo.png"
+                  alt="쓰레드"
+                  width={256}
+                  height={256}
+                  className="h-10 w-10 rounded-xl"
+                />
+              </span>
+              <Text>쓰레드</Text>
             </button>
-            <button className="h-8 w-8 rounded-xl" onClick={() => handleAddLink("custom")}>
-              커스텀
+            <button className="grid gap-1" onClick={() => handleAddLink("custom")}>
+              <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-background-muted">
+                <Image
+                  src="/images/custom-logo.png"
+                  alt="커스텀"
+                  width={256}
+                  height={256}
+                  className="h-10 w-10 rounded-xl"
+                />
+              </span>
+              <Text>커스텀</Text>
             </button>
           </div>
         </Modal>

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { CaretDown, CaretUp, DotsSixVertical, PencilSimple, Trash } from "@phosphor-icons/react";
@@ -145,7 +147,13 @@ export function LinkListItem({
             </button>
           </div>
           <div className="flex items-center">
-            <span className="inline-block min-h-8 min-w-8 rounded-xl bg-primary-300"></span>
+            <Image
+              src={image ?? "/images/custom-logo.png"}
+              alt={type}
+              width={256}
+              height={256}
+              className="inline-block h-8 min-w-8 max-w-8 rounded-xl"
+            />
           </div>
         </div>
 
@@ -177,9 +185,14 @@ export function LinkListItem({
       {/* header */}
       <div className="flex items-center py-4 pl-6 pr-3">
         <div className="relative flex items-center">
-          {/* TODO: 이미지 */}
           <button type="button">
-            <span className="block min-h-8 min-w-8 rounded-xl bg-primary-300"></span>
+            <Image
+              src={image ?? "/images/custom-logo.png"}
+              alt={type}
+              width={256}
+              height={256}
+              className="inline-block h-8 min-w-8 max-w-8 rounded-xl"
+            />
           </button>
           {/* TODO: 이미지 삭제 */}
           <button

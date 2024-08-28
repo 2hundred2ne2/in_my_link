@@ -9,7 +9,6 @@ import {
   AppHeaderRight,
 } from "@/components/ui/app-header";
 import { Heading } from "@/components/ui/heading";
-import { Link } from "@/types/link";
 
 export default function LinksPage() {
   return (
@@ -42,21 +41,21 @@ export default function LinksPage() {
               id: 1,
               title: "insta",
               url: "https://www.instagram.com/",
-              image: "",
+              image: "/images/instagram-logo.png",
               type: "instagram",
             },
             {
               id: 2,
               title: "facebook",
               url: "https://www.facebook.com",
-              image: "",
+              image: "/images/facebook-logo.png",
               type: "facebook",
             },
             {
               id: 3,
               title: "thread",
               url: "https://www.threads.net/",
-              image: "",
+              image: "/images/threads-logo.png",
               type: "threads",
             },
           ]}
