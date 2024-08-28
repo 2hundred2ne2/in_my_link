@@ -150,31 +150,31 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
           className="w-full"
           onClick={() => setIsAddModalOpen(true)}
         >
-          <Plus size={16} className="mr-2 -ml-1" />
+          <Plus size={16} className="-ml-1 mr-2" />
           추가하기
         </Button>
         <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
-          <Heading variant="subtitle2" className="text-center mb-6">
+          <Heading variant="subtitle2" className="mb-6 text-center">
             어떤 링크를 추가할까요?
           </Heading>
           <div className="flex items-center justify-center">
-            <button className="w-8 h-8 rounded-xl" onClick={() => handleAddLink("instagram")}>
+            <button className="h-8 w-8 rounded-xl" onClick={() => handleAddLink("instagram")}>
               인스타그램
             </button>
-            <button className="w-8 h-8 rounded-xl" onClick={() => handleAddLink("facebook")}>
+            <button className="h-8 w-8 rounded-xl" onClick={() => handleAddLink("facebook")}>
               페이스북
             </button>
-            <button className="w-8 h-8 rounded-xl" onClick={() => handleAddLink("threads")}>
+            <button className="h-8 w-8 rounded-xl" onClick={() => handleAddLink("threads")}>
               쓰레드
             </button>
-            <button className="w-8 h-8 rounded-xl" onClick={() => handleAddLink("custom")}>
+            <button className="h-8 w-8 rounded-xl" onClick={() => handleAddLink("custom")}>
               커스텀
             </button>
           </div>
         </Modal>
       </div>
 
-      <section className="mt-8 mb-16">
+      <section className="mb-16 mt-8">
         <h1 className="sr-only">링크 리스트</h1>
 
         {links.length > 0 && (
@@ -216,7 +216,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
         <Heading variant="heading2" className="text-center">
           링크 삭제 확인
         </Heading>
-        <p className="mt-3 mb-6 text-center">정말로 이 링크를 삭제하시겠습니까?</p>
+        <p className="mb-6 mt-3 text-center">정말로 이 링크를 삭제하시겠습니까?</p>
         <div className="grid gap-2">
           <Button
             size="large"

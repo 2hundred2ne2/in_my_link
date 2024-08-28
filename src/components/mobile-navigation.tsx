@@ -32,15 +32,15 @@ export function MobileNavigation() {
   const path = usePathname();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 mx-auto max-w-lg bg-background z-10">
+    <nav className="fixed bottom-0 left-0 right-0 z-10 mx-auto max-w-lg bg-background">
       <h1 className="sr-only">모바일 네비게이션</h1>
-      <ul className="flex justify-around items-center px-5 h-[68px]">
+      <ul className="flex h-[68px] items-center justify-around px-5">
         {links.map((link) => (
-          <li key={link.id} className="w-full h-full p-1 ">
+          <li key={link.id} className="h-full w-full p-1">
             <Link
               href={link.href}
               className={cn(
-                "w-full h-full flex flex-col items-center justify-center rounded-lg text-foreground-disabled hover:bg-background-muted transition-[background-color]",
+                "flex h-full w-full flex-col items-center justify-center rounded-lg text-foreground-disabled transition-[background-color] hover:bg-background-muted",
                 link.href === path && "text-foreground",
               )}
             >

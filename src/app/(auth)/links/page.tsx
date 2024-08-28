@@ -20,18 +20,18 @@ export default function LinksPage() {
           <Logo className="text-xl" />
         </AppHeaderCenter>
         <AppHeaderRight>
-          <button type="button" className="w-7 h-7 -mr-2 inline-flex items-center justify-center">
+          <button type="button" className="-mr-2 inline-flex h-7 w-7 items-center justify-center">
             <SignOut size={20} />
             <span className="sr-only">로그아웃</span>
           </button>
         </AppHeaderRight>
       </AppHeader>
 
-      <main className="flex-1 pt-16 pb-[68px]">
-        <div className="flex flex-col items-center pt-12 px-3">
+      <main className="flex-1 pb-[68px] pt-16">
+        <div className="flex flex-col items-center px-3 pt-12">
           <div>
             {/* avatar */}
-            <span className="inline-block w-24 h-24 rounded-full bg-primary-300"></span>
+            <span className="inline-block h-24 w-24 rounded-full bg-primary-300"></span>
           </div>
           <Heading className="mt-4">Nickname</Heading>
         </div>

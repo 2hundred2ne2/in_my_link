@@ -70,7 +70,7 @@ function BoardCreate({
   const classNames = `${ToastVariants[variant]} inline-flex flex-row gap-5 p-2 ${className} ${isHiding ? PositionanimateHide[closeposition] : Positionanimate[enterposition]}`;
   return (
     <div>
-      <button onClick={showToastHandler} className="text-sky-600 p-10">
+      <button onClick={showToastHandler} className="p-10 text-sky-600">
         저장
       </button>
       {toast && (
