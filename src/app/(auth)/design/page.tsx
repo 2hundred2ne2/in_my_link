@@ -31,17 +31,17 @@ export default function DesignPage() {
           <Logo className="text-xl" />
         </AppHeaderCenter>
         <AppHeaderRight>
-          <button type="button" className="w-7 h-7 -mr-2 inline-flex items-center justify-center">
+          <button type="button" className="-mr-2 inline-flex h-7 w-7 items-center justify-center">
             <SignOut size={20} />
             <span className="sr-only">로그아웃</span>
           </button>
         </AppHeaderRight>
       </AppHeader>
 
-      <main className="flex-1 pt-16 pb-[68px]">
+      <main className="flex-1 pb-[68px] pt-16">
         <h1 className="sr-only">디자인</h1>
         <Tabs defaultValue="스킨">
-          <TabList className="px-4 my-4">
+          <TabList className="my-4 px-4">
             <Tab value="스킨" className="w-28">
               스킨
             </Tab>
@@ -53,45 +53,45 @@ export default function DesignPage() {
             </Tab>
           </TabList>
           <TabPanel value="스킨">
-            <section className="px-3 space-y-2 md:space-y-3">
+            <section className="space-y-2 px-3 md:space-y-3">
               <h1 className="sr-only">스킨 편집</h1>
               <div>
                 <Heading variant="subtitle2" order={2} className="font-medium">
                   배경 컬러
                 </Heading>
                 <div className="overflow-x-auto">
-                  <div className="flex gap-3 mt-2 min-w-max">
+                  <div className="mt-2 flex min-w-max gap-3">
                     <button
                       type="button" //여기서부터 버튼
-                      className={`flex-shrink-0 w-14 h-14 bg-background rounded-full active:scale-[0.96] duration-100 transition-transform border ${activeBackgroundButtonIndex === 0 ? "border-black" : "border-transparent"} focus:outline-none`}
+                      className={`h-14 w-14 flex-shrink-0 rounded-full border bg-background transition-transform duration-100 active:scale-[0.96] ${activeBackgroundButtonIndex === 0 ? "border-black" : "border-transparent"} focus:outline-none`}
                       onClick={() => backgroundButtonClick(0)}
                     >
                       <span className="sr-only">기본</span>
                     </button>
                     <button
                       type="button"
-                      className={`flex-shrink-0 w-14 h-14 bg-background-muted rounded-full active:scale-[0.96] duration-100 transition-transform border ${activeBackgroundButtonIndex === 1 ? "border-black" : "border-transparent"} focus:outline-none`}
+                      className={`h-14 w-14 flex-shrink-0 rounded-full border bg-background-muted transition-transform duration-100 active:scale-[0.96] ${activeBackgroundButtonIndex === 1 ? "border-black" : "border-transparent"} focus:outline-none`}
                       onClick={() => backgroundButtonClick(1)}
                     >
                       <span className="sr-only">약함</span>
                     </button>
                     <button
                       type="button"
-                      className={`flex-shrink-0 w-14 h-14 bg-green-100 rounded-full active:scale-[0.96] duration-100 transition-transform border ${activeBackgroundButtonIndex === 2 ? "border-black" : "border-transparent"} focus:outline-none`}
+                      className={`h-14 w-14 flex-shrink-0 rounded-full border bg-green-100 transition-transform duration-100 active:scale-[0.96] ${activeBackgroundButtonIndex === 2 ? "border-black" : "border-transparent"} focus:outline-none`}
                       onClick={() => backgroundButtonClick(2)}
                     >
                       <span className="sr-only">파스텔 그린</span>
                     </button>
                     <button
                       type="button"
-                      className={`flex-shrink-0 w-14 h-14 bg-pink-100 rounded-full active:scale-[0.96] duration-100 transition-transform border ${activeBackgroundButtonIndex === 3 ? "border-black" : "border-transparent"} focus:outline-none`}
+                      className={`h-14 w-14 flex-shrink-0 rounded-full border bg-pink-100 transition-transform duration-100 active:scale-[0.96] ${activeBackgroundButtonIndex === 3 ? "border-black" : "border-transparent"} focus:outline-none`}
                       onClick={() => backgroundButtonClick(3)}
                     >
                       <span className="sr-only">파스텔 핑크</span>
                     </button>
                     <button
                       type="button"
-                      className={`flex-shrink-0 w-14 h-14 bg-blue-100 rounded-full active:scale-[0.96] duration-100 transition-transform border ${activeBackgroundButtonIndex === 4 ? "border-black" : "border-transparent"} focus:outline-none`}
+                      className={`h-14 w-14 flex-shrink-0 rounded-full border bg-blue-100 transition-transform duration-100 active:scale-[0.96] ${activeBackgroundButtonIndex === 4 ? "border-black" : "border-transparent"} focus:outline-none`}
                       onClick={() => backgroundButtonClick(4)}
                     >
                       <span className="sr-only">파스텔 블루</span>
@@ -104,34 +104,34 @@ export default function DesignPage() {
                   스티커
                 </Heading>
                 <div className="overflow-x-auto">
-                  <div className="flex gap-3 mt-2 min-w-max">
+                  <div className="mt-2 flex min-w-max gap-3">
                     <button
                       type="button"
-                      className="flex-shrink-0 w-14 h-14 bg-background rounded-full active:scale-[0.96] duration-100 transition-transform border"
+                      className="h-14 w-14 flex-shrink-0 rounded-full border bg-background transition-transform duration-100 active:scale-[0.96]"
                     >
                       <span className="sr-only">기본</span>
                     </button>
                     <button
                       type="button"
-                      className="flex-shrink-0 w-14 h-14 bg-background-muted rounded-full active:scale-[0.96] duration-100 transition-transform"
+                      className="h-14 w-14 flex-shrink-0 rounded-full bg-background-muted transition-transform duration-100 active:scale-[0.96]"
                     >
                       <span className="sr-only">약함</span>
                     </button>
                     <button
                       type="button"
-                      className="flex-shrink-0 w-14 h-14 bg-green-100 rounded-full active:scale-[0.96] duration-100 transition-transform"
+                      className="h-14 w-14 flex-shrink-0 rounded-full bg-green-100 transition-transform duration-100 active:scale-[0.96]"
                     >
                       <span className="sr-only">파스텔 그린</span>
                     </button>
                     <button
                       type="button"
-                      className="flex-shrink-0 w-14 h-14 bg-pink-100 rounded-full active:scale-[0.96] duration-100 transition-transform"
+                      className="h-14 w-14 flex-shrink-0 rounded-full bg-pink-100 transition-transform duration-100 active:scale-[0.96]"
                     >
                       <span className="sr-only">파스텔 핑크</span>
                     </button>
                     <button
                       type="button"
-                      className="flex-shrink-0 w-14 h-14 bg-blue-100 rounded-full active:scale-[0.96] duration-100 transition-transform"
+                      className="h-14 w-14 flex-shrink-0 rounded-full bg-blue-100 transition-transform duration-100 active:scale-[0.96]"
                     >
                       <span className="sr-only">파스텔 블루</span>
                     </button>
@@ -141,63 +141,63 @@ export default function DesignPage() {
             </section>
           </TabPanel>
           <TabPanel value="버튼">
-            <section className="px-3 space-y-2 md:space-y-3 mb-16">
+            <section className="mb-16 space-y-2 px-3 md:space-y-3">
               <h1 className="sr-only">버튼 편집</h1>
               <div>
                 <Heading variant="subtitle2" order={2} className="font-medium">
                   레이아웃
                 </Heading>
 
-                <div className="space-y-3 mt-2">
+                <div className="mt-2 space-y-3">
                   <button
                     type="button"
-                    className="block h-32 md:h-36 w-full bg-background-muted/90  rounded-xl"
+                    className="block h-32 w-full rounded-xl bg-background-muted/90 md:h-36"
                   >
                     <Image
                       alt="레이아웃 1"
                       src="/images/layout-1.png"
                       width={320}
                       height={320}
-                      className="w-full h-full object-contain"
+                      className="h-full w-full object-contain"
                     />
                     <span className="sr-only">레이아웃 1</span>
                   </button>
                   <button
                     type="button"
-                    className="block h-32 md:h-36 w-full bg-background-muted/90  rounded-xl"
+                    className="block h-32 w-full rounded-xl bg-background-muted/90 md:h-36"
                   >
                     <Image
                       alt="레이아웃 2"
                       src="/images/layout-2.png"
                       width={320}
                       height={320}
-                      className="w-full h-full object-contain"
+                      className="h-full w-full object-contain"
                     />
                     <span className="sr-only">레이아웃 2</span>
                   </button>
                   <button
                     type="button"
-                    className="block h-32 md:h-36 w-full bg-background-muted/90  rounded-xl"
+                    className="block h-32 w-full rounded-xl bg-background-muted/90 md:h-36"
                   >
                     <Image
                       alt="레이아웃 3"
                       src="/images/layout-3.png"
                       width={320}
                       height={320}
-                      className="w-full h-full object-contain"
+                      className="h-full w-full object-contain"
                     />
                     <span className="sr-only">레이아웃 3</span>
                   </button>
                   <button
                     type="button"
-                    className="block h-32 md:h-36 w-full bg-background-muted/90  rounded-xl"
+                    className="block h-32 w-full rounded-xl bg-background-muted/90 md:h-36"
                   >
                     <Image
                       alt="레이아웃 4"
                       src="/images/layout-4.png"
                       width={320}
                       height={320}
-                      className="w-full h-full object-contain"
+                      className="h-full w-full object-contain"
                     />
                     <span className="sr-only">레이아웃 4</span>
                   </button>
@@ -206,13 +206,13 @@ export default function DesignPage() {
             </section>
           </TabPanel>
           <TabPanel value="폰트">
-            <section className="px-3 space-y-2 md:space-y-3">
+            <section className="space-y-2 px-3 md:space-y-3">
               <h1 className="sr-only">폰트 편집</h1>
               <div>
                 <Heading variant="subtitle2" order={2} className="font-medium">
                   종류
                 </Heading>
-                <div className="flex gap-2 mt-2">
+                <div className="mt-2 flex gap-2">
                   <Button type="button" variant="primary">
                     폰트 A
                   </Button>
@@ -228,7 +228,7 @@ export default function DesignPage() {
                 <Heading variant="subtitle2" order={2} className="font-medium">
                   사이즈
                 </Heading>
-                <div className="flex gap-2 mt-2">
+                <div className="mt-2 flex gap-2">
                   <Button type="button" variant="primary" className="text-xs">
                     작게
                   </Button>
@@ -244,7 +244,7 @@ export default function DesignPage() {
                 <h1 className="sr-only">폰트 미리보기</h1>
                 <Card
                   variant="muted"
-                  className="flex items-center justify-center w-full h-32 mt-10 rounded-2xl"
+                  className="mt-10 flex h-32 w-full items-center justify-center rounded-2xl"
                 >
                   가나다 ABC
                 </Card>

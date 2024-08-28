@@ -33,11 +33,11 @@ export function Input({
 
   return (
     <div>
-      <label htmlFor={inputId} className="block text-sm mb-2">
+      <label htmlFor={inputId} className="mb-2 block text-sm">
         {label}
       </label>
       <input id={inputId} className={classNames} {...rest} />
-      {status === "error" && <p className="block text-danger text-sm">{errorMessage}</p>}
+      {status === "error" && <p className="block text-sm text-danger">{errorMessage}</p>}
     </div>
   );
 }

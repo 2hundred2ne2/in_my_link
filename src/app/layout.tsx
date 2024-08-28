@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <div className="relative flex min-h-screen w-full max-w-lg mx-auto flex-col overflow-x-hidden">
+        <div className="relative mx-auto flex min-h-screen w-full max-w-lg flex-col overflow-x-hidden">
           {children}
         </div>
       </body>
