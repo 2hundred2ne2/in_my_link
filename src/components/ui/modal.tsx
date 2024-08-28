@@ -54,7 +54,7 @@ export function Modal({
     <Portal>
       <BackDrop
         className={cn(
-          `fixed inset-0 flex items-center justify-center p-3 z-20 transition-opacity duration-100 ease-in`,
+          `fixed inset-0 z-20 flex items-center justify-center p-3 transition-opacity duration-100 ease-in`,
           isModalOpen ? "opacity-100" : "opacity-0",
           !isBackdropVisible && "bg-transparent",
         )}
@@ -62,9 +62,9 @@ export function Modal({
       >
         <div
           className={cn(
-            `w-full max-w-md p-6 rounded-2xl bg-background transition-all duration-[${DURATION}ms] ease-in-out z-30`,
-            isModalOpen ? "opacity-100 scale-100" : "opacity-0 scale-95",
-            !isBackdropVisible && "shadow-md border border-[0.1]",
+            `w-full max-w-md rounded-2xl bg-background p-6 transition-all duration-[${DURATION}ms] z-30 ease-in-out`,
+            isModalOpen ? "scale-100 opacity-100" : "scale-95 opacity-0",
+            !isBackdropVisible && "border border-[0.1] shadow-md",
             className,
           )}
           onClick={(e) => e.stopPropagation()}

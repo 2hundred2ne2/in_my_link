@@ -94,8 +94,8 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           buttonSizes[size],
           buttonRadii[radius],
           className,
-          isDisabled && "opacity-50 pointer-events-none",
-          "active:scale-[0.98] duration-100 transition-transform",
+          isDisabled && "pointer-events-none opacity-50",
+          "transition-transform duration-100 active:scale-[0.98]",
         )}
         disabled={isDisabled}
         aria-disabled={isDisabled}

@@ -132,32 +132,32 @@ export function LinkListItem({
         ref={setNodeRef}
         variant="default"
         style={style}
-        className="relative rounded-2xl flex p-0"
+        className="relative flex rounded-2xl p-0"
       >
-        <div className="absolute flex h-full items-center top-1/2 -translate-y-1/2">
+        <div className="absolute top-1/2 flex h-full -translate-y-1/2 items-center">
           <div
             {...attributes}
             {...listeners}
-            className="flex items-center justify-center w-full h-full touch-none"
+            className="flex h-full w-full touch-none items-center justify-center"
           >
-            <button type="button" className="cursor-grab px-2 w-full h-full">
+            <button type="button" className="h-full w-full cursor-grab px-2">
               <DotsSixVertical size={16} />
             </button>
           </div>
           <div className="flex items-center">
-            <span className="min-w-8 min-h-8 inline-block bg-primary-300 rounded-xl"></span>
+            <span className="inline-block min-h-8 min-w-8 rounded-xl bg-primary-300"></span>
           </div>
         </div>
 
-        <div className="flex items-center justify-center px-3 py-4 w-full min-h-16">
-          <Text className="font-medium w-full text-center">{displayTitle}</Text>
+        <div className="flex min-h-16 w-full items-center justify-center px-3 py-4">
+          <Text className="w-full text-center font-medium">{displayTitle}</Text>
         </div>
 
-        <div className="absolute flex h-full right-3 items-center top-1/2 -translate-y-1/2">
+        <div className="absolute right-3 top-1/2 flex h-full -translate-y-1/2 items-center">
           <Button
             type="button"
             variant="text"
-            className="p-0 min-w-7 min-h-7 rounded-full"
+            className="min-h-7 min-w-7 rounded-full p-0"
             onClick={() => onEditStart(id)}
           >
             <CaretDown size={16} />
@@ -172,19 +172,19 @@ export function LinkListItem({
       ref={setNodeRef}
       variant="default"
       style={style}
-      className="rounded-2xl flex flex-col p-0"
+      className="flex flex-col rounded-2xl p-0"
     >
       {/* header */}
-      <div className="flex items-center pl-6 py-4 pr-3">
+      <div className="flex items-center py-4 pl-6 pr-3">
         <div className="relative flex items-center">
           {/* TODO: 이미지 */}
           <button type="button">
-            <span className="min-w-8 min-h-8 block bg-primary-300 rounded-xl"></span>
+            <span className="block min-h-8 min-w-8 rounded-xl bg-primary-300"></span>
           </button>
           {/* TODO: 이미지 삭제 */}
           <button
             type="button"
-            className="absolute inline-flex text-foreground-inverted items-center justify-center bg-danger min-w-[18px] min-h-[18px] rounded-full -right-1 -bottom-1"
+            className="absolute -bottom-1 -right-1 inline-flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-danger text-foreground-inverted"
           >
             <Trash size={14} />
           </button>
@@ -201,7 +201,7 @@ export function LinkListItem({
         <Button
           type="button"
           variant="text"
-          className="ml-4 p-0 min-w-7 min-h-7 rounded-full"
+          className="ml-4 min-h-7 min-w-7 rounded-full p-0"
           onClick={() => onEditEnd(id)}
         >
           <CaretUp size={16} />
@@ -219,11 +219,11 @@ export function LinkListItem({
       </div>
 
       {/* footer */}
-      <div className="flex justify-end pr-3 py-3">
+      <div className="flex justify-end py-3 pr-3">
         <Button
           type="button"
           variant="text"
-          className="p-0 min-w-7 min-h-7 rounded-full"
+          className="min-h-7 min-w-7 rounded-full p-0"
           onClick={() => onClickDelete(id)}
         >
           <Trash size={16} />

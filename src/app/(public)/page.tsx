@@ -9,7 +9,7 @@ import { Text } from "@/components/ui/text";
 
 export default function LoginPage() {
   return (
-    <main className="flex-1 flex items-center justify-center px-3 md:px-8 py-8">
+    <main className="flex flex-1 items-center justify-center px-3 py-8 md:px-8">
       <div className="w-full max-w-xs">
         <Logo className="mb-5" />
 
@@ -25,11 +25,11 @@ export default function LoginPage() {
           </div>
         </form>
 
-        <div className="text-center mt-8">
+        <div className="mt-8 text-center">
           <p className="text-foreground">
             <Text as="span">처음이신가요?</Text>
 
-            <Link href="/signup" className="text-accent ml-3 ">
+            <Link href="/signup" className="ml-3 text-accent">
               <Text as="span" className="hover:underline">
                 가입하기
               </Text>

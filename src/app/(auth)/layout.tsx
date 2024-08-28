@@ -13,7 +13,7 @@ export default function AuthLayout({
         <Button
           variant="text"
           radius="full"
-          className="fixed bottom-0 mx-auto w-40 mb-20 bg-background border-[0.2px] shadow-md z-10"
+          className="fixed bottom-0 z-10 mx-auto mb-20 w-40 border-[0.2px] bg-background shadow-md"
         >
           미리보기
         </Button>

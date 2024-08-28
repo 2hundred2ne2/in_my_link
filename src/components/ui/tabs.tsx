@@ -91,8 +91,8 @@ export const Tab = forwardRef<HTMLButtonElement, TabProps>(
         aria-controls={`tabpanel-${value}`}
         tabIndex={isSelected ? 0 : -1}
         className={cn(
-          "text-sm font-medium py-2 px-4 rounded-[10px] flex-shrink-0 active:scale-[0.96] duration-100 transition-transform",
-          currentValue === value ? "bg-foreground border border-foreground text-white" : "border",
+          "flex-shrink-0 rounded-[10px] px-4 py-2 text-sm font-medium transition-transform duration-100 active:scale-[0.96]",
+          currentValue === value ? "border border-foreground bg-foreground text-white" : "border",
           className,
         )}
         onClick={() => onChange(value)}

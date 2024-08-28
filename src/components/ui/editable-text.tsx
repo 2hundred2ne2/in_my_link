@@ -51,20 +51,20 @@ export function EditableText({
   }, [value]);
 
   return (
-    <div className="grid pl-2 w-full text-sm">
+    <div className="grid w-full pl-2 text-sm">
       {/* 편집상태가 아닐 때  */}
       <div
-        className={cn("row-start-1 col-start-1 overflow-hidden", className, isEdit && "sr-only")}
+        className={cn("col-start-1 row-start-1 overflow-hidden", className, isEdit && "sr-only")}
       >
         <button
           type="button"
-          className="flex items-center max-w-full min-h-7"
+          className="flex min-h-7 max-w-full items-center"
           onClick={() => setIsEdit(true)}
         >
           {leftIcon && <span>{leftIcon}</span>}
           <span
             className={cn(
-              "max-w-full whitespace-nowrap text-ellipsis overflow-hidden",
+              "max-w-full overflow-hidden text-ellipsis whitespace-nowrap",
               value.trim().length === 0 && "text-foreground-muted",
             )}
           >
@@ -75,13 +75,13 @@ export function EditableText({
       </div>
 
       {/* 편집상태 */}
-      <label className={cn("row-start-1 col-start-1", className, !isEdit && "sr-only")}>
+      <label className={cn("col-start-1 row-start-1", className, !isEdit && "sr-only")}>
         <span className="sr-only">{label}</span>
         <input
           ref={inputRef}
           type="text"
           placeholder={label}
-          className="w-full min-h-7 outline-none"
+          className="min-h-7 w-full outline-none"
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}
         />

@@ -71,7 +71,7 @@ export default function SignUpPage() {
   };
 
   return (
-    <main className="flex-1 flex items-center justify-center px-3 md:px-8 py-8">
+    <main className="flex flex-1 items-center justify-center px-3 py-8 md:px-8">
       <div className="w-full max-w-xs">
         <h1 className={cn(logo.className, "mb-5 text-center text-3xl font-extrabold")}>Linkggu</h1>
         <form onSubmit={handleSubmit}>
@@ -140,7 +140,7 @@ export default function SignUpPage() {
           )}
         </form>
 
-        <div className="text-center mt-8">
+        <div className="mt-8 text-center">
           <p className="text-foreground">
             <Text as="span"> 회원이신가요?</Text>
 
