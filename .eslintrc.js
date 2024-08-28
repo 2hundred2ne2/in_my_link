@@ -1,4 +1,3 @@
-
 /**
  * @type {import("eslint").Linter.Config}
  */
@@ -51,7 +50,8 @@ module.exports = {
       },
     ],
 
-    "@typescript-eslint/naming-convention": [ // 네이밍 컨벤션 규칙을 정의
+    "@typescript-eslint/naming-convention": [
+      // 네이밍 컨벤션 규칙을 정의
       "error",
       {
         format: ["camelCase", "UPPER_CASE", "PascalCase"],
@@ -63,10 +63,11 @@ module.exports = {
       { format: ["PascalCase"], selector: "typeAlias" },
     ],
     "@typescript-eslint/no-unused-vars": ["warn", { ignoreRestSiblings: true }], // 사용하지 않는 변수에 대해 경고합니다. (rest 매개변수 제외)
+    "@typescript-eslint/no-explicit-any": "warn",
 
     "react/display-name": "off", // React 컴포넌트의 displayName 검사를 비활성화합니다 (forwardRef에서 미사용)
     "react/no-unknown-property": ["error"], // 알 수 없는 React 속성 사용 시 에러를 발생시킵니다.
 
     "prettier/prettier": ["warn"], // Prettier 규칙 위반 시 경고를 발생시킵니다.
   },
-}
+};
