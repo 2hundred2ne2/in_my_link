@@ -83,14 +83,41 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       return;
     }
 
-    if (active.id !== over.id) {
-      setLinks((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
-
-        return arrayMove(items, oldIndex, newIndex);
-      });
+    // 드래그한 아이템과 드롭한 위치 아이템이 같은 경우
+    if (active.id === over.id) {
+      return;
     }
+
+    const oldIndex = links.findIndex((item) => item.id === active.id);
+    const newIndex = links.findIndex((item) => item.id === over.id);
+
+    const newLinks = arrayMove(links, oldIndex, newIndex);
+
+    // 순서 업데이트
+    const updatedLinks = newLinks.map((link, index) => ({
+      ...link,
+      order: index + 1,
+    }));
+
+    setLinks(updatedLinks);
+
+    fetch(`${ENV.apiUrl}/api/links/reorder`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedLinks.map((link) => ({ id: link.id, order: link.order }))),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("링크 순서 업데이트에 실패했습니다");
+        }
+      })
+      .catch((error) => {
+        console.error("링크 순서 변경 중 오류 발생:", error);
+        // 원래 순서로 변경
+        setLinks(links);
+      });
   };
 
   const handleAddLink = async (type: LinkType) => {
