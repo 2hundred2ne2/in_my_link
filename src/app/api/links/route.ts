@@ -29,29 +29,36 @@ interface User extends RowDataPacket {
  * @see https://github.com/2hundred2ne2/in_my_link/issues/59
  */
 export async function POST(request: Request) {
-  const body = await request.json();
-  const { userId, type, title, image, url } = body;
+  try {
+    const body = await request.json();
+    const { userId, type, title, image, url } = body;
 
-  // TODO: 유효성검사
-  // TODO: 권한
+    // TODO: 유효성검사
+    // TODO: 권한
 
-  const [maxOrderResult] = await db.query<MaxOrderResult[]>(
-    "SELECT MAX(`order`) as maxOrder FROM link WHERE user_id = ?",
-    [userId],
-  );
+    const [maxOrderResult] = await db.query<MaxOrderResult[]>(
+      "SELECT MAX(`order`) as maxOrder FROM link WHERE user_id = ?",
+      [userId],
+    );
 
-  const newOrder = (maxOrderResult[0].maxOrder ?? 0) + 1;
+    const newOrder = (maxOrderResult[0].maxOrder ?? 0) + 1;
 
-  const [insertResult] = await db.query<ResultSetHeader>(
-    "INSERT INTO link (user_id, type, title, image, url, `order`, create_date, update_date) VALUES (?, ?, ?, ?, ?, NOW(), NOW())",
-    [userId, type, title, image || null, url, newOrder],
-  );
+    const [insertResult] = await db.query<ResultSetHeader>(
+      `
+      INSERT INTO link (user_id, type, title, image, url, \`order\`, create_date, update_date)
+      VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())`,
+      [userId, type, title, image, url, newOrder],
+    );
 
-  const [links] = await db.query<Link[]>("SELECT * FROM link WHERE id = ?", [
-    insertResult.insertId,
-  ]);
+    const [links] = await db.query<Link[]>("SELECT * FROM link WHERE id = ?", [
+      insertResult.insertId,
+    ]);
 
-  return NextResponse.json(links[0], { status: 201 });
+    return NextResponse.json(links[0], { status: 201 });
+  } catch (error) {
+    console.error("[POST] /api/links: \n", error);
+    return NextResponse.json({ message: " Internal Server Error" }, { status: 500 });
+  }
 }
 
 /**

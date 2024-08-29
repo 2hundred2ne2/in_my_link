@@ -93,7 +93,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
     }
   };
 
-  const handleAddLink = (type: LinkType) => {
+  const handleAddLink = async (type: LinkType) => {
     setIsAddModalOpen(false);
     const newLink: LinkItem = {
       id: Date.now(),
@@ -103,7 +103,32 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       isEdit: true,
       type,
     };
-    setLinks((prevLinks) => [...prevLinks, newLink]);
+
+    try {
+      const response = await fetch("/api/links", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: 1, // FIXME 인증된 사용자 ID
+          type: newLink.type,
+          title: newLink.title,
+          image: newLink.image,
+          url: newLink.url,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("링크 추가에 실패했습니다");
+      }
+
+      const savedLink = await response.json();
+
+      setLinks((prevLinks) => [...prevLinks, { ...savedLink, isEdit: true }]);
+    } catch (error) {
+      console.error("링크 추가 중 오류 발생:", error);
+    }
   };
 
   const handleEditStart = (id: number) => {
