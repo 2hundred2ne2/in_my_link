@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRef, useState } from "react";
 
 import {
@@ -25,11 +24,11 @@ import { getSnsUrl } from "@/lib/utils";
 import { Link, LinkType } from "@/types/link";
 
 import { Button } from "../ui/button";
-import { Heading } from "../ui/heading";
-import { Modal } from "../ui/modal";
-import { Text } from "../ui/text";
 
+import { LinkAddModal } from "./link-add-modal";
+import { LinkDeleteModal } from "./link-delete-modal";
 import { LinkListItem } from "./link-list-item";
+import { LinkImageDeleteModal } from "./linke-image-delete-modal";
 
 interface LinkItem extends Pick<Link, "id" | "type" | "title" | "url" | "image"> {
   isEdit: boolean;
@@ -54,9 +53,9 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
   // 삭제할 링크 ID
   const linkToDeleteIdRef = useRef<number | null>(null);
   // 링크 이미지 삭제 확인 모달
-  const [isDeleteImageModalOpen, setIsDeleteImageModalOpen] = useState(false);
+  const [isImageDeleteModalOpen, setIsImageDeleteModalOpen] = useState(false);
   // 삭제할 이미지의 링크 ID
-  const linkToDeleteImageIdRef = useRef<number | null>(null);
+  const linkToImageDeleteIdRef = useRef<number | null>(null);
 
   const sensors = useSensors(
     useSensor(TouchSensor, {
@@ -173,26 +172,40 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
   };
 
   const handleDeleteImageClick = (id: number) => {
-    setIsDeleteImageModalOpen(true);
-    linkToDeleteImageIdRef.current = id;
+    setIsImageDeleteModalOpen(true);
+    linkToImageDeleteIdRef.current = id;
   };
 
   const handleConfirmDeleteImage = () => {
-    if (linkToDeleteImageIdRef.current) {
+    if (linkToImageDeleteIdRef.current) {
       setLinks((prevLinks) =>
         prevLinks.map((link) =>
-          link.id === linkToDeleteImageIdRef.current
+          link.id === linkToImageDeleteIdRef.current
             ? { ...link, image: `/images/custom-logo.png` }
             : link,
         ),
       );
     }
-    setIsDeleteImageModalOpen(false);
-    linkToDeleteImageIdRef.current = null;
+    setIsImageDeleteModalOpen(false);
+    linkToImageDeleteIdRef.current = null;
   };
 
   return (
     <>
+      {/* 삭제 확인 모달 */}
+      <LinkDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDelete={handleConfirmDelete}
+      />
+      {/* 이미지 삭제 확인 모달 */}
+      <LinkImageDeleteModal
+        isOpen={isImageDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDelete={handleConfirmDeleteImage}
+      />
+
+      {/* 링크 추가하기 */}
       <div className="mt-6 px-3">
         <Button
           size="large"
@@ -203,61 +216,11 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
           <Plus size={16} className="-ml-1 mr-2" />
           추가하기
         </Button>
-        <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
-          <Heading variant="subtitle2" className="mb-6 text-center">
-            어떤 링크를 추가할까요?
-          </Heading>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <button className="grid gap-1" onClick={() => handleAddLink("instagram")}>
-              <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-background-muted">
-                <Image
-                  src="/images/instagram-logo.png"
-                  alt="인스타그램"
-                  width={256}
-                  height={256}
-                  className="h-10 w-10 rounded-xl"
-                />
-              </span>
-              <Text>인스타그램</Text>
-            </button>
-            <button className="grid gap-1" onClick={() => handleAddLink("facebook")}>
-              <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-background-muted">
-                <Image
-                  src="/images/facebook-logo.png"
-                  alt="페이스북"
-                  width={256}
-                  height={256}
-                  className="h-10 w-10 rounded-xl"
-                />
-              </span>
-              <Text>페이스북</Text>
-            </button>
-            <button className="grid gap-1" onClick={() => handleAddLink("threads")}>
-              <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-background-muted">
-                <Image
-                  src="/images/threads-logo.png"
-                  alt="쓰레드"
-                  width={256}
-                  height={256}
-                  className="h-10 w-10 rounded-xl"
-                />
-              </span>
-              <Text>쓰레드</Text>
-            </button>
-            <button className="grid gap-1" onClick={() => handleAddLink("custom")}>
-              <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-background-muted">
-                <Image
-                  src="/images/custom-logo.png"
-                  alt="커스텀"
-                  width={256}
-                  height={256}
-                  className="h-10 w-10 rounded-xl"
-                />
-              </span>
-              <Text>커스텀</Text>
-            </button>
-          </div>
-        </Modal>
+        <LinkAddModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onAdd={handleAddLink}
+        />
       </div>
 
       <section className="mb-16 mt-8">
@@ -297,48 +260,6 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
           </DndContext>
         )}
       </section>
-
-      {/* 삭제 확인 모달 */}
-      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
-        <Heading variant="heading2" className="text-center">
-          링크 삭제 확인
-        </Heading>
-        <p className="mb-6 mt-3 text-center">정말로 이 링크를 삭제하시나요?</p>
-        <div className="grid gap-2">
-          <Button
-            size="large"
-            variant="secondary"
-            className="text-danger"
-            onClick={handleConfirmDelete}
-          >
-            삭제
-          </Button>
-          <Button size="large" variant="text" onClick={() => setIsDeleteModalOpen(false)}>
-            취소
-          </Button>
-        </div>
-      </Modal>
-
-      {/* 이미지 삭제 확인 모달 */}
-      <Modal isOpen={isDeleteImageModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
-        <Heading variant="heading2" className="text-center">
-          이미지 삭제 확인
-        </Heading>
-        <p className="mb-6 mt-3 text-center">정말로 이미지를 삭제하시나요?</p>
-        <div className="grid gap-2">
-          <Button
-            size="large"
-            variant="secondary"
-            className="text-danger"
-            onClick={handleConfirmDeleteImage}
-          >
-            삭제
-          </Button>
-          <Button size="large" variant="text" onClick={() => setIsDeleteImageModalOpen(false)}>
-            취소
-          </Button>
-        </div>
-      </Modal>
     </>
   );
 }
