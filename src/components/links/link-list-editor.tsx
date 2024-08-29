@@ -211,12 +211,29 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
     linkToDeleteIdRef.current = id;
   };
 
-  const handleConfirmDelete = () => {
-    if (linkToDeleteIdRef.current) {
-      setLinks((prevLinks) => prevLinks.filter((link) => link.id !== linkToDeleteIdRef.current));
+  const handleConfirmDelete = async () => {
+    if (!linkToDeleteIdRef.current) {
+      return;
     }
-    setIsDeleteModalOpen(false);
-    linkToDeleteIdRef.current = null;
+
+    try {
+      const id = linkToDeleteIdRef.current;
+
+      setIsDeleteModalOpen(false);
+      linkToDeleteIdRef.current = null;
+
+      const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("링크 삭제에 실패했습니다");
+      }
+
+      setLinks((prevLinks) => prevLinks.filter((link) => link.id !== id));
+    } catch (error) {
+      console.error("링크 삭제 중 오류 발생:", error);
+    }
   };
 
   const handleDeleteImageClick = (id: number) => {
@@ -253,7 +270,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       });
 
       if (!response.ok) {
-        throw new Error("URL 수정에 실패했습니다");
+        throw new Error("이미지 삭제에 실패했습니다");
       }
 
       setLinks((prevLinks) =>

@@ -42,7 +42,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
       [title, image, url, id],
     );
 
-    console.error(`링크가 업데이트 되었습니다`);
+    console.debug(`링크가 업데이트 되었습니다`);
     return NextResponse.json({ message: "링크가 업데이트 되었습니다" }, { status: 200 });
   } catch (error) {
     console.error("[PATCH] /api/links/{id}: \n", error);
@@ -54,24 +54,37 @@ export async function PATCH(request: Request, { params }: { params: { id: string
  * @see https://github.com/2hundred2ne2/in_my_link/issues/63
  */
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  // TODO: 유효성검사
-  // TODO: 권한
-  const TEMP_USER_ID = 1;
-  const [links] = await db.query<LinkQueryResult[]>("SELECT id, user_id FROM link WHERE id = ?", [
-    params.id,
-  ]);
+  try {
+    // TODO: 권한
+    const TEMP_USER_ID = 1;
+    const id = params.id;
 
-  const [foundLink] = links;
+    const [links] = await db.query<LinkQueryResult[]>(
+      "SELECT id, user_id userId FROM link WHERE id = ?",
+      [id],
+    );
 
-  if (!foundLink) {
-    return NextResponse.json({ message: "링크가 존재하지 않습니다" }, { status: 404 });
+    const [foundLink] = links;
+    console.debug("foundLink :\n", foundLink);
+
+    if (!foundLink) {
+      console.error(`링크 id ${id}는 존재하지 않습니다`);
+      return NextResponse.json({ message: "링크가 존재하지 않습니다" }, { status: 404 });
+    }
+
+    if (foundLink.userId !== TEMP_USER_ID) {
+      console.error(`권한이 없습니다`);
+      return NextResponse.json({ message: "권한이 없습니다" }, { status: 403 });
+    }
+
+    await db.query("DELETE FROM link WHERE id = ?", [id]);
+
+    console.debug(`링크가 삭제 되었습니다`);
+    return new Response(null, {
+      status: 204,
+    });
+  } catch (error) {
+    console.error("[DELETE] /api/links/{id}: \n", error);
+    return NextResponse.json({ message: " Internal Server Error" }, { status: 500 });
   }
-
-  if (foundLink.userId !== TEMP_USER_ID) {
-    return NextResponse.json({ message: "권한이 없습니다" }, { status: 403 });
-  }
-
-  await db.query("DELETE FROM link WHERE id = ?", [params.id]);
-
-  return NextResponse.json({}, { status: 204 });
 }
