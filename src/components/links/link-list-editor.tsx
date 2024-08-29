@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useRef, useState } from "react";
 
 import {
@@ -21,15 +20,16 @@ import {
 } from "@dnd-kit/sortable";
 import { Plus } from "@phosphor-icons/react";
 
+import { ENV } from "@/constants/env";
 import { getSnsUrl } from "@/lib/utils";
 import { Link, LinkType } from "@/types/link";
 
 import { Button } from "../ui/button";
-import { Heading } from "../ui/heading";
-import { Modal } from "../ui/modal";
-import { Text } from "../ui/text";
 
+import { LinkAddModal } from "./link-add-modal";
+import { LinkDeleteModal } from "./link-delete-modal";
 import { LinkListItem } from "./link-list-item";
+import { LinkImageDeleteModal } from "./linke-image-delete-modal";
 
 interface LinkItem extends Pick<Link, "id" | "type" | "title" | "url" | "image"> {
   isEdit: boolean;
@@ -54,9 +54,9 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
   // 삭제할 링크 ID
   const linkToDeleteIdRef = useRef<number | null>(null);
   // 링크 이미지 삭제 확인 모달
-  const [isDeleteImageModalOpen, setIsDeleteImageModalOpen] = useState(false);
+  const [isImageDeleteModalOpen, setIsImageDeleteModalOpen] = useState(false);
   // 삭제할 이미지의 링크 ID
-  const linkToDeleteImageIdRef = useRef<number | null>(null);
+  const linkToImageDeleteIdRef = useRef<number | null>(null);
 
   const sensors = useSensors(
     useSensor(TouchSensor, {
@@ -83,17 +83,44 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       return;
     }
 
-    if (active.id !== over.id) {
-      setLinks((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
-
-        return arrayMove(items, oldIndex, newIndex);
-      });
+    // 드래그한 아이템과 드롭한 위치 아이템이 같은 경우
+    if (active.id === over.id) {
+      return;
     }
+
+    const oldIndex = links.findIndex((item) => item.id === active.id);
+    const newIndex = links.findIndex((item) => item.id === over.id);
+
+    const newLinks = arrayMove(links, oldIndex, newIndex);
+
+    // 순서 업데이트
+    const updatedLinks = newLinks.map((link, index) => ({
+      ...link,
+      order: index + 1,
+    }));
+
+    setLinks(updatedLinks);
+
+    fetch(`${ENV.apiUrl}/api/links/reorder`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updatedLinks.map((link) => ({ id: link.id, order: link.order }))),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("링크 순서 업데이트에 실패했습니다");
+        }
+      })
+      .catch((error) => {
+        console.error("링크 순서 변경 중 오류 발생:", error);
+        // 원래 순서로 변경
+        setLinks(links);
+      });
   };
 
-  const handleAddLink = (type: LinkType) => {
+  const handleAddLink = async (type: LinkType) => {
     setIsAddModalOpen(false);
     const newLink: LinkItem = {
       id: Date.now(),
@@ -103,7 +130,32 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       isEdit: true,
       type,
     };
-    setLinks((prevLinks) => [...prevLinks, newLink]);
+
+    try {
+      const response = await fetch(`${ENV.apiUrl}/api/links`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userId: 1, // FIXME 인증된 사용자 ID
+          type: newLink.type,
+          title: newLink.title,
+          image: newLink.image,
+          url: newLink.url,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("링크 추가에 실패했습니다");
+      }
+
+      const savedLink = await response.json();
+
+      setLinks((prevLinks) => [...prevLinks, { ...savedLink, isEdit: true }]);
+    } catch (error) {
+      console.error("링크 추가 중 오류 발생:", error);
+    }
   };
 
   const handleEditStart = (id: number) => {
@@ -114,24 +166,71 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
     setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, isEdit: false } : link)));
   };
 
-  const handleChageTitle = (id: number, value: string) => {
-    setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, title: value } : link)));
+  const handleChageTitle = async (id: number, value: string) => {
+    try {
+      const link = links.find((link) => link.id === id);
+
+      if (!link) {
+        return;
+      }
+
+      const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...link,
+          userId: 1, //FIXME: 인증된 회원 아이디
+          title: value,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("제목 수정에 실패했습니다");
+      }
+
+      setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, title: value } : link)));
+    } catch (error) {
+      console.error("링크 수정 중 오류 발생:", error);
+    }
   };
 
-  const handleChangeUrl = (id: number, value: string) => {
-    setLinks((prev) =>
-      prev.map((link) => {
-        if (link.id === id) {
-          if (link.type !== "custom") {
-            const prefix = getSnsUrl(link.type);
-            const username = value.slice(prefix.length);
-            return { ...link, url: `${prefix}${username}` };
-          }
-          return { ...link, url: value };
-        }
-        return link;
-      }),
-    );
+  const handleChangeUrl = async (id: number, value: string) => {
+    try {
+      const link = links.find((link) => link.id === id);
+
+      if (!link) {
+        return;
+      }
+
+      let newUrl: string = value;
+      if (link.type !== "custom") {
+        const prefix = getSnsUrl(link.type);
+        const username = value.slice(prefix.length);
+        newUrl = `${prefix}${username}`;
+      }
+
+      const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...link,
+          userId: 1, //FIXME: 인증된 회원 아이디
+          url: newUrl,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("URL 수정에 실패했습니다");
+      }
+
+      setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, url: newUrl } : link)));
+    } catch (error) {
+      console.error("링크 수정 중 오류 발생:", error);
+    }
   };
 
   const handleDeleteClick = (id: number) => {
@@ -139,35 +238,94 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
     linkToDeleteIdRef.current = id;
   };
 
-  const handleConfirmDelete = () => {
-    if (linkToDeleteIdRef.current) {
-      setLinks((prevLinks) => prevLinks.filter((link) => link.id !== linkToDeleteIdRef.current));
+  const handleConfirmDelete = async () => {
+    if (!linkToDeleteIdRef.current) {
+      return;
     }
-    setIsDeleteModalOpen(false);
-    linkToDeleteIdRef.current = null;
+
+    try {
+      const id = linkToDeleteIdRef.current;
+
+      setIsDeleteModalOpen(false);
+      linkToDeleteIdRef.current = null;
+
+      const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("링크 삭제에 실패했습니다");
+      }
+
+      setLinks((prevLinks) => prevLinks.filter((link) => link.id !== id));
+    } catch (error) {
+      console.error("링크 삭제 중 오류 발생:", error);
+    }
   };
 
   const handleDeleteImageClick = (id: number) => {
-    setIsDeleteImageModalOpen(true);
-    linkToDeleteImageIdRef.current = id;
+    setIsImageDeleteModalOpen(true);
+    linkToImageDeleteIdRef.current = id;
   };
 
-  const handleConfirmDeleteImage = () => {
-    if (linkToDeleteImageIdRef.current) {
+  const handleConfirmDeleteImage = async () => {
+    if (!linkToImageDeleteIdRef.current) {
+      return;
+    }
+
+    try {
+      const id = linkToImageDeleteIdRef.current;
+      const link = links.find((link) => link.id === id);
+
+      if (!link) {
+        return;
+      }
+
+      setIsImageDeleteModalOpen(false);
+      linkToImageDeleteIdRef.current = null;
+
+      const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...link,
+          userId: 1, //FIXME: 인증된 회원 아이디
+          image: `/images/custom-logo.png`,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("이미지 삭제에 실패했습니다");
+      }
+
       setLinks((prevLinks) =>
         prevLinks.map((link) =>
-          link.id === linkToDeleteImageIdRef.current
-            ? { ...link, image: `/images/custom-logo.png` }
-            : link,
+          link.id === id ? { ...link, image: `/images/custom-logo.png` } : link,
         ),
       );
+    } catch (error) {
+      console.error("링크 수정 중 오류 발생:", error);
     }
-    setIsDeleteImageModalOpen(false);
-    linkToDeleteImageIdRef.current = null;
   };
 
   return (
     <>
+      {/* 삭제 확인 모달 */}
+      <LinkDeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onDelete={handleConfirmDelete}
+      />
+      {/* 이미지 삭제 확인 모달 */}
+      <LinkImageDeleteModal
+        isOpen={isImageDeleteModalOpen}
+        onClose={() => setIsImageDeleteModalOpen(false)}
+        onDelete={handleConfirmDeleteImage}
+      />
+
+      {/* 링크 추가하기 */}
       <div className="mt-6 px-3">
         <Button
           size="large"
@@ -178,61 +336,11 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
           <Plus size={16} className="-ml-1 mr-2" />
           추가하기
         </Button>
-        <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)}>
-          <Heading variant="subtitle2" className="mb-6 text-center">
-            어떤 링크를 추가할까요?
-          </Heading>
-          <div className="flex flex-wrap items-center justify-center gap-4">
-            <button className="grid gap-1" onClick={() => handleAddLink("instagram")}>
-              <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-background-muted">
-                <Image
-                  src="/images/instagram-logo.png"
-                  alt="인스타그램"
-                  width={256}
-                  height={256}
-                  className="h-10 w-10 rounded-xl"
-                />
-              </span>
-              <Text>인스타그램</Text>
-            </button>
-            <button className="grid gap-1" onClick={() => handleAddLink("facebook")}>
-              <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-background-muted">
-                <Image
-                  src="/images/facebook-logo.png"
-                  alt="페이스북"
-                  width={256}
-                  height={256}
-                  className="h-10 w-10 rounded-xl"
-                />
-              </span>
-              <Text>페이스북</Text>
-            </button>
-            <button className="grid gap-1" onClick={() => handleAddLink("threads")}>
-              <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-background-muted">
-                <Image
-                  src="/images/threads-logo.png"
-                  alt="쓰레드"
-                  width={256}
-                  height={256}
-                  className="h-10 w-10 rounded-xl"
-                />
-              </span>
-              <Text>쓰레드</Text>
-            </button>
-            <button className="grid gap-1" onClick={() => handleAddLink("custom")}>
-              <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-background-muted">
-                <Image
-                  src="/images/custom-logo.png"
-                  alt="커스텀"
-                  width={256}
-                  height={256}
-                  className="h-10 w-10 rounded-xl"
-                />
-              </span>
-              <Text>커스텀</Text>
-            </button>
-          </div>
-        </Modal>
+        <LinkAddModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onAdd={handleAddLink}
+        />
       </div>
 
       <section className="mb-16 mt-8">
@@ -240,6 +348,8 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
 
         {links.length > 0 && (
           <DndContext
+            // @see https://github.com/clauderic/dnd-kit/issues/926
+            id="link-list-dnd-context"
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
@@ -272,48 +382,6 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
           </DndContext>
         )}
       </section>
-
-      {/* 삭제 확인 모달 */}
-      <Modal isOpen={isDeleteModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
-        <Heading variant="heading2" className="text-center">
-          링크 삭제 확인
-        </Heading>
-        <p className="mb-6 mt-3 text-center">정말로 이 링크를 삭제하시나요?</p>
-        <div className="grid gap-2">
-          <Button
-            size="large"
-            variant="secondary"
-            className="text-danger"
-            onClick={handleConfirmDelete}
-          >
-            삭제
-          </Button>
-          <Button size="large" variant="text" onClick={() => setIsDeleteModalOpen(false)}>
-            취소
-          </Button>
-        </div>
-      </Modal>
-
-      {/* 이미지 삭제 확인 모달 */}
-      <Modal isOpen={isDeleteImageModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
-        <Heading variant="heading2" className="text-center">
-          이미지 삭제 확인
-        </Heading>
-        <p className="mb-6 mt-3 text-center">정말로 이미지를 삭제하시나요?</p>
-        <div className="grid gap-2">
-          <Button
-            size="large"
-            variant="secondary"
-            className="text-danger"
-            onClick={handleConfirmDeleteImage}
-          >
-            삭제
-          </Button>
-          <Button size="large" variant="text" onClick={() => setIsDeleteImageModalOpen(false)}>
-            취소
-          </Button>
-        </div>
-      </Modal>
     </>
   );
 }

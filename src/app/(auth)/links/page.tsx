@@ -9,8 +9,25 @@ import {
   AppHeaderRight,
 } from "@/components/ui/app-header";
 import { Heading } from "@/components/ui/heading";
+import { ENV } from "@/constants/env";
+import { Link } from "@/types/link";
 
-export default function LinksPage() {
+async function getLinks(domain: string): Promise<Link[]> {
+  const res = await fetch(`${ENV.apiUrl}/api/links?domain=${domain}`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("링크를 불러오는데 실패했어요");
+  }
+
+  return res.json();
+}
+
+export default async function LinksPage() {
+  const TEMP_UESR_DOMAIN = "test";
+  const links = await getLinks(TEMP_UESR_DOMAIN);
+
   return (
     <>
       <AppHeader>
@@ -35,31 +52,7 @@ export default function LinksPage() {
           <Heading className="mt-4">Nickname</Heading>
         </div>
 
-        <LinkListEditor
-          links={[
-            {
-              id: 1,
-              title: "insta",
-              url: "https://www.instagram.com/",
-              image: "/images/instagram-logo.png",
-              type: "instagram",
-            },
-            {
-              id: 2,
-              title: "facebook",
-              url: "https://www.facebook.com",
-              image: "/images/facebook-logo.png",
-              type: "facebook",
-            },
-            {
-              id: 3,
-              title: "thread",
-              url: "https://www.threads.net/",
-              image: "/images/threads-logo.png",
-              type: "threads",
-            },
-          ]}
-        />
+        <LinkListEditor links={links} />
       </main>
     </>
   );

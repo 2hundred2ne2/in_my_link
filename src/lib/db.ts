@@ -1,13 +1,15 @@
 import mysql, { PoolConnection } from "mysql2/promise";
 
+import { ENV } from "@/constants/env";
+
 /**
  * @see https://sidorares.github.io/node-mysql2/docs#using-connection-pools
  */
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: ENV.dbHost,
+  user: ENV.dbUser,
+  password: ENV.dbPassword,
+  database: ENV.dbName,
   connectionLimit: 5,
 });
 

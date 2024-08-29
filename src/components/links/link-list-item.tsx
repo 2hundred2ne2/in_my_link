@@ -172,6 +172,7 @@ export function LinkListItem({
             className="min-h-7 min-w-7 rounded-full p-0"
             onClick={() => onEditStart(id)}
           >
+            <span className="sr-only">펼치기</span>
             <CaretDown size={16} />
           </Button>
         </div>
@@ -204,6 +205,7 @@ export function LinkListItem({
             className="absolute -bottom-1 -right-1 inline-flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-danger text-foreground-inverted"
             onClick={() => onClickDeleteImage(id)}
           >
+            <span className="sr-only">이미지 삭제</span>
             <Trash size={14} />
           </button>
         </div>
@@ -222,6 +224,7 @@ export function LinkListItem({
           className="ml-4 min-h-7 min-w-7 rounded-full p-0"
           onClick={() => onEditEnd(id)}
         >
+          <span className="sr-only">접기</span>
           <CaretUp size={16} />
         </Button>
       </div>
@@ -244,6 +247,7 @@ export function LinkListItem({
           className="min-h-7 min-w-7 rounded-full p-0"
           onClick={() => onClickDelete(id)}
         >
+          <span className="sr-only">삭제</span>
           <Trash size={16} />
         </Button>
       </div>
