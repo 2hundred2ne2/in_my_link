@@ -66,23 +66,28 @@ export async function POST(request: Request) {
  * @see https://github.com/2hundred2ne2/in_my_link/issues/62
  */
 export async function GET(request: NextRequest) {
-  const searchParams = request.nextUrl.searchParams;
-  const domain = searchParams.get("domain");
+  try {
+    const searchParams = request.nextUrl.searchParams;
+    const domain = searchParams.get("domain");
 
-  if (!domain) {
-    return NextResponse.json([], { status: 200 });
+    if (!domain) {
+      return NextResponse.json([], { status: 200 });
+    }
+
+    const [users] = await db.query<User[]>("SELECT id FROM user WHERE domain = ?", [domain]);
+
+    if (users.length < 1) {
+      return NextResponse.json([], { status: 200 });
+    }
+
+    const [links] = await db.query<Link[]>(
+      "SELECT * FROM link WHERE user_id = ? ORDER BY `order` ASC",
+      [users[0].id],
+    );
+
+    return NextResponse.json(links, { status: 201 });
+  } catch (error) {
+    console.error("[GET] /api/links: \n", error);
+    return NextResponse.json({ message: " Internal Server Error" }, { status: 500 });
   }
-
-  const [users] = await db.query<User[]>("SELECT id FROM user WHERE domain = ?", [domain]);
-
-  if (users.length < 1) {
-    return NextResponse.json([], { status: 200 });
-  }
-
-  const [links] = await db.query<Link[]>(
-    "SELECT * FROM link WHERE user_id = ? ORDER BY `order` ASC",
-    [users[0].id],
-  );
-
-  return NextResponse.json(links, { status: 201 });
 }
