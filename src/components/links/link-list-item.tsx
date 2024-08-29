@@ -43,6 +43,9 @@ interface LinkListItemProps {
   /** URL이 변경될 때 호출되는 콜백 함수 */
   onChangeUrl: (id: number, value: string) => void;
 
+  /** 이미지 삭제를 누를때 호출되는 콜백 함수 */
+  onClickDeleteImage: (id: number) => void;
+
   /** 삭제 버튼이 클릭될 때 호출되는 콜백 함수 */
   onClickDelete: (id: number) => void;
 }
@@ -58,6 +61,7 @@ export function LinkListItem({
   onEditEnd,
   onChangeTitle,
   onChangeUrl,
+  onClickDeleteImage,
   onClickDelete,
 }: LinkListItemProps) {
   const {
@@ -194,10 +198,11 @@ export function LinkListItem({
               className="inline-block h-8 min-w-8 max-w-8 rounded-xl"
             />
           </button>
-          {/* TODO: 이미지 삭제 */}
+          {/* 이미지 삭제 버튼 */}
           <button
             type="button"
             className="absolute -bottom-1 -right-1 inline-flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-danger text-foreground-inverted"
+            onClick={() => onClickDeleteImage(id)}
           >
             <Trash size={14} />
           </button>

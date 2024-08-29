@@ -53,6 +53,10 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   // 삭제할 링크 ID
   const linkToDeleteIdRef = useRef<number | null>(null);
+  // 링크 이미지 삭제 확인 모달
+  const [isDeleteImageModalOpen, setIsDeleteImageModalOpen] = useState(false);
+  // 삭제할 이미지의 링크 ID
+  const linkToDeleteImageIdRef = useRef<number | null>(null);
 
   const sensors = useSensors(
     useSensor(TouchSensor, {
@@ -141,6 +145,25 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
     }
     setIsDeleteModalOpen(false);
     linkToDeleteIdRef.current = null;
+  };
+
+  const handleDeleteImageClick = (id: number) => {
+    setIsDeleteImageModalOpen(true);
+    linkToDeleteImageIdRef.current = id;
+  };
+
+  const handleConfirmDeleteImage = () => {
+    if (linkToDeleteImageIdRef.current) {
+      setLinks((prevLinks) =>
+        prevLinks.map((link) =>
+          link.id === linkToDeleteImageIdRef.current
+            ? { ...link, image: `/images/custom-logo.png` }
+            : link,
+        ),
+      );
+    }
+    setIsDeleteImageModalOpen(false);
+    linkToDeleteImageIdRef.current = null;
   };
 
   return (
@@ -239,7 +262,8 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
                       onEditEnd={handleEditEnd}
                       onChangeTitle={handleChageTitle}
                       onChangeUrl={handleChangeUrl}
-                      onClickDelete={() => handleDeleteClick(link.id)}
+                      onClickDeleteImage={(id) => handleDeleteImageClick(id)}
+                      onClickDelete={(id) => handleDeleteClick(id)}
                     />
                   </li>
                 ))}
@@ -254,7 +278,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
         <Heading variant="heading2" className="text-center">
           링크 삭제 확인
         </Heading>
-        <p className="mb-6 mt-3 text-center">정말로 이 링크를 삭제하시겠습니까?</p>
+        <p className="mb-6 mt-3 text-center">정말로 이 링크를 삭제하시나요?</p>
         <div className="grid gap-2">
           <Button
             size="large"
@@ -265,6 +289,27 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
             삭제
           </Button>
           <Button size="large" variant="text" onClick={() => setIsDeleteModalOpen(false)}>
+            취소
+          </Button>
+        </div>
+      </Modal>
+
+      {/* 이미지 삭제 확인 모달 */}
+      <Modal isOpen={isDeleteImageModalOpen} onClose={() => setIsDeleteModalOpen(false)}>
+        <Heading variant="heading2" className="text-center">
+          이미지 삭제 확인
+        </Heading>
+        <p className="mb-6 mt-3 text-center">정말로 이미지를 삭제하시나요?</p>
+        <div className="grid gap-2">
+          <Button
+            size="large"
+            variant="secondary"
+            className="text-danger"
+            onClick={handleConfirmDeleteImage}
+          >
+            삭제
+          </Button>
+          <Button size="large" variant="text" onClick={() => setIsDeleteImageModalOpen(false)}>
             취소
           </Button>
         </div>
