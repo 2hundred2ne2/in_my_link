@@ -65,7 +65,7 @@ export function EditableText({
           <span
             className={cn(
               "max-w-full overflow-hidden text-ellipsis whitespace-nowrap",
-              value.trim().length === 0 && "text-foreground-muted",
+              value?.trim().length === 0 && "text-foreground-muted",
             )}
           >
             {value || label}
