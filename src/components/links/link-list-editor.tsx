@@ -20,6 +20,7 @@ import {
 } from "@dnd-kit/sortable";
 import { Plus } from "@phosphor-icons/react";
 
+import { ENV } from "@/constants/env";
 import { getSnsUrl } from "@/lib/utils";
 import { Link, LinkType } from "@/types/link";
 
@@ -104,7 +105,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
     };
 
     try {
-      const response = await fetch("/api/links", {
+      const response = await fetch(`${ENV.apiUrl}/api/links`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -138,24 +139,71 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
     setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, isEdit: false } : link)));
   };
 
-  const handleChageTitle = (id: number, value: string) => {
-    setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, title: value } : link)));
+  const handleChageTitle = async (id: number, value: string) => {
+    try {
+      const link = links.find((link) => link.id === id);
+
+      if (!link) {
+        return;
+      }
+
+      const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...link,
+          userId: 1, //FIXME: 인증된 회원 아이디
+          title: value,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("제목 수정에 실패했습니다");
+      }
+
+      setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, title: value } : link)));
+    } catch (error) {
+      console.error("링크 수정 중 오류 발생:", error);
+    }
   };
 
-  const handleChangeUrl = (id: number, value: string) => {
-    setLinks((prev) =>
-      prev.map((link) => {
-        if (link.id === id) {
-          if (link.type !== "custom") {
-            const prefix = getSnsUrl(link.type);
-            const username = value.slice(prefix.length);
-            return { ...link, url: `${prefix}${username}` };
-          }
-          return { ...link, url: value };
-        }
-        return link;
-      }),
-    );
+  const handleChangeUrl = async (id: number, value: string) => {
+    try {
+      const link = links.find((link) => link.id === id);
+
+      if (!link) {
+        return;
+      }
+
+      let newUrl: string = value;
+      if (link.type !== "custom") {
+        const prefix = getSnsUrl(link.type);
+        const username = value.slice(prefix.length);
+        newUrl = `${prefix}${username}`;
+      }
+
+      const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...link,
+          userId: 1, //FIXME: 인증된 회원 아이디
+          url: newUrl,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("URL 수정에 실패했습니다");
+      }
+
+      setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, url: newUrl } : link)));
+    } catch (error) {
+      console.error("링크 수정 중 오류 발생:", error);
+    }
   };
 
   const handleDeleteClick = (id: number) => {
@@ -176,18 +224,46 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
     linkToImageDeleteIdRef.current = id;
   };
 
-  const handleConfirmDeleteImage = () => {
-    if (linkToImageDeleteIdRef.current) {
+  const handleConfirmDeleteImage = async () => {
+    if (!linkToImageDeleteIdRef.current) {
+      return;
+    }
+
+    try {
+      const id = linkToImageDeleteIdRef.current;
+      const link = links.find((link) => link.id === id);
+
+      if (!link) {
+        return;
+      }
+
+      setIsImageDeleteModalOpen(false);
+      linkToImageDeleteIdRef.current = null;
+
+      const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...link,
+          userId: 1, //FIXME: 인증된 회원 아이디
+          image: `/images/custom-logo.png`,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("URL 수정에 실패했습니다");
+      }
+
       setLinks((prevLinks) =>
         prevLinks.map((link) =>
-          link.id === linkToImageDeleteIdRef.current
-            ? { ...link, image: `/images/custom-logo.png` }
-            : link,
+          link.id === id ? { ...link, image: `/images/custom-logo.png` } : link,
         ),
       );
+    } catch (error) {
+      console.error("링크 수정 중 오류 발생:", error);
     }
-    setIsImageDeleteModalOpen(false);
-    linkToImageDeleteIdRef.current = null;
   };
 
   return (
@@ -201,7 +277,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       {/* 이미지 삭제 확인 모달 */}
       <LinkImageDeleteModal
         isOpen={isImageDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen(false)}
+        onClose={() => setIsImageDeleteModalOpen(false)}
         onDelete={handleConfirmDeleteImage}
       />
 

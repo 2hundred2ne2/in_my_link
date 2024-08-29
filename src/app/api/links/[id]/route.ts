@@ -3,46 +3,51 @@ import { NextResponse } from "next/server";
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
 import { db } from "@/lib/db";
+import { Link } from "@/types/link";
 
-// TODO: 분리
-interface Link extends RowDataPacket {
-  id: number;
-  userId: number;
-  title: string;
-  image: string;
-  url: string;
-  order: number;
-  createDate: string;
-  updateDate: string;
-}
+interface LinkQueryResult extends RowDataPacket, Link {}
 
 /**
  * @see https://github.com/2hundred2ne2/in_my_link/issues/60
  */
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
-  const body = await request.json();
-  const { userId, title, image, url } = body;
+  try {
+    // TODO: 권한
+    const body = await request.json();
+    console.debug("Requset Body: \n", body);
 
-  // TODO: 유효성검사
-  // TODO: 권한
-  const [links] = await db.query<Link[]>("SELECT id, user_id FROM link WHERE id = ?", [params.id]);
+    const id = params.id;
+    const { userId, title, image, url } = body;
 
-  const [foundLink] = links;
+    const [links] = await db.query<LinkQueryResult[]>(
+      "SELECT id, user_id userId FROM link WHERE id = ?",
+      [id],
+    );
 
-  if (!foundLink) {
-    return NextResponse.json({ message: "링크가 존재하지 않습니다" }, { status: 404 });
+    const [foundLink] = links;
+    console.debug("foundLink :\n", foundLink);
+
+    if (!foundLink) {
+      console.error(`링크 id ${id}는 존재하지 않습니다`);
+      return NextResponse.json({ message: "링크가 존재하지 않습니다" }, { status: 404 });
+    }
+
+    if (foundLink.userId !== userId) {
+      console.error(`권한이 없습니다`);
+      return NextResponse.json({ message: "권한이 없습니다" }, { status: 403 });
+    }
+
+    await db.query<ResultSetHeader>(
+      "UPDATE link SET title = ?, image = ?, url = ?, update_date = NOW() WHERE id = ?",
+      [title, image, url, id],
+    );
+
+    console.error(`링크가 업데이트 되었습니다`);
+    return NextResponse.json({ message: "링크가 업데이트 되었습니다" }, { status: 200 });
+  } catch (error) {
+    console.error("[PATCH] /api/links/{id}: \n", error);
+    return NextResponse.json({ message: " Internal Server Error" }, { status: 500 });
   }
-
-  if (foundLink.userId !== userId) {
-    return NextResponse.json({ message: "권한이 없습니다" }, { status: 403 });
-  }
-
-  await db.query<ResultSetHeader>(
-    "UPDATE link SET title = ?, image = ?, url = ?, update_date = NOW() WHERE id = ?",
-    [title, image, url, params.id],
-  );
-
-  return NextResponse.json({ message: "링크가 업데이트 되었습니다" }, { status: 200 });
 }
 
 /**
@@ -52,7 +57,9 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
   // TODO: 유효성검사
   // TODO: 권한
   const TEMP_USER_ID = 1;
-  const [links] = await db.query<Link[]>("SELECT id, user_id FROM link WHERE id = ?", [params.id]);
+  const [links] = await db.query<LinkQueryResult[]>("SELECT id, user_id FROM link WHERE id = ?", [
+    params.id,
+  ]);
 
   const [foundLink] = links;
 
