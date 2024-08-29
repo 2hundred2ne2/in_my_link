@@ -321,6 +321,8 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
 
         {links.length > 0 && (
           <DndContext
+            // @see https://github.com/clauderic/dnd-kit/issues/926
+            id="link-list-dnd-context"
             sensors={sensors}
             collisionDetection={closestCenter}
             onDragEnd={handleDragEnd}
