@@ -3,16 +3,7 @@ import { NextResponse } from "next/server";
 import { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 
 import { db } from "@/lib/db";
-
-// 사용자 타입 정의
-interface User extends RowDataPacket {
-  id: number;
-  email: string;
-  password: string;
-  domain: string;
-  create_date: Date;
-  update_date: Date;
-}
+import { User } from "@/types/user";
 
 // 사용자 정보 가져오기 API
 export async function GET(req: Request) {

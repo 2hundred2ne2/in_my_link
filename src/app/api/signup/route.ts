@@ -4,10 +4,7 @@ import bcrypt from "bcryptjs";
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
 import { db } from "@/lib/db";
-
-interface UserQueryResult extends RowDataPacket {
-  id: number;
-}
+import { User } from "@/types/user";
 
 export async function POST(req: Request) {
   const { email, password, domain } = await req.json();
@@ -23,7 +20,7 @@ export async function POST(req: Request) {
 
     // 이메일 중복 체크
     const emailQuery = "SELECT id FROM user WHERE email = ?";
-    const [emailRows] = await connection.execute<UserQueryResult[]>(emailQuery, [email]);
+    const [emailRows] = await connection.execute<User[]>(emailQuery, [email]);
 
     if (emailRows.length > 0) {
       await connection.rollback(); // 트랜잭션 롤백
@@ -32,7 +29,7 @@ export async function POST(req: Request) {
 
     // 도메인 중복 체크
     const domainQuery = "SELECT id FROM user WHERE domain = ?";
-    const [domainRows] = await connection.execute<UserQueryResult[]>(domainQuery, [domain]);
+    const [domainRows] = await connection.execute<User[]>(domainQuery, [domain]);
 
     if (domainRows.length > 0) {
       await connection.rollback(); // 트랜잭션 롤백

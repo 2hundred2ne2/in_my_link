@@ -4,13 +4,7 @@ import bcrypt from "bcryptjs";
 import { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 
 import { db } from "@/lib/db";
-
-// 사용자 타입 정의
-interface User extends RowDataPacket {
-  id: number;
-  email: string;
-  password: string;
-}
+import { User } from "@/types/user";
 
 // 로그인 API
 export async function POST(req: Request) {
