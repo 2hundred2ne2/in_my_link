@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
     subject: "이메일 인증 코드",
     text: `인증번호는 ${verificationCode}입니다.`,
   };
+  console.log(`인증번호 : ${verificationCode}`);
 
   try {
     await transporter.sendMail(mailOptions);

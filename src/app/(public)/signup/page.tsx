@@ -85,16 +85,36 @@ export default function SignUpPage() {
     }
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    if (
-      email &&
-      password &&
-      passwordConfirm === password &&
-      emailCode === serverVerificationCode &&
-      domain
-    ) {
-      router.push("/signup/link");
+  const handleSubmit = async (event) => {
+    event.preventDefault(); // 기본 폼 제출 동작 방지
+
+    // 입력 유효성 검사
+    if (!email || !password || password !== passwordConfirm || !domain) {
+      alert("입력 정보를 정확히 입력해주세요.");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password, domain }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // 회원가입 성공 처리, 예를 들어 로그인 페이지로 리다이렉트
+        router.push("/login");
+      } else {
+        // 서버에서 반환된 에러 메시지 표시
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("회원가입 중 오류 발생:", error);
+      alert("서버 오류로 인해 회원가입에 실패했습니다.");
     }
   };
 
