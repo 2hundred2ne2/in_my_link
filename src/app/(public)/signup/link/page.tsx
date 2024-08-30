@@ -1,14 +1,20 @@
+"use client";
 import Link from "next/link";
+import { useState } from "react";
 
 import {
-  Trash,
   Link as Chain,
   InstagramLogo,
   FacebookLogo,
   XLogo,
   ThreadsLogo,
+  TiktokLogo,
+  YoutubeLogo,
+  GithubLogo,
 } from "@phosphor-icons/react/dist/ssr";
 
+import LinkAddButton from "@/components/signup/link-add-button";
+import LinkAddInput from "@/components/signup/link-add-input";
 import {
   AppHeader,
   AppHeaderCenter,
@@ -16,10 +22,44 @@ import {
   AppHeaderRight,
 } from "@/components/ui/app-header";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 
+export interface RegisterLinkListItemProps {
+  /** 링크 id */
+  id: number;
+  /** 링크 URL */
+  url?: string;
+}
+
 export default function RegisterLinksPage() {
+  const iconLists = [
+    { icon: <Chain size={40} />, iconLabel: "커스텀" },
+    { icon: <InstagramLogo size={40} />, iconLabel: "인스타그램" },
+    { icon: <FacebookLogo size={40} />, iconLabel: "페이스북" },
+    { icon: <XLogo size={40} />, iconLabel: "X(트위터)" },
+    { icon: <ThreadsLogo size={40} />, iconLabel: "쓰레드" },
+    { icon: <TiktokLogo size={40} />, iconLabel: "틱톡" },
+    { icon: <YoutubeLogo size={40} />, iconLabel: "유튜브" },
+    { icon: <GithubLogo size={40} />, iconLabel: "깃허브" },
+    { icon: <Chain size={40} />, iconLabel: "네이버블로그" },
+    { icon: <Chain size={40} />, iconLabel: "라인" },
+  ];
+
+  const [linkInputs, setLinkInputs] = useState<RegisterLinkListItemProps[]>([]);
+
+  const handleAddLinkInput = () => {
+    const newLinkInputs = {
+      id: Date.now(),
+      url: "",
+    };
+
+    setLinkInputs([...linkInputs, newLinkInputs]);
+  };
+
+  const handleDeleteLinkInput = (id: number) => {
+    setLinkInputs(linkInputs.filter((input) => input.id !== id));
+  };
+
   return (
     <>
       <AppHeader>
@@ -33,99 +73,18 @@ export default function RegisterLinksPage() {
           <div className="px-3 pb-12">
             <Heading variant="subtitle1">사용하실 웹사이트 링크를 연결해보세요</Heading>
           </div>
-          <section>
-            <ul className="flex flex-row gap-4 px-3">
-              <li>
-                <button type="button">
-                  <Card
-                    variant="muted"
-                    className="flex h-16 w-16 flex-col items-center rounded-2xl"
-                  >
-                    <span className="mt-3 block min-h-10 min-w-10 rounded-xl bg-primary-300">
-                      <Chain size={40} />
-                    </span>
-                  </Card>
-                  <span>커스텀</span>
-                </button>
-              </li>
-              <li>
-                <button type="button">
-                  <Card
-                    variant="muted"
-                    className="flex h-16 w-16 flex-col items-center rounded-2xl"
-                  >
-                    <InstagramLogo size={48} className="mt-2" />
-                  </Card>
-                  <span>인스타그램</span>
-                </button>
-              </li>
-              <li>
-                <button type="button">
-                  <Card
-                    variant="muted"
-                    className="flex h-16 w-16 flex-col items-center rounded-2xl"
-                  >
-                    <FacebookLogo size={48} className="mt-2" />
-                  </Card>
-                  <span>페이스북</span>
-                </button>
-              </li>
-              <li>
-                <button type="button">
-                  <Card
-                    variant="muted"
-                    className="flex h-16 w-16 flex-col items-center rounded-2xl"
-                  >
-                    <XLogo size={48} className="mt-2" />
-                  </Card>
-                  <span>X</span>
-                </button>
-              </li>
-              <li>
-                <button type="button">
-                  <Card
-                    variant="muted"
-                    className="flex h-16 w-16 flex-col items-center rounded-2xl"
-                  >
-                    <ThreadsLogo size={48} className="mt-2" />
-                  </Card>
-                  <span>쓰레드</span>
-                </button>
-              </li>
-            </ul>
-            <ul className="mt-20 flex flex-col gap-4 px-2">
-              <li>
-                <Card variant="default" className="flex items-center rounded-2xl p-0">
-                  <span className="mx-3 flex h-8 items-center justify-center">
-                    <InstagramLogo size={40} />
-                  </span>
-                  <input
-                    type="text"
-                    className="mb-4 mt-4 h-7 w-full flex-auto items-center px-3 py-4"
-                    placeholder="https://instagram.com/"
-                  ></input>
-                  <button className="m-2 h-7 w-7 flex-none items-center justify-center">
-                    <Trash size={18} />
-                  </button>
-                </Card>
-              </li>
-              <li>
-                <Card variant="default" className="flex items-center rounded-2xl p-0">
-                  <span className="mx-4 flex h-8 w-8 items-center justify-center">
-                    <span className="mt-0.5 flex items-center rounded-xl bg-primary-300 p-1.5">
-                      <Chain size={28} />
-                    </span>
-                  </span>
-                  <input
-                    type="text"
-                    className="mb-4 mt-4 h-7 w-full flex-auto items-center px-3 py-4"
-                    placeholder="URL을 입력해주세요"
-                  ></input>
-                  <button className="m-2 h-7 w-7 flex-none items-center justify-center">
-                    <Trash size={18} />
-                  </button>
-                </Card>
-              </li>
+          <LinkAddButton iconLists={iconLists} handleAddLinkInput={handleAddLinkInput} />
+          <section className="w-full">
+            <ul className="mt-4 flex flex-col gap-4 px-2">
+              {linkInputs.map((item, index) => {
+                return (
+                  <LinkAddInput
+                    key={item.id}
+                    {...item}
+                    handleDeleteLinkInput={handleDeleteLinkInput}
+                  />
+                );
+              })}
             </ul>
             <div className="mt-20 flex flex-col gap-2 px-2">
               <Button variant="primary" size="large">
