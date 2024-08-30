@@ -1,15 +1,12 @@
 "use client";
-import { Lobster } from "next/font/google";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useRef } from "react";
 
 import { Input } from "@/components/input";
+import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-import { cn } from "@/lib/utils";
-
-const logo = Lobster({ subsets: ["latin"], weight: ["400"] });
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -40,11 +37,12 @@ export default function SignUpPage() {
     setPassword(e.target.value);
     setShowPasswordConfirm(Boolean(e.target.value));
   };
-
+  //비밀번호 확인
   const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasswordConfirm(e.target.value);
     if (e.target.value === password) {
       setErrorPasswordConfirm("");
+      requestEmailCode();
       setShowEmailCode(true);
     } else {
       setErrorPasswordConfirm("비밀번호가 일치하지 않습니다");
@@ -63,6 +61,28 @@ export default function SignUpPage() {
       setShowDomainInput(false);
     }
   };
+  //인증번호 호출
+  const requestEmailCode = async () => {
+    console.log("이메일 전송");
+    try {
+      const response = await fetch("/api/signup/send-verification-code", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert(result.message);
+      } else {
+        alert(result.message);
+      }
+    } catch (error) {
+      console.error("Error requesting email code:", error);
+    }
+  };
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -74,7 +94,7 @@ export default function SignUpPage() {
   return (
     <main className="flex flex-1 items-center justify-center px-3 py-8 md:px-8">
       <div className="w-full max-w-xs">
-        <h1 className={cn(logo.className, "mb-5 text-center text-3xl font-extrabold")}>Linkggu</h1>
+        <Logo className="mb-5 text-center text-3xl font-extrabold" />
         {!showDomainInput && (
           <>
             <Input
@@ -142,7 +162,6 @@ export default function SignUpPage() {
             </div>
           </>
         )}
-
         <div className="mt-8 text-center">
           <p className="text-foreground">
             <Text as="span"> 회원이신가요?</Text>
