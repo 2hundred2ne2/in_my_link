@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useRef } from "react";
+import { useState } from "react";
 
 import { Input } from "@/components/input";
 import { Logo } from "@/components/logo";
@@ -18,13 +18,14 @@ export default function SignUpPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [showEmailCode, setShowEmailCode] = useState(false);
-  // 인증번호가 전송되었는지 확인하는 값
   const [showDomainInput, setShowDomainInput] = useState(false);
 
   const [errorEmail, setErrorEmail] = useState("");
   const [errorPassword, setErrorPassword] = useState("");
   const [errorPasswordConfirm, setErrorPasswordConfirm] = useState("");
   const [errorEmailCode, setErrorEmailCode] = useState("");
+
+  const [serverVerificationCode, setServerVerificationCode] = useState<string | null>(null);
 
   const router = useRouter();
 
@@ -37,7 +38,7 @@ export default function SignUpPage() {
     setPassword(e.target.value);
     setShowPasswordConfirm(Boolean(e.target.value));
   };
-  //비밀번호 확인
+
   const handlePasswordConfirmChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPasswordConfirm(e.target.value);
     if (e.target.value === password) {
@@ -52,16 +53,15 @@ export default function SignUpPage() {
 
   const handleEmailCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmailCode(e.target.value);
-    if (e.target.value === "1234") {
+    if (e.target.value === serverVerificationCode) {
       setErrorEmailCode("");
-
       setShowDomainInput(true);
     } else {
       setErrorEmailCode("인증번호가 일치하지 않습니다");
       setShowDomainInput(false);
     }
   };
-  //인증번호 호출
+
   const requestEmailCode = async () => {
     console.log("이메일 전송");
     try {
@@ -75,6 +75,7 @@ export default function SignUpPage() {
 
       const result = await response.json();
       if (response.ok) {
+        setServerVerificationCode(result.code); // 서버에서 받은 인증번호를 상태로 저장
         alert(result.message);
       } else {
         alert(result.message);
@@ -86,7 +87,13 @@ export default function SignUpPage() {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if (email && password && passwordConfirm === password && emailCode === "1234" && domain) {
+    if (
+      email &&
+      password &&
+      passwordConfirm === password &&
+      emailCode === serverVerificationCode &&
+      domain
+    ) {
       router.push("/signup/link");
     }
   };
@@ -156,7 +163,7 @@ export default function SignUpPage() {
               className="w-full"
             />
             <div>
-              <Button className="mt-2 w-full" size="large">
+              <Button className="mt-2 w-full" size="large" onClick={handleSubmit}>
                 다음
               </Button>
             </div>
