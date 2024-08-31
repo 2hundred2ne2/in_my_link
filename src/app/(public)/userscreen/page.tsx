@@ -1,6 +1,11 @@
+import { Portal } from "@/components/portal";
+
 export default function UserScreenPage() {
   return (
     <>
+      <Portal>
+        <div className="fixed inset-0 z-[-10]"></div>
+      </Portal>
       <div className="mx-auto flex min-h-dvh max-w-screen-sm flex-col items-center">
         <section className="my-8 flex flex-col items-center gap-3">
           <button type="button" className="h-[95px] w-[95px] rounded-full bg-slate-600"></button>
