@@ -17,12 +17,24 @@ import { Heading } from "@/components/ui/heading";
 import { Tab, TabList, TabPanel, Tabs } from "@/components/ui/tabs";
 
 export default function DesignPage() {
-  const [activeBackgroundButtonIndex, setActiveBackgroundButtonIndex] = useState<number | null>(0);
+  const [activeBackgroundButtonIndex, setActiveBackgroundButtonIndex] = useState(0);
 
   const backgroundButtonClick = (index: number) => {
     setActiveBackgroundButtonIndex(index);
+    // 여기에 fetch 호출을 추가하면 됩니다.
+    fetch("/api/skin-config", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ color: `bg-${index}` }), // 필요한 데이터로 수정하세요
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((error) => console.error("Error:", error));
   };
-
   return (
     <>
       <AppHeader>
@@ -61,41 +73,22 @@ export default function DesignPage() {
                 </Heading>
                 <div className="overflow-x-auto">
                   <div className="mt-2 flex min-w-max gap-3">
-                    <button
-                      type="button" //여기서부터 버튼
-                      className={`h-14 w-14 flex-shrink-0 rounded-full border bg-background transition-transform duration-100 active:scale-[0.96] ${activeBackgroundButtonIndex === 0 ? "border-black" : "border-transparent"} focus:outline-none`}
-                      onClick={() => backgroundButtonClick(0)}
-                    >
-                      <span className="sr-only">기본</span>
-                    </button>
-                    <button
-                      type="button"
-                      className={`h-14 w-14 flex-shrink-0 rounded-full border bg-background-muted transition-transform duration-100 active:scale-[0.96] ${activeBackgroundButtonIndex === 1 ? "border-black" : "border-transparent"} focus:outline-none`}
-                      onClick={() => backgroundButtonClick(1)}
-                    >
-                      <span className="sr-only">약함</span>
-                    </button>
-                    <button
-                      type="button"
-                      className={`h-14 w-14 flex-shrink-0 rounded-full border bg-green-100 transition-transform duration-100 active:scale-[0.96] ${activeBackgroundButtonIndex === 2 ? "border-black" : "border-transparent"} focus:outline-none`}
-                      onClick={() => backgroundButtonClick(2)}
-                    >
-                      <span className="sr-only">파스텔 그린</span>
-                    </button>
-                    <button
-                      type="button"
-                      className={`h-14 w-14 flex-shrink-0 rounded-full border bg-pink-100 transition-transform duration-100 active:scale-[0.96] ${activeBackgroundButtonIndex === 3 ? "border-black" : "border-transparent"} focus:outline-none`}
-                      onClick={() => backgroundButtonClick(3)}
-                    >
-                      <span className="sr-only">파스텔 핑크</span>
-                    </button>
-                    <button
-                      type="button"
-                      className={`h-14 w-14 flex-shrink-0 rounded-full border bg-blue-100 transition-transform duration-100 active:scale-[0.96] ${activeBackgroundButtonIndex === 4 ? "border-black" : "border-transparent"} focus:outline-none`}
-                      onClick={() => backgroundButtonClick(4)}
-                    >
-                      <span className="sr-only">파스텔 블루</span>
-                    </button>
+                    {[
+                      { bgColor: "bg-background", label: "기본" },
+                      { bgColor: "bg-background-muted", label: "약함" },
+                      { bgColor: "bg-green-100", label: "파스텔 그린" },
+                      { bgColor: "bg-pink-100", label: "파스텔 핑크" },
+                      { bgColor: "bg-blue-100", label: "파스텔 블루" },
+                    ].map((color, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        className={`h-14 w-14 flex-shrink-0 rounded-full border transition-transform duration-100 active:scale-[0.96] ${activeBackgroundButtonIndex === index ? "border-black" : "border-transparent"} focus:outline-none ${color.bgColor}`}
+                        onClick={() => backgroundButtonClick(index)}
+                      >
+                        <span className="sr-only">{color.label}</span>
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>

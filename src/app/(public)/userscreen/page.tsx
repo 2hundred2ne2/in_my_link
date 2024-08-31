@@ -1,10 +1,37 @@
+"use client";
+import { useEffect, useState } from "react";
+
 import { Portal } from "@/components/portal";
+import { ENV } from "@/constants/env";
 
 export default function UserScreenPage() {
+  const [backgroundColor, setBackgroundColor] = useState("white");
+  const domain = "";
+  useEffect(() => {
+    // 색상 데이터 API 호출
+    fetch(`${ENV.apiUrl}/api/skin-config`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        // 색상 데이터 처리
+        console.log(data);
+
+        // 색상 데이터를 버튼 배경색으로 설정
+        if (data && data.backgroundColor) {
+          setBackgroundColor(data.backgroundColor);
+        }
+      })
+      .catch((error) => console.error("Error:", error));
+  }, [domain]); // domain이 변경될 때마다 색상 데이터를 재호출합니다
+
   return (
     <>
       <Portal>
-        <div className="fixed inset-0 z-[-10]"></div>
+        <div className={`fixed inset-0 z-[-10] ${backgroundColor}`}></div>
       </Portal>
       <div className="mx-auto flex min-h-dvh max-w-screen-sm flex-col items-center">
         <section className="my-8 flex flex-col items-center gap-3">
