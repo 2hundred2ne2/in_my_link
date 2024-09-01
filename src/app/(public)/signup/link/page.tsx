@@ -13,8 +13,8 @@ import {
   GithubLogo,
 } from "@phosphor-icons/react/dist/ssr";
 
-import LinkAddButton from "@/components/signup/link-add-button";
-import LinkAddInput from "@/components/signup/link-add-input";
+import { LinkAddButton } from "@/components/signup/link-add-button";
+import { LinkAddInput } from "@/components/signup/link-add-input";
 import {
   AppHeader,
   AppHeaderCenter,
@@ -24,39 +24,72 @@ import {
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 
-export interface RegisterLinkListItemProps {
+export interface AddLinkInputProps {
   /** 링크 id */
   id: number;
   /** 링크 URL */
   url?: string;
+  /** */
+  type?: number;
 }
 
 export default function RegisterLinksPage() {
   const iconLists = [
-    { icon: <Chain size={40} />, iconLabel: "커스텀" },
-    { icon: <InstagramLogo size={40} />, iconLabel: "인스타그램" },
-    { icon: <FacebookLogo size={40} />, iconLabel: "페이스북" },
-    { icon: <XLogo size={40} />, iconLabel: "X(트위터)" },
-    { icon: <ThreadsLogo size={40} />, iconLabel: "쓰레드" },
-    { icon: <TiktokLogo size={40} />, iconLabel: "틱톡" },
-    { icon: <YoutubeLogo size={40} />, iconLabel: "유튜브" },
-    { icon: <GithubLogo size={40} />, iconLabel: "깃허브" },
-    { icon: <Chain size={40} />, iconLabel: "네이버블로그" },
-    { icon: <Chain size={40} />, iconLabel: "라인" },
+    { index: 0, icon: <Chain size={40} />, iconLabel: "커스텀", prefix: "" },
+    {
+      index: 1,
+      icon: <InstagramLogo size={40} />,
+      iconLabel: "인스타그램",
+      prefix: "https://www.instagram.com/",
+    },
+    {
+      index: 2,
+      icon: <FacebookLogo size={40} />,
+      iconLabel: "페이스북",
+      prefix: "https://www.facebook.com/",
+    },
+    { index: 3, icon: <XLogo size={40} />, iconLabel: "X(트위터)", prefix: "https://x.com/" },
+    {
+      index: 4,
+      icon: <ThreadsLogo size={40} />,
+      iconLabel: "쓰레드",
+      prefix: "https://threads.net/@",
+    },
+    { index: 5, icon: <TiktokLogo size={40} />, iconLabel: "틱톡", prefix: "tiktok.com/@" },
+    {
+      index: 6,
+      icon: <YoutubeLogo size={40} />,
+      iconLabel: "유튜브",
+      prefix: "https://www.youtube.com/@",
+    },
+    {
+      index: 7,
+      icon: <GithubLogo size={40} />,
+      iconLabel: "깃허브",
+      prefix: "https://github.com/",
+    },
+    {
+      index: 8,
+      icon: <Chain size={40} />,
+      iconLabel: "네이버블로그",
+      prefix: "https://blog.naver.com/",
+    },
+    { index: 9, icon: <Chain size={40} />, iconLabel: "라인", prefix: "https://line.me/ti/p/@" },
   ];
 
-  const [linkInputs, setLinkInputs] = useState<RegisterLinkListItemProps[]>([]);
+  const [linkInputs, setLinkInputs] = useState<AddLinkInputProps[]>([]);
 
-  const handleAddLinkInput = () => {
+  const handleAddLinkInput = (index: number) => {
     const newLinkInputs = {
       id: Date.now(),
       url: "",
+      type: index,
     };
 
     setLinkInputs([...linkInputs, newLinkInputs]);
   };
 
-  const handleDeleteLinkInput = (id: number) => {
+  const onDelete = (id: number) => {
     setLinkInputs(linkInputs.filter((input) => input.id !== id));
   };
 
@@ -80,8 +113,10 @@ export default function RegisterLinksPage() {
                 return (
                   <LinkAddInput
                     key={item.id}
+                    index={item.type}
                     {...item}
-                    handleDeleteLinkInput={handleDeleteLinkInput}
+                    onDelete={onDelete}
+                    iconLists={iconLists}
                   />
                 );
               })}

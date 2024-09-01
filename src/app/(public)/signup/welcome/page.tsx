@@ -3,8 +3,34 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { ENV } from "@/constants/env";
 
-export default function WelcomePage() {
+async function getUser(id: number) {
+  console.log("get user info");
+  try {
+    const response = await fetch(`${ENV.apiUrl}/api/users?id=${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error("유저 정보를 불러오는데 실패했어요");
+    }
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export default async function WelcomePage() {
+  const TEMP_USER_ID = 1;
+  const userInfo = await getUser(TEMP_USER_ID);
+  const nickname = userInfo.user.nickname ? `${userInfo.user.nickname}님, ` : "";
+
   return (
     <>
       <main className="min-h-dvh pb-[68px] pt-16">
@@ -14,7 +40,7 @@ export default function WelcomePage() {
           </div>
           <div className="mb-12 mt-8 inline-block h-7">
             <Heading variant="subtitle1" className="font-bold">
-              닉네임님, 환영합니다!
+              {nickname}환영합니다!
             </Heading>
           </div>
         </div>
