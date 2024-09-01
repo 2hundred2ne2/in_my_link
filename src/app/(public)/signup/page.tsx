@@ -7,6 +7,7 @@ import { Input } from "@/components/input";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { User } from "@/types/user";
 
 export default function SignUpPage() {
   const [email, setEmail] = useState("");
@@ -85,7 +86,7 @@ export default function SignUpPage() {
     }
   };
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent<User>) => {
     event.preventDefault(); // 기본 폼 제출 동작 방지
 
     // 입력 유효성 검사
@@ -95,7 +96,7 @@ export default function SignUpPage() {
     }
 
     try {
-      const response = await fetch("/api/signup", {
+      let response = await fetch("/api/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -103,11 +104,27 @@ export default function SignUpPage() {
         body: JSON.stringify({ email, password, domain }),
       });
 
-      const data = await response.json();
+      let data = await response.json();
 
       if (response.ok) {
-        // 회원가입 성공 처리, 예를 들어 로그인 페이지로 리다이렉트
-        router.push("/login");
+        // 회원 가입 성공, 자동 로그인 시도
+        response = await fetch("/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        data = await response.json();
+        if (response.ok) {
+          // 로그인 성공, 토큰 저장 및 /profile 페이지로 리다이렉트
+          localStorage.setItem("token", data.token); // 토큰을 로컬 스토리지에 저장
+          router.push("/siginup/profile");
+        } else {
+          // 로그인 실패, 에러 메시지 표시
+          alert(data.message);
+        }
       } else {
         // 서버에서 반환된 에러 메시지 표시
         alert(data.message);
