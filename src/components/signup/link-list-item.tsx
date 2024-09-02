@@ -14,15 +14,13 @@ export function LinkListItem({ id, type, url, onDelete, onChangeUrl }: any) {
       <li>
         <Card variant="default" className="flex items-center rounded-2xl p-0">
           <span className="mx-4 flex h-8 w-8 items-center justify-center">
-            <span className="mt-0.5 flex items-center rounded-xl bg-primary-300 p-1.5">
-              <Image
-                src={`/images/${type}-logo.png`}
-                alt={"type"}
-                width={256}
-                height={256}
-                className="inline-block h-8 min-w-8 max-w-8 rounded-xl"
-              />
-            </span>
+            <Image
+              src={`/images/${type}-logo.png`}
+              alt={"type"}
+              width={256}
+              height={256}
+              className="inline-block h-8 min-w-8 max-w-8 rounded-xl"
+            />
           </span>
           <input
             type="text"

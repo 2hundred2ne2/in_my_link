@@ -2,13 +2,6 @@
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";
 
-import {
-  Link as Chain,
-  InstagramLogo,
-  FacebookLogo,
-  ThreadsLogo,
-} from "@phosphor-icons/react/dist/ssr";
-
 import { LinkAddButtons } from "@/components/signup/link-add-buttons";
 import { LinkListItem } from "@/components/signup/link-list-item";
 import {
@@ -32,23 +25,20 @@ export interface AddLinkInputProps {
 }
 
 const iconLists = [
-  { type: "custom", icon: <Chain size={40} />, iconLabel: "커스텀", prefix: "" },
+  { type: "custom", iconLabel: "커스텀", prefix: "" },
   {
     type: "instagram",
-    icon: <InstagramLogo size={40} />,
     iconLabel: "인스타그램",
     prefix: "https://www.instagram.com/",
   },
   {
     type: "facebook",
-    icon: <FacebookLogo size={40} />,
     iconLabel: "페이스북",
     prefix: "https://www.facebook.com/",
   },
 
   {
     type: "threads",
-    icon: <ThreadsLogo size={40} />,
     iconLabel: "쓰레드",
     prefix: "https://threads.net/@",
   },
@@ -90,7 +80,7 @@ export default function RegisterLinksPage() {
           <LinkAddButtons iconLists={iconLists} onAdd={handleAddLink} />
           <section className="w-full">
             <ul className="mt-4 flex flex-col gap-4 px-2">
-              {linkInputs.map((item, index) => (
+              {linkInputs.map((item) => (
                 <LinkListItem
                   key={item.id}
                   type={item.type}
