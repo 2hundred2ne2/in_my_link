@@ -30,7 +30,7 @@ export default async function LinksPage() {
 
   return (
     <>
-      <AppHeader>
+      <AppHeader className="z-10">
         <AppHeaderLeft />
         <AppHeaderCenter>
           <Logo className="text-xl" />
