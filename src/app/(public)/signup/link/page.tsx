@@ -1,20 +1,16 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 
 import {
   Link as Chain,
   InstagramLogo,
   FacebookLogo,
-  XLogo,
   ThreadsLogo,
-  TiktokLogo,
-  YoutubeLogo,
-  GithubLogo,
 } from "@phosphor-icons/react/dist/ssr";
 
-import { LinkAddButton } from "@/components/signup/link-add-button";
-import { LinkAddInput } from "@/components/signup/link-add-input";
+import { LinkAddButtons } from "@/components/signup/link-add-buttons";
+import { LinkListItem } from "@/components/signup/link-list-item";
 import {
   AppHeader,
   AppHeaderCenter,
@@ -23,70 +19,55 @@ import {
 } from "@/components/ui/app-header";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
+import { getSnsUrl } from "@/lib/utils";
+import { LinkType } from "@/types/link";
 
 export interface AddLinkInputProps {
   /** 링크 id */
   id: number;
   /** 링크 URL */
   url?: string;
-  /** */
-  type?: number;
+  /** 링크 type*/
+  type?: LinkType;
 }
 
-export default function RegisterLinksPage() {
-  const iconLists = [
-    { index: 0, icon: <Chain size={40} />, iconLabel: "커스텀", prefix: "" },
-    {
-      index: 1,
-      icon: <InstagramLogo size={40} />,
-      iconLabel: "인스타그램",
-      prefix: "https://www.instagram.com/",
-    },
-    {
-      index: 2,
-      icon: <FacebookLogo size={40} />,
-      iconLabel: "페이스북",
-      prefix: "https://www.facebook.com/",
-    },
-    { index: 3, icon: <XLogo size={40} />, iconLabel: "X(트위터)", prefix: "https://x.com/" },
-    {
-      index: 4,
-      icon: <ThreadsLogo size={40} />,
-      iconLabel: "쓰레드",
-      prefix: "https://threads.net/@",
-    },
-    { index: 5, icon: <TiktokLogo size={40} />, iconLabel: "틱톡", prefix: "tiktok.com/@" },
-    {
-      index: 6,
-      icon: <YoutubeLogo size={40} />,
-      iconLabel: "유튜브",
-      prefix: "https://www.youtube.com/@",
-    },
-    {
-      index: 7,
-      icon: <GithubLogo size={40} />,
-      iconLabel: "깃허브",
-      prefix: "https://github.com/",
-    },
-    {
-      index: 8,
-      icon: <Chain size={40} />,
-      iconLabel: "네이버블로그",
-      prefix: "https://blog.naver.com/",
-    },
-    { index: 9, icon: <Chain size={40} />, iconLabel: "라인", prefix: "https://line.me/ti/p/@" },
-  ];
+const iconLists = [
+  { type: "custom", icon: <Chain size={40} />, iconLabel: "커스텀", prefix: "" },
+  {
+    type: "instagram",
+    icon: <InstagramLogo size={40} />,
+    iconLabel: "인스타그램",
+    prefix: "https://www.instagram.com/",
+  },
+  {
+    type: "facebook",
+    icon: <FacebookLogo size={40} />,
+    iconLabel: "페이스북",
+    prefix: "https://www.facebook.com/",
+  },
 
+  {
+    type: "threads",
+    icon: <ThreadsLogo size={40} />,
+    iconLabel: "쓰레드",
+    prefix: "https://threads.net/@",
+  },
+];
+
+export default function RegisterLinksPage() {
   const [linkInputs, setLinkInputs] = useState<AddLinkInputProps[]>([]);
 
-  const handleAddLinkInput = (index: number) => {
-    const newLinkInputs = {
+  const handleAddLink = (type: LinkType) => {
+    const newLink = {
       id: Date.now(),
-      url: "",
-      type: index,
+      url: getSnsUrl(type),
+      type,
     };
 
-    setLinkInputs([...linkInputs, newLinkInputs]);
+    setLinkInputs([...linkInputs, newLink]);
+  };
+  const handleChangeUrl = (id: number, e: ChangeEvent) => {
+    console.log(id);
   };
 
   const onDelete = (id: number) => {
@@ -106,20 +87,18 @@ export default function RegisterLinksPage() {
           <div className="px-3 pb-12">
             <Heading variant="subtitle1">사용하실 웹사이트 링크를 연결해보세요</Heading>
           </div>
-          <LinkAddButton iconLists={iconLists} handleAddLinkInput={handleAddLinkInput} />
+          <LinkAddButtons iconLists={iconLists} onAdd={handleAddLink} />
           <section className="w-full">
             <ul className="mt-4 flex flex-col gap-4 px-2">
-              {linkInputs.map((item, index) => {
-                return (
-                  <LinkAddInput
-                    key={item.id}
-                    index={item.type}
-                    {...item}
-                    onDelete={onDelete}
-                    iconLists={iconLists}
-                  />
-                );
-              })}
+              {linkInputs.map((item, index) => (
+                <LinkListItem
+                  key={item.id}
+                  type={item.type}
+                  {...item}
+                  onDelete={onDelete}
+                  onChangeUrl={handleChangeUrl}
+                />
+              ))}
             </ul>
             <div className="mt-20 flex flex-col gap-2 px-2">
               <Button variant="primary" size="large">
