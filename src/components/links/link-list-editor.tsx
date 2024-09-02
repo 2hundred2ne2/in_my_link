@@ -75,61 +75,62 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
     }),
   );
 
-  const handleDragEnd = (e: DragEndEvent) => {
+  const handleDragEnd = async (e: DragEndEvent) => {
     const { active, over } = e;
 
     // 유효한 드롭 영역이 아닌 곳에 놓았을 경우
-    if (!over) {
-      return;
-    }
-
     // 드래그한 아이템과 드롭한 위치 아이템이 같은 경우
-    if (active.id === over.id) {
+    if (!over || active.id === over.id) {
       return;
     }
 
     const oldIndex = links.findIndex((item) => item.id === active.id);
     const newIndex = links.findIndex((item) => item.id === over.id);
 
-    const newLinks = arrayMove(links, oldIndex, newIndex);
-
     // 순서 업데이트
+    const newLinks = arrayMove(links, oldIndex, newIndex);
     const updatedLinks = newLinks.map((link, index) => ({
       ...link,
       order: index + 1,
     }));
 
+    const originalLinks = [...links];
     setLinks(updatedLinks);
 
-    fetch(`${ENV.apiUrl}/api/links/reorder`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(updatedLinks.map((link) => ({ id: link.id, order: link.order }))),
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("링크 순서 업데이트에 실패했습니다");
-        }
-      })
-      .catch((error) => {
-        console.error("링크 순서 변경 중 오류 발생:", error);
-        // 원래 순서로 변경
-        setLinks(links);
+    try {
+      const response = await fetch(`${ENV.apiUrl}/api/links/reorder`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedLinks.map((link) => ({ id: link.id, order: link.order }))),
       });
+
+      if (!response.ok) {
+        throw new Error("링크 순서 업데이트에 실패했습니다");
+      }
+    } catch (error) {
+      console.error("링크 순서 변경 중 오류 발생:", error); // 원래 순서로 변경
+      setLinks(originalLinks);
+    }
   };
 
   const handleAddLink = async (type: LinkType) => {
     setIsAddModalOpen(false);
+
+    // 임시 ID
+    const tempId = Date.now();
+
     const newLink: LinkItem = {
-      id: Date.now(),
+      id: tempId,
       title: "",
       url: type === "custom" ? "" : getSnsUrl(type),
       image: `/images/${type}-logo.png`,
       isEdit: true,
       type,
     };
+
+    setLinks((prevLinks) => [...prevLinks, newLink]);
 
     try {
       const response = await fetch(`${ENV.apiUrl}/api/links`, {
@@ -152,9 +153,14 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
 
       const savedLink = await response.json();
 
-      setLinks((prevLinks) => [...prevLinks, { ...savedLink, isEdit: true }]);
+      // 서버에서 받은 ID로 업데이트
+      setLinks((prevLinks) =>
+        prevLinks.map((link) => (link.id === tempId ? { ...link, id: savedLink.id } : link)),
+      );
     } catch (error) {
       console.error("링크 추가 중 오류 발생:", error);
+      // 에러 발생 시 추가된 링크 제거
+      setLinks((prevLinks) => prevLinks.filter((link) => link.id !== tempId));
     }
   };
 
@@ -167,13 +173,17 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
   };
 
   const handleChageTitle = async (id: number, value: string) => {
+    const link = links.find((link) => link.id === id);
+
+    if (!link) {
+      return;
+    }
+
+    const originalTitle = link.title;
+
+    setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, title: value } : link)));
+
     try {
-      const link = links.find((link) => link.id === id);
-
-      if (!link) {
-        return;
-      }
-
       const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
         method: "PATCH",
         headers: {
@@ -189,28 +199,33 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       if (!response.ok) {
         throw new Error("제목 수정에 실패했습니다");
       }
-
-      setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, title: value } : link)));
     } catch (error) {
       console.error("링크 수정 중 오류 발생:", error);
+      setLinks((prev) =>
+        prev.map((link) => (link.id === id ? { ...link, title: originalTitle } : link)),
+      );
     }
   };
 
   const handleChangeUrl = async (id: number, value: string) => {
+    const link = links.find((link) => link.id === id);
+
+    if (!link) {
+      return;
+    }
+
+    const originalUrl = link.url;
+
+    let newUrl: string = value;
+    if (link.type !== "custom") {
+      const prefix = getSnsUrl(link.type);
+      const username = value.slice(prefix.length);
+      newUrl = `${prefix}${username}`;
+    }
+
+    setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, url: newUrl } : link)));
+
     try {
-      const link = links.find((link) => link.id === id);
-
-      if (!link) {
-        return;
-      }
-
-      let newUrl: string = value;
-      if (link.type !== "custom") {
-        const prefix = getSnsUrl(link.type);
-        const username = value.slice(prefix.length);
-        newUrl = `${prefix}${username}`;
-      }
-
       const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
         method: "PATCH",
         headers: {
@@ -226,10 +241,11 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       if (!response.ok) {
         throw new Error("URL 수정에 실패했습니다");
       }
-
-      setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, url: newUrl } : link)));
     } catch (error) {
       console.error("링크 수정 중 오류 발생:", error);
+      setLinks((prev) =>
+        prev.map((link) => (link.id === id ? { ...link, url: originalUrl } : link)),
+      );
     }
   };
 
@@ -243,12 +259,14 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       return;
     }
 
+    const id = linkToDeleteIdRef.current;
+    setIsDeleteModalOpen(false);
+    linkToDeleteIdRef.current = null;
+
+    const originalLinks = [...links];
+    setLinks((prevLinks) => prevLinks.filter((link) => link.id !== id));
+
     try {
-      const id = linkToDeleteIdRef.current;
-
-      setIsDeleteModalOpen(false);
-      linkToDeleteIdRef.current = null;
-
       const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
         method: "DELETE",
       });
@@ -260,6 +278,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       setLinks((prevLinks) => prevLinks.filter((link) => link.id !== id));
     } catch (error) {
       console.error("링크 삭제 중 오류 발생:", error);
+      setLinks(originalLinks);
     }
   };
 
@@ -273,17 +292,24 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       return;
     }
 
+    const id = linkToImageDeleteIdRef.current;
+    const link = links.find((link) => link.id === id);
+
+    if (!link) {
+      return;
+    }
+
+    setIsImageDeleteModalOpen(false);
+    linkToImageDeleteIdRef.current = null;
+
+    const originalLinks = [...links];
+    setLinks((prevLinks) =>
+      prevLinks.map((link) =>
+        link.id === id ? { ...link, image: `/images/custom-logo.png` } : link,
+      ),
+    );
+
     try {
-      const id = linkToImageDeleteIdRef.current;
-      const link = links.find((link) => link.id === id);
-
-      if (!link) {
-        return;
-      }
-
-      setIsImageDeleteModalOpen(false);
-      linkToImageDeleteIdRef.current = null;
-
       const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
         method: "PATCH",
         headers: {
@@ -307,6 +333,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       );
     } catch (error) {
       console.error("링크 수정 중 오류 발생:", error);
+      setLinks(originalLinks);
     }
   };
 
