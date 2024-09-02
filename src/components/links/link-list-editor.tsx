@@ -139,11 +139,14 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId: 1, // FIXME 인증된 사용자 ID
-          type: newLink.type,
-          title: newLink.title,
-          image: newLink.image,
-          url: newLink.url,
+          links: [
+            {
+              type: newLink.type,
+              title: newLink.title,
+              image: newLink.image,
+              url: newLink.url,
+            },
+          ],
         }),
       });
 
@@ -151,7 +154,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
         throw new Error("링크 추가에 실패했습니다");
       }
 
-      const savedLink = await response.json();
+      const [savedLink] = await response.json();
 
       // 서버에서 받은 ID로 업데이트
       setLinks((prevLinks) =>
