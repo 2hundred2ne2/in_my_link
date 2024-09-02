@@ -6,10 +6,10 @@ import { ENV } from "@/constants/env";
 
 export default function UserScreenPage() {
   const [backgroundColor, setBackgroundColor] = useState("white");
-  const domain = "";
+  const domain = "test";
   useEffect(() => {
     // 색상 데이터 API 호출
-    fetch(`${ENV.apiUrl}/api/skin-config`, {
+    fetch(`${ENV.apiUrl}/api/skin-config?domain=${domain}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -18,12 +18,8 @@ export default function UserScreenPage() {
       .then((response) => response.json())
       .then((data) => {
         // 색상 데이터 처리
-        console.log(data);
-
-        // 색상 데이터를 버튼 배경색으로 설정
-        if (data && data.backgroundColor) {
-          setBackgroundColor(data.backgroundColor);
-        }
+        console.log(data.color);
+        setBackgroundColor(data.color);
       })
       .catch((error) => console.error("Error:", error));
   }, [domain]); // domain이 변경될 때마다 색상 데이터를 재호출합니다
