@@ -1,9 +1,8 @@
-"use client";
-import Image from "next/image";
-import { useState, useEffect } from "react";
-
 import { SignOut } from "@phosphor-icons/react/dist/ssr";
 
+import { FontConfigEditor } from "@/components/design/font-config-editor";
+import { LayoutConfigEditor } from "@/components/design/layout-config-editor";
+import { SkinConfigEditor } from "@/components/design/skin-config-editor";
 import { Logo } from "@/components/logo";
 import {
   AppHeader,
@@ -11,56 +10,9 @@ import {
   AppHeaderCenter,
   AppHeaderRight,
 } from "@/components/ui/app-header";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Heading } from "@/components/ui/heading";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Tab, TabList, TabPanel, Tabs } from "@/components/ui/tabs";
-import { ENV } from "@/constants/env";
 
 export default function DesignPage() {
-  const [backgroundColor, setBackgroundColor] = useState("bg-background");
-  const [isBackgroundloding, setIsBackgroundloding] = useState(true);
-
-  const domain = "test";
-  useEffect(() => {
-    setIsBackgroundloding(true);
-
-    fetch(`${ENV.apiUrl}/api/skin-config?domain=${domain}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        // 색상 데이터 처리
-        console.log(data.color);
-        setBackgroundColor(data.color);
-      })
-      .catch((error) => console.error("Error:", error))
-      .finally(() => {
-        setIsBackgroundloding(false);
-      });
-  }, [domain]); // domain이 변경될 때마다 색상 데이터를 재호출합니다
-
-  const backgroundButtonClick = (color: string) => {
-    //setActiveBackgroundButtonIndex(index);
-    // 여기에 fetch 호출을 추가하면 됩니다.
-    fetch("/api/skin-config", {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ color }), // 필요한 데이터로 수정하세요
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setBackgroundColor(color);
-      })
-      .catch((error) => console.error("Error:", error));
-  };
   return (
     <>
       <AppHeader>
@@ -91,193 +43,13 @@ export default function DesignPage() {
             </Tab>
           </TabList>
           <TabPanel value="스킨">
-            <section className="space-y-2 px-3 md:space-y-3">
-              <h1 className="sr-only">스킨 편집</h1>
-              {isBackgroundloding ? (
-                <>
-                  <Skeleton className="h-6 w-32" />
-                  <Skeleton className="h-14 w-full" />
-                </>
-              ) : (
-                <>
-                  <div>
-                    <Heading variant="subtitle2" order={2} className="font-medium">
-                      배경 컬러
-                    </Heading>
-                    <div className="overflow-x-auto">
-                      <div className="mt-2 flex min-w-max gap-3">
-                        {[
-                          { bgColor: "bg-background", label: "기본" },
-                          { bgColor: "bg-background-muted", label: "약함" },
-                          { bgColor: "bg-green-100", label: "파스텔 그린" },
-                          { bgColor: "bg-pink-100", label: "파스텔 핑크" },
-                          { bgColor: "bg-blue-100", label: "파스텔 블루" },
-                        ].map((color, index) => (
-                          <button
-                            key={index}
-                            type="button"
-                            className={`h-14 w-14 flex-shrink-0 rounded-full border transition-transform duration-100 active:scale-[0.96] ${color.bgColor === backgroundColor ? "border-black" : "border-transparent"} focus:outline-none ${color.bgColor}`}
-                            onClick={() => backgroundButtonClick(color.bgColor)}
-                          >
-                            <span className="sr-only">{color.label}</span>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <Heading variant="subtitle2" order={2} className="font-medium">
-                      스티커
-                    </Heading>
-                    <div className="overflow-x-auto">
-                      <div className="mt-2 flex min-w-max gap-3">
-                        <button
-                          type="button"
-                          className="h-14 w-14 flex-shrink-0 rounded-full border bg-background transition-transform duration-100 active:scale-[0.96]"
-                        >
-                          <span className="sr-only">기본</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="h-14 w-14 flex-shrink-0 rounded-full bg-background-muted transition-transform duration-100 active:scale-[0.96]"
-                        >
-                          <span className="sr-only">약함</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="h-14 w-14 flex-shrink-0 rounded-full bg-green-100 transition-transform duration-100 active:scale-[0.96]"
-                        >
-                          <span className="sr-only">파스텔 그린</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="h-14 w-14 flex-shrink-0 rounded-full bg-pink-100 transition-transform duration-100 active:scale-[0.96]"
-                        >
-                          <span className="sr-only">파스텔 핑크</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="h-14 w-14 flex-shrink-0 rounded-full bg-blue-100 transition-transform duration-100 active:scale-[0.96]"
-                        >
-                          <span className="sr-only">파스텔 블루</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </>
-              )}
-            </section>
+            <SkinConfigEditor />
           </TabPanel>
           <TabPanel value="버튼">
-            <section className="mb-16 space-y-2 px-3 md:space-y-3">
-              <h1 className="sr-only">버튼 편집</h1>
-              <div>
-                <Heading variant="subtitle2" order={2} className="font-medium">
-                  레이아웃
-                </Heading>
-
-                <div className="mt-2 space-y-3">
-                  <button
-                    type="button"
-                    className="block h-32 w-full rounded-xl bg-background-muted/90 md:h-36"
-                  >
-                    <Image
-                      alt="레이아웃 1"
-                      src="/images/layout-1.png"
-                      width={320}
-                      height={320}
-                      className="h-full w-full object-contain"
-                    />
-                    <span className="sr-only">레이아웃 1</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="block h-32 w-full rounded-xl bg-background-muted/90 md:h-36"
-                  >
-                    <Image
-                      alt="레이아웃 2"
-                      src="/images/layout-2.png"
-                      width={320}
-                      height={320}
-                      className="h-full w-full object-contain"
-                    />
-                    <span className="sr-only">레이아웃 2</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="block h-32 w-full rounded-xl bg-background-muted/90 md:h-36"
-                  >
-                    <Image
-                      alt="레이아웃 3"
-                      src="/images/layout-3.png"
-                      width={320}
-                      height={320}
-                      className="h-full w-full object-contain"
-                    />
-                    <span className="sr-only">레이아웃 3</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="block h-32 w-full rounded-xl bg-background-muted/90 md:h-36"
-                  >
-                    <Image
-                      alt="레이아웃 4"
-                      src="/images/layout-4.png"
-                      width={320}
-                      height={320}
-                      className="h-full w-full object-contain"
-                    />
-                    <span className="sr-only">레이아웃 4</span>
-                  </button>
-                </div>
-              </div>
-            </section>
+            <LayoutConfigEditor />
           </TabPanel>
           <TabPanel value="폰트">
-            <section className="space-y-2 px-3 md:space-y-3">
-              <h1 className="sr-only">폰트 편집</h1>
-              <div>
-                <Heading variant="subtitle2" order={2} className="font-medium">
-                  종류
-                </Heading>
-                <div className="mt-2 flex gap-2">
-                  <Button type="button" variant="primary">
-                    폰트 A
-                  </Button>
-                  <Button type="button" variant="secondary">
-                    폰트 B
-                  </Button>
-                  <Button type="button" variant="secondary">
-                    폰트 C
-                  </Button>
-                </div>
-              </div>
-              <div>
-                <Heading variant="subtitle2" order={2} className="font-medium">
-                  사이즈
-                </Heading>
-                <div className="mt-2 flex gap-2">
-                  <Button type="button" variant="primary" className="text-xs">
-                    작게
-                  </Button>
-                  <Button type="button" variant="secondary" className="text-sm">
-                    보통
-                  </Button>
-                  <Button type="button" variant="secondary" className="text-base">
-                    크게
-                  </Button>
-                </div>
-              </div>
-              <div>
-                <h1 className="sr-only">폰트 미리보기</h1>
-                <Card
-                  variant="muted"
-                  className="mt-10 flex h-32 w-full items-center justify-center rounded-2xl"
-                >
-                  가나다 ABC
-                </Card>
-              </div>
-            </section>
+            <FontConfigEditor />
           </TabPanel>
         </Tabs>
       </main>
