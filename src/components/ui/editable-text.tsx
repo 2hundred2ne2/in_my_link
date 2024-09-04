@@ -7,9 +7,10 @@ import { cn } from "@/lib/utils";
 export interface EditableTextProps {
   label: string;
   value?: string;
-  className?: string;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
+  errorMessage?: string;
+  className?: string;
   onChange: (value: string) => void;
 }
 
@@ -18,6 +19,7 @@ export function EditableText({
   value = "",
   leftIcon,
   rightIcon,
+  errorMessage,
   className,
   onChange,
 }: EditableTextProps) {
@@ -65,6 +67,7 @@ export function EditableText({
           <span
             className={cn(
               "max-w-full overflow-hidden text-ellipsis whitespace-nowrap",
+              errorMessage && "text-danger",
               value?.trim().length === 0 && "text-foreground-muted",
             )}
           >
@@ -86,6 +89,16 @@ export function EditableText({
           onKeyDown={handleKeyDown}
         />
       </label>
+
+      {errorMessage && (
+        <div className="relative inline-block w-fit rounded-sm bg-danger p-1">
+          <div
+            aria-hidden
+            className="absolute bottom-full h-0 w-0 border-b-4 border-l-4 border-r-4 border-b-danger border-l-transparent border-r-transparent"
+          ></div>
+          <p className="text-xs font-semibold text-foreground-inverted">{errorMessage}</p>
+        </div>
+      )}
     </div>
   );
 }
