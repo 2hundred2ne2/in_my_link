@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 import { SignOut } from "@phosphor-icons/react/dist/ssr";
 
 import { FontConfigEditor } from "@/components/design/font-config-editor";
@@ -11,6 +13,10 @@ import {
   AppHeaderRight,
 } from "@/components/ui/app-header";
 import { Tab, TabList, TabPanel, Tabs } from "@/components/ui/tabs";
+
+export const metadata: Metadata = {
+  title: "디자인 설정하기",
+};
 
 export default function DesignPage() {
   return (
