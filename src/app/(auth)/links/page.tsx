@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 import { SignOut } from "@phosphor-icons/react/dist/ssr";
 
 import { LinkListEditor } from "@/components/links/link-list-editor";
@@ -11,6 +13,10 @@ import {
 import { Heading } from "@/components/ui/heading";
 import { ENV } from "@/constants/env";
 import { Link } from "@/types/link";
+
+export const metadata: Metadata = {
+  title: "링크 관리하기",
+};
 
 async function getLinks(domain: string): Promise<Link[]> {
   const res = await fetch(`${ENV.apiUrl}/api/links?domain=${domain}`, {
