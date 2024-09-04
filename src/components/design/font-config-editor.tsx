@@ -1,5 +1,5 @@
 "use client";
-import { Nanum_Pen_Script } from "next/font/google";
+import { Jua, Orbit } from "next/font/google";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -7,7 +7,8 @@ import { Card } from "@/components/ui/card";
 import { Heading } from "@/components/ui/heading";
 import { ENV } from "@/constants/env";
 
-const hahmletFont = Nanum_Pen_Script({ subsets: ["latin"], weight: ["400"] });
+const JuaFont = Jua({ subsets: ["latin"], weight: ["400"] });
+const OrbitFont = Orbit({ subsets: ["latin"], weight: ["400"] });
 
 export function FontConfigEditor() {
   const [fontType, setFontType] = useState("폰트 A");
@@ -75,8 +76,11 @@ export function FontConfigEditor() {
     return <div>에러: {error}</div>;
   }
 
-  const cardFontClass = fontType === "폰트 B" ? hahmletFont.className : "";
-  const inlineFontStyle = fontType !== "폰트 B" ? { fontFamily: fontType } : {};
+  const cardFontClass =
+    fontType === "폰트 B" ? JuaFont.className : fontType === "폰트 C" ? OrbitFont.className : "";
+
+  const inlineFontStyle =
+    fontType !== "폰트 B" && fontType !== "폰트 C" ? { fontFamily: fontType } : {};
 
   return (
     <>
