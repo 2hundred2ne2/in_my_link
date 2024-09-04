@@ -19,6 +19,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Plus } from "@phosphor-icons/react";
+import toast from "react-hot-toast";
 
 import { ENV } from "@/constants/env";
 import { getSnsUrl } from "@/lib/utils";
@@ -110,7 +111,8 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
         throw new Error("링크 순서 업데이트에 실패했습니다");
       }
     } catch (error) {
-      console.error("링크 순서 변경 중 오류 발생:", error); // 원래 순서로 변경
+      console.error("링크 순서 변경 중 오류 발생:", error);
+      toast("순서 변경에 오류가 있어요. 잠시후에 다시 시도해주세요");
       setLinks(originalLinks);
     }
   };
@@ -118,7 +120,6 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
   const handleAddLink = async (type: LinkType) => {
     setIsAddModalOpen(false);
 
-    // 임시 ID
     const tempId = Date.now();
 
     const newLink: LinkItem = {
@@ -162,7 +163,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       );
     } catch (error) {
       console.error("링크 추가 중 오류 발생:", error);
-      // 에러 발생 시 추가된 링크 제거
+      toast("링크 추가에 실패했어요. 잠시후에 다시 시도해주세요");
       setLinks((prevLinks) => prevLinks.filter((link) => link.id !== tempId));
     }
   };
@@ -203,7 +204,8 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
         throw new Error("제목 수정에 실패했습니다");
       }
     } catch (error) {
-      console.error("링크 수정 중 오류 발생:", error);
+      console.error("제목 수정 중 오류 발생:", error);
+      toast("제목 수정에 실패했어요. 잠시후에 다시 시도해주세요");
       setLinks((prev) =>
         prev.map((link) => (link.id === id ? { ...link, title: originalTitle } : link)),
       );
@@ -246,6 +248,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       }
     } catch (error) {
       console.error("링크 수정 중 오류 발생:", error);
+      toast("URL 수정에 실패했어요. 잠시후에 다시 시도해주세요");
       setLinks((prev) =>
         prev.map((link) => (link.id === id ? { ...link, url: originalUrl } : link)),
       );
@@ -281,6 +284,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       setLinks((prevLinks) => prevLinks.filter((link) => link.id !== id));
     } catch (error) {
       console.error("링크 삭제 중 오류 발생:", error);
+      toast("링크 삭제에 실패했어요. 잠시후에 다시 시도해주세요");
       setLinks(originalLinks);
     }
   };
@@ -336,6 +340,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       );
     } catch (error) {
       console.error("링크 수정 중 오류 발생:", error);
+      toast("이미지 삭제에 실패했어요. 잠시후에 다시 시도해주세요");
       setLinks(originalLinks);
     }
   };
