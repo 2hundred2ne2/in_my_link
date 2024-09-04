@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
-import { db } from "@/lib/db";
+import { db, trx } from "@/lib/db";
 import { Link } from "@/types/link";
 
-interface LinkQueryResult extends RowDataPacket, Link {}
+interface LinkQueryResult extends RowDataPacket, Pick<Link, "id" | "userId" | "order"> {}
 
 /**
  * @see https://github.com/2hundred2ne2/in_my_link/issues/60
@@ -20,7 +20,7 @@ export async function PATCH(request: Request, { params }: { params: { id: string
     const { userId, title, image, url } = body;
 
     const [links] = await db.query<LinkQueryResult[]>(
-      "SELECT id, user_id userId FROM link WHERE id = ?",
+      "SELECT id, user_id userId, `order` FROM link WHERE id = ?",
       [id],
     );
 
@@ -60,7 +60,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
     const id = params.id;
 
     const [links] = await db.query<LinkQueryResult[]>(
-      "SELECT id, user_id userId FROM link WHERE id = ?",
+      "SELECT id, user_id userId, `order` FROM link WHERE id = ?",
       [id],
     );
 
@@ -77,9 +77,17 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
       return NextResponse.json({ message: "권한이 없습니다" }, { status: 403 });
     }
 
-    await db.query("DELETE FROM link WHERE id = ?", [id]);
+    await trx(async (connection) => {
+      await connection.query("DELETE FROM link WHERE id = ?", [id]);
 
-    console.debug(`링크가 삭제 되었습니다`);
+      // 삭제된 링크보다 높은 순서를 가진 링크들의 순서를 1씩 감소
+      await connection.query(
+        "UPDATE link SET `order` = `order` - 1 WHERE user_id = ? AND `order` > ?",
+        [TEMP_USER_ID, foundLink.order],
+      );
+    });
+
+    console.debug(`링크 ${id}가/이 삭제 되었습니다`);
     return new Response(null, {
       status: 204,
     });
