@@ -28,7 +28,11 @@ export function FontConfigEditor() {
       setFontType(data.type || "폰트 A");
       setFontSize(`text-${data.size}` || "text-base");
     } catch (err) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("unknown error occurred");
+      }
     } finally {
       setLoading(false);
     }
@@ -51,7 +55,11 @@ export function FontConfigEditor() {
         throw new Error("Failed to update font config");
       }
     } catch (err) {
-      setError(err.message);
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Unknown error occurred");
+      }
     }
   };
 
