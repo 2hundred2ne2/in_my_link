@@ -125,7 +125,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
     const newLink: LinkItem = {
       id: tempId,
       title: "",
-      url: type === "custom" ? "" : getSnsUrl(type),
+      url: type === "custom" ? "https://" : getSnsUrl(type),
       image: `/images/${type}-logo.png`,
       isEdit: true,
       type,
@@ -176,83 +176,12 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
     setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, isEdit: false } : link)));
   };
 
-  const handleChageTitle = async (id: number, value: string) => {
-    const link = links.find((link) => link.id === id);
-
-    if (!link) {
-      return;
-    }
-
-    const originalTitle = link.title;
-
-    setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, title: value } : link)));
-
-    try {
-      const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...link,
-          userId: 1, //FIXME: 인증된 회원 아이디
-          title: value,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("제목 수정에 실패했습니다");
-      }
-    } catch (error) {
-      console.error("제목 수정 중 오류 발생:", error);
-      toast("제목 수정에 실패했어요. 잠시후에 다시 시도해주세요");
-      setLinks((prev) =>
-        prev.map((link) => (link.id === id ? { ...link, title: originalTitle } : link)),
-      );
-    }
+  const handleChageTitle = async (id: number, newTitle: string) => {
+    setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, title: newTitle } : link)));
   };
 
-  const handleChangeUrl = async (id: number, value: string) => {
-    const link = links.find((link) => link.id === id);
-
-    if (!link) {
-      return;
-    }
-
-    const originalUrl = link.url;
-
-    let newUrl: string = value;
-    if (link.type !== "custom") {
-      const prefix = getSnsUrl(link.type);
-      const username = value.slice(prefix.length);
-      newUrl = `${prefix}${username}`;
-    }
-
+  const handleChangeUrl = (id: number, newUrl: string) => {
     setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, url: newUrl } : link)));
-
-    try {
-      const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...link,
-          userId: 1, //FIXME: 인증된 회원 아이디
-          url: newUrl,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("URL 수정에 실패했습니다");
-      }
-    } catch (error) {
-      console.error("링크 수정 중 오류 발생:", error);
-      toast("URL 수정에 실패했어요. 잠시후에 다시 시도해주세요");
-      setLinks((prev) =>
-        prev.map((link) => (link.id === id ? { ...link, url: originalUrl } : link)),
-      );
-    }
   };
 
   const handleDeleteClick = (id: number) => {
