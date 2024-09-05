@@ -12,8 +12,14 @@ import {
 } from "@/components/ui/app-header";
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
+import { ENV } from "@/constants/env";
 import { getSnsUrl } from "@/lib/utils";
 import { LinkType } from "@/types/link";
+/* import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "회원가입 | 링꾸",
+}; */
 
 export interface AddLinkInputProps {
   /** 링크 id */
@@ -25,24 +31,45 @@ export interface AddLinkInputProps {
 }
 
 const iconLists = [
-  { type: "custom", iconLabel: "커스텀", prefix: "" },
+  { type: "custom", iconLabel: "커스텀" },
   {
     type: "instagram",
     iconLabel: "인스타그램",
-    prefix: "https://www.instagram.com/",
   },
   {
     type: "facebook",
     iconLabel: "페이스북",
-    prefix: "https://www.facebook.com/",
   },
 
   {
     type: "threads",
     iconLabel: "쓰레드",
-    prefix: "https://threads.net/@",
   },
 ];
+
+/**링크저장 API --> 다음 버튼을 누르면 모두 한번에 저장됨 */
+async function setLink(id: number, linkInputs: AddLinkInputProps[]) {
+  console.log("insert link array");
+
+  const data = JSON.stringify(linkInputs);
+  console.log(data);
+
+  try {
+    const response = await fetch(`${ENV.apiUrl}/api/links?user_id=${id}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: data,
+    });
+
+    if (!response.ok) {
+      throw new Error("URL 등록에 실패했습니다");
+    }
+  } catch (error) {
+    console.log("링크 등록 중 오류 발생: ", error);
+  }
+}
 
 export default function RegisterLinksPage() {
   const [linkInputs, setLinkInputs] = useState<AddLinkInputProps[]>([]);
@@ -56,8 +83,14 @@ export default function RegisterLinksPage() {
 
     setLinkInputs([...linkInputs, newLink]);
   };
-  const handleChangeUrl = (id: number, e: ChangeEvent) => {
-    console.log(id);
+
+  const handleChangeUrl = (id: number, e: ChangeEvent<HTMLInputElement>) => {
+    const wholeUrl = e.target.value;
+
+    setLinkInputs((prev) =>
+      prev.map((link) => (link.id === id ? { ...link, url: wholeUrl } : link)),
+    );
+    console.log(linkInputs);
   };
 
   const onDelete = (id: number) => {

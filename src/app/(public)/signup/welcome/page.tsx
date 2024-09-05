@@ -1,9 +1,14 @@
+import { Metadata } from "next";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { ENV } from "@/constants/env";
+
+export const metadata: Metadata = {
+  title: "회원가입 | 링꾸",
+};
 
 async function getUser(id: number) {
   console.log("get user info");
