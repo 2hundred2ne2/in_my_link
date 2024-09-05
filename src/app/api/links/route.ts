@@ -71,7 +71,6 @@ export async function POST(request: Request) {
 }
 
 /**
- *
  * @see https://github.com/2hundred2ne2/in_my_link/issues/62
  */
 export async function GET(request: NextRequest) {
