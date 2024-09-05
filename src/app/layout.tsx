@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <div className="relative mx-auto flex min-h-screen w-full max-w-lg flex-col overflow-x-hidden">
+        <div className="relative mx-auto flex min-h-screen w-full max-w-sm flex-col overflow-x-hidden">
           {children}
           {/* @see https://react-hot-toast.com/docs/toaster */}
           <Toaster
