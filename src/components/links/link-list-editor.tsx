@@ -19,6 +19,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Plus } from "@phosphor-icons/react";
+import toast from "react-hot-toast";
 
 import { ENV } from "@/constants/env";
 import { getSnsUrl } from "@/lib/utils";
@@ -110,7 +111,8 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
         throw new Error("링크 순서 업데이트에 실패했습니다");
       }
     } catch (error) {
-      console.error("링크 순서 변경 중 오류 발생:", error); // 원래 순서로 변경
+      console.error("링크 순서 변경 중 오류 발생:", error);
+      toast("순서 변경에 오류가 있어요. 잠시후에 다시 시도해주세요");
       setLinks(originalLinks);
     }
   };
@@ -118,13 +120,12 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
   const handleAddLink = async (type: LinkType) => {
     setIsAddModalOpen(false);
 
-    // 임시 ID
     const tempId = Date.now();
 
     const newLink: LinkItem = {
       id: tempId,
       title: "",
-      url: type === "custom" ? "" : getSnsUrl(type),
+      url: type === "custom" ? "https://" : getSnsUrl(type),
       image: `/images/${type}-logo.png`,
       isEdit: true,
       type,
@@ -162,7 +163,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       );
     } catch (error) {
       console.error("링크 추가 중 오류 발생:", error);
-      // 에러 발생 시 추가된 링크 제거
+      toast("링크 추가에 실패했어요. 잠시후에 다시 시도해주세요");
       setLinks((prevLinks) => prevLinks.filter((link) => link.id !== tempId));
     }
   };
@@ -175,81 +176,12 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
     setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, isEdit: false } : link)));
   };
 
-  const handleChageTitle = async (id: number, value: string) => {
-    const link = links.find((link) => link.id === id);
-
-    if (!link) {
-      return;
-    }
-
-    const originalTitle = link.title;
-
-    setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, title: value } : link)));
-
-    try {
-      const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...link,
-          userId: 1, //FIXME: 인증된 회원 아이디
-          title: value,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("제목 수정에 실패했습니다");
-      }
-    } catch (error) {
-      console.error("링크 수정 중 오류 발생:", error);
-      setLinks((prev) =>
-        prev.map((link) => (link.id === id ? { ...link, title: originalTitle } : link)),
-      );
-    }
+  const handleChageTitle = async (id: number, newTitle: string) => {
+    setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, title: newTitle } : link)));
   };
 
-  const handleChangeUrl = async (id: number, value: string) => {
-    const link = links.find((link) => link.id === id);
-
-    if (!link) {
-      return;
-    }
-
-    const originalUrl = link.url;
-
-    let newUrl: string = value;
-    if (link.type !== "custom") {
-      const prefix = getSnsUrl(link.type);
-      const username = value.slice(prefix.length);
-      newUrl = `${prefix}${username}`;
-    }
-
+  const handleChangeUrl = (id: number, newUrl: string) => {
     setLinks((prev) => prev.map((link) => (link.id === id ? { ...link, url: newUrl } : link)));
-
-    try {
-      const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...link,
-          userId: 1, //FIXME: 인증된 회원 아이디
-          url: newUrl,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("URL 수정에 실패했습니다");
-      }
-    } catch (error) {
-      console.error("링크 수정 중 오류 발생:", error);
-      setLinks((prev) =>
-        prev.map((link) => (link.id === id ? { ...link, url: originalUrl } : link)),
-      );
-    }
   };
 
   const handleDeleteClick = (id: number) => {
@@ -281,6 +213,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       setLinks((prevLinks) => prevLinks.filter((link) => link.id !== id));
     } catch (error) {
       console.error("링크 삭제 중 오류 발생:", error);
+      toast("링크 삭제에 실패했어요. 잠시후에 다시 시도해주세요");
       setLinks(originalLinks);
     }
   };
@@ -336,6 +269,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       );
     } catch (error) {
       console.error("링크 수정 중 오류 발생:", error);
+      toast("이미지 삭제에 실패했어요. 잠시후에 다시 시도해주세요");
       setLinks(originalLinks);
     }
   };
