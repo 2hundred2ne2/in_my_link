@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 
+import { Toaster } from "react-hot-toast";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -19,8 +21,19 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <div className="relative mx-auto flex min-h-screen w-full max-w-lg flex-col overflow-x-hidden">
+        <div className="relative mx-auto flex min-h-screen w-full max-w-sm flex-col overflow-x-hidden">
           {children}
+          {/* @see https://react-hot-toast.com/docs/toaster */}
+          <Toaster
+            toastOptions={{
+              style: {
+                width: "100%",
+                backgroundColor: "rgb(var(--foreground) / 1)",
+                color: "rgb(var(--foreground-inverted) / 0.87)",
+                fontSize: "0.875rem",
+              },
+            }}
+          />
         </div>
       </body>
     </html>
