@@ -10,7 +10,7 @@ import {
   AppHeaderLeft,
   AppHeaderRight,
 } from "@/components/ui/app-header";
-import { Heading } from "@/components/ui/heading";
+import { UserProfile } from "@/components/user-profile";
 import { ENV } from "@/constants/env";
 import { Link } from "@/types/link";
 
@@ -50,14 +50,10 @@ export default async function LinksPage() {
       </AppHeader>
 
       <main className="flex-1 pb-[68px] pt-16">
-        <div className="flex flex-col items-center px-3 pt-12">
-          <div>
-            {/* avatar */}
-            <span className="inline-block h-24 w-24 rounded-full bg-primary-300"></span>
-          </div>
-          <Heading className="mt-4">Nickname</Heading>
-        </div>
-
+        <UserProfile
+          nickname="Nickname"
+          image="https://avatars.githubusercontent.com/u/54213143?v=4"
+        />
         <LinkListEditor links={links} />
       </main>
     </>
