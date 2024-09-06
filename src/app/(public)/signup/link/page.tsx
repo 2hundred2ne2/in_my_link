@@ -1,6 +1,9 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
+
+import toast from "react-hot-toast";
 
 import { LinkAddButtons } from "@/components/signup/link-add-buttons";
 import { LinkListItem } from "@/components/signup/link-list-item";
@@ -48,11 +51,10 @@ const iconLists = [
 ];
 
 /**링크저장 API --> 다음 버튼을 누르면 모두 한번에 저장됨 */
-async function setLink(id: number, linkInputs: AddLinkInputProps[]) {
+async function addLinks(id: number, linkInputs: AddLinkInputProps[]) {
   console.log("insert link array");
 
-  const data = JSON.stringify(linkInputs);
-  console.log(data);
+  const data = JSON.stringify({ links: linkInputs });
 
   try {
     const response = await fetch(`${ENV.apiUrl}/api/links?user_id=${id}`, {
@@ -73,6 +75,17 @@ async function setLink(id: number, linkInputs: AddLinkInputProps[]) {
 
 export default function RegisterLinksPage() {
   const [linkInputs, setLinkInputs] = useState<AddLinkInputProps[]>([]);
+  const router = useRouter();
+
+  const handleNext = async () => {
+    try {
+      await addLinks(1, linkInputs);
+      router.push("/signup/welcome");
+    } catch (error) {
+      console.log("링크 저장 중 오류 발생: ", error);
+      toast("링크 추가에 실패했어요. 잠시후에 다시 시도해주세요");
+    }
+  };
 
   const handleAddLink = (type: LinkType) => {
     const newLink = {
@@ -124,8 +137,8 @@ export default function RegisterLinksPage() {
               ))}
             </ul>
             <div className="mt-20 flex flex-col gap-2 px-2">
-              <Button variant="primary" size="large">
-                <Link href="/signup/welcome">다음</Link>
+              <Button variant="primary" size="large" onClick={handleNext}>
+                다음
               </Button>
               <Button variant="text" size="large">
                 <Link href="/signup/welcome">건너뛰기</Link>

@@ -7,7 +7,7 @@ import { Text } from "@/components/ui/text";
 import { ENV } from "@/constants/env";
 
 export const metadata: Metadata = {
-  title: "회원가입 | 링꾸",
+  title: "회원가입",
 };
 
 async function getUser(id: number) {
