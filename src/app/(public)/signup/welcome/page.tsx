@@ -6,10 +6,13 @@ import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { ENV } from "@/constants/env";
 
+/**동적 페이지 설정 */
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "회원가입",
 };
 
+/**GET API: 유저테이블에서 회원가입 한 유저 정보 불러오기 */
 async function getUser(id: number) {
   console.log("get user info");
   try {
@@ -34,7 +37,17 @@ async function getUser(id: number) {
 export default async function WelcomePage() {
   const TEMP_USER_ID = 1;
   const userInfo = await getUser(TEMP_USER_ID);
-  const nickname = userInfo.user.nickname ? `${userInfo.user.nickname}님, ` : "";
+  let nickname = "";
+
+  if (userInfo) {
+    if (userInfo.user.nickname) {
+      nickname = `${userInfo.user.nickname}님, `;
+    } else {
+      nickname = "";
+    }
+  } else {
+    return;
+  }
 
   return (
     <>
