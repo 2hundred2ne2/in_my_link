@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { Trash, Link as Chain } from "@phosphor-icons/react/dist/ssr";
+import { Trash } from "@phosphor-icons/react/dist/ssr";
 
 import { Card } from "../ui/card";
 

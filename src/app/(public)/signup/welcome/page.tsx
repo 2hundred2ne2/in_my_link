@@ -7,8 +7,6 @@ import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
 import { ENV } from "@/constants/env";
 
-/**동적 페이지 설정 */
-export const forceDynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "회원가입",
 };
