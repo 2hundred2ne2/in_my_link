@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -7,10 +8,15 @@ import { Text } from "@/components/ui/text";
 import { ENV } from "@/constants/env";
 
 /**동적 페이지 설정 */
-export const dynamic = "force-dynamic";
+export const forceDynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "회원가입",
 };
+
+const FireWorks = dynamic<any>(
+  () => import("@/components/signup/fireworks").then((module) => module.FireWorks),
+  { ssr: false },
+);
 
 /**GET API: 유저테이블에서 회원가입 한 유저 정보 불러오기 */
 async function getUser(id: number) {
@@ -59,6 +65,7 @@ export default async function WelcomePage() {
           <div className="mb-12 mt-8 inline-block h-7">
             <Heading variant="subtitle1" className="font-bold">
               {nickname}환영합니다!
+              <FireWorks />
             </Heading>
           </div>
         </div>
