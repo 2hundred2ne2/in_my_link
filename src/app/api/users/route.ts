@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
 import { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 
+import { ENV } from "@/constants/env";
 import { db } from "@/lib/db";
 import { User } from "@/types/user";
 
@@ -55,7 +56,7 @@ export async function PATCH(req: Request) {
     domain?: string;
   }
 
-  const secret = process.env.JWT_SECRET;
+  const secret = ENV.jwtSecret;
   if (!secret) {
     throw new Error("JWT secret is not defined");
   }

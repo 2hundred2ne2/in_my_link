@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+import { ENV } from "@/constants/env";
 import { db } from "@/lib/db";
 import { User } from "@/types/user";
 
@@ -32,7 +33,7 @@ export async function POST(req: Request) {
     // JWT 토큰 생성
     const token = jwt.sign(
       { userId: user.id, email, domain: user.domain, nickname: user.nickname },
-      process.env.JWT_SECRET,
+      ENV.jwtSecret,
       { expiresIn: "1h" },
     );
 

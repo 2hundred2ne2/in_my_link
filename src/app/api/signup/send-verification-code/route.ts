@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 import nodemailer from "nodemailer";
 
+import { ENV } from "@/constants/env";
+
 export async function POST(req: NextRequest) {
   const { email } = await req.json();
 
@@ -21,13 +23,13 @@ export async function POST(req: NextRequest) {
   const transporter = nodemailer.createTransport({
     service: "Gmail",
     auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
+      user: ENV.emailUser,
+      pass: ENV.emailPass,
     },
   });
 
   const mailOptions = {
-    from: process.env.EMAIL_USER,
+    from: ENV.emailUser,
     to: email,
     subject: "이메일 인증 코드",
     text: `인증번호는 ${verificationCode}입니다.`,
