@@ -178,7 +178,7 @@ export default function SignUpPage() {
   };
 
   // 폼 제출 처리
-  const handleSubmit = async (event: React.FormEvent<User>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!email || !password || password !== passwordConfirm || !domain) {
@@ -226,75 +226,78 @@ export default function SignUpPage() {
     <main className="flex flex-1 items-center justify-center px-3 py-8 md:px-8">
       <div className="w-full max-w-xs">
         <Logo className="mb-5 text-center text-3xl font-extrabold" />
-        {!showDomainInput && (
-          <>
-            <Input
-              type="email"
-              placeholder="이메일"
-              value={email}
-              onChange={handleEmailChange}
-              status={errorEmail ? "error" : "default"}
-              errorMessage={errorEmail}
-              className="w-full"
-            />
-            {showPassword && (
+        {/* 폼으로 감싸기 */}
+        <form onSubmit={handleSubmit}>
+          {!showDomainInput && (
+            <>
               <Input
-                type="password"
-                placeholder="비밀번호"
-                value={password}
-                onChange={handlePasswordChange}
-                status={errorPassword ? "error" : "default"}
-                errorMessage={errorPassword}
+                type="email"
+                placeholder="이메일"
+                value={email}
+                onChange={handleEmailChange}
+                status={errorEmail ? "error" : "default"}
+                errorMessage={errorEmail}
                 className="w-full"
               />
-            )}
-            {showPasswordConfirm && (
-              <Input
-                type="password"
-                placeholder="비밀번호 확인"
-                value={passwordConfirm}
-                onChange={handlePasswordConfirmChange}
-                status={errorPasswordConfirm ? "error" : "default"}
-                errorMessage={errorPasswordConfirm}
-                className="w-full"
-              />
-            )}
-            {showEmailCode && (
-              <>
-                <Text as="p" className="mt-8">
-                  인증번호를 이메일로 발송했습니다. 메일을 확인해주세요
-                </Text>
+              {showPassword && (
                 <Input
-                  type="text"
-                  placeholder="인증번호"
-                  value={emailCode}
-                  onChange={handleEmailCodeChange}
-                  status={errorEmailCode ? "error" : "default"}
-                  errorMessage={errorEmailCode}
+                  type="password"
+                  placeholder="비밀번호"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  status={errorPassword ? "error" : "default"}
+                  errorMessage={errorPassword}
                   className="w-full"
                 />
-              </>
-            )}
-          </>
-        )}
-        {showDomainInput && (
-          <>
-            <Input
-              type="text"
-              placeholder="inmylink.com/"
-              value={domain}
-              onChange={handleDomainChange}
-              status={errorDomain ? "error" : "default"}
-              errorMessage={errorDomain}
-              className="w-full"
-            />
-            {showNextButton && (
-              <Button className="mt-2 w-full" size="large" onClick={handleSubmit}>
-                다음
-              </Button>
-            )}
-          </>
-        )}
+              )}
+              {showPasswordConfirm && (
+                <Input
+                  type="password"
+                  placeholder="비밀번호 확인"
+                  value={passwordConfirm}
+                  onChange={handlePasswordConfirmChange}
+                  status={errorPasswordConfirm ? "error" : "default"}
+                  errorMessage={errorPasswordConfirm}
+                  className="w-full"
+                />
+              )}
+              {showEmailCode && (
+                <>
+                  <Text as="p" className="mt-8">
+                    인증번호를 이메일로 발송했습니다. 메일을 확인해주세요
+                  </Text>
+                  <Input
+                    type="text"
+                    placeholder="인증번호"
+                    value={emailCode}
+                    onChange={handleEmailCodeChange}
+                    status={errorEmailCode ? "error" : "default"}
+                    errorMessage={errorEmailCode}
+                    className="w-full"
+                  />
+                </>
+              )}
+            </>
+          )}
+          {showDomainInput && (
+            <>
+              <Input
+                type="text"
+                placeholder="inmylink.com/"
+                value={domain}
+                onChange={handleDomainChange}
+                status={errorDomain ? "error" : "default"}
+                errorMessage={errorDomain}
+                className="w-full"
+              />
+              {showNextButton && (
+                <Button className="mt-2 w-full" size="large" type="submit">
+                  다음
+                </Button>
+              )}
+            </>
+          )}
+        </form>
         <div className="mt-8 text-center">
           <p className="text-foreground">
             <Text as="span"> 회원이신가요?</Text>
