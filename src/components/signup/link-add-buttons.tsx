@@ -4,23 +4,23 @@ import { LinkType } from "@/types/link";
 
 import { Text } from "../ui/text";
 
-import { IconListsType } from "./link-list-editor";
+import { IconListType } from "./link-list-editor";
 
 export interface LinkAddButtonsProps {
   /**SNS 아이콘이 클릭 될 때 호출되는 콜백 함수 */
   onAdd: (type: LinkType) => void;
 
   /**아이콘 리스트 객체 배열 */
-  iconLists: IconListsType[];
+  iconList: IconListType[];
 }
 
-export function LinkAddButtons({ onAdd, iconLists }: LinkAddButtonsProps) {
+export function LinkAddButtons({ onAdd, iconList }: LinkAddButtonsProps) {
   return (
     <>
       <section className="mb-10 w-full">
         <div className="overflow-x-auto">
           <ul className="flex flex-row gap-4 whitespace-nowrap px-3">
-            {iconLists.map((icon: IconListsType) => (
+            {iconList.map((icon: IconListType) => (
               <button key={icon.type} className="grid gap-1" onClick={() => onAdd(icon.type)}>
                 <span className="flex h-16 w-16 items-center justify-center rounded-2xl bg-background-muted">
                   <Image

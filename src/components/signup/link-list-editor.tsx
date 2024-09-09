@@ -26,7 +26,7 @@ export interface AddLinkInputProps {
   type?: LinkType;
 }
 
-export interface IconListsType {
+export interface IconListType {
   /**아이콘 리스트 SNS type */
   type: LinkType;
 
@@ -34,7 +34,7 @@ export interface IconListsType {
   iconLabel: string;
 }
 
-const iconLists: IconListsType[] = [
+const iconList: IconListType[] = [
   { type: "custom", iconLabel: "커스텀" },
   {
     type: "instagram",
@@ -104,13 +104,13 @@ export function LinkListEditor() {
     );
   };
 
-  const HandleDelete = (id: number) => {
+  const handleDelete = (id: number) => {
     setLinkInputs(linkInputs.filter((input) => input.id !== id));
   };
 
   return (
     <>
-      <LinkAddButtons iconLists={iconLists} onAdd={handleAddLink} />
+      <LinkAddButtons iconList={iconList} onAdd={handleAddLink} />
       <section className="w-full">
         <ul className="mt-4 flex flex-col gap-4 px-2">
           {linkInputs.map((item) => (
@@ -118,7 +118,7 @@ export function LinkListEditor() {
               key={item.id}
               type={item.type}
               {...item}
-              onDelete={HandleDelete}
+              onDelete={handleDelete}
               onChangeUrl={handleChangeUrl}
             />
           ))}

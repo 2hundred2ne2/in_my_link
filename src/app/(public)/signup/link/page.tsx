@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/app-header";
 import { Heading } from "@/components/ui/heading";
 
-const metadata: Metadata = {
+export const metadata: Metadata = {
   title: "회원가입",
 };
 
