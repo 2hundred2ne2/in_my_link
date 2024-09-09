@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "사용 가능한 이메일입니다." }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { message: "이메일 중복 확인 중 오류가 발생했습니다.", error: error.message },
+      { message: "이메일 중복 확인 중 오류가 발생했습니다." },
       { status: 500 },
     );
   }
