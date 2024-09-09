@@ -2,6 +2,7 @@
 import { Jua, Orbit } from "next/font/google";
 import { useEffect, useState } from "react";
 
+import { LinkLayout } from "@/components/linklayout";
 import { Portal } from "@/components/portal";
 import { ENV } from "@/constants/env";
 
@@ -85,26 +86,7 @@ export default function UserScreenPage() {
           </div>
         </section>
         <section className="flex flex-col gap-5 pb-10 text-[15px]">
-          <div className="flex h-[70px] cursor-pointer flex-row items-center justify-start gap-5 rounded-2xl border border-border bg-white pl-6 pr-6">
-            <div className="h-[45px] w-[45px] rounded-2xl bg-background-muted"></div>
-            <div>instargram</div>
-          </div>
-          <div className="flex h-[70px] cursor-pointer flex-row items-center justify-start gap-5 rounded-2xl border border-border bg-white pl-6 pr-6">
-            <div className="h-[45px] w-[45px] rounded-2xl bg-background-muted"></div>
-            <div>kakao</div>
-          </div>
-          <div className="flex h-[70px] cursor-pointer flex-row items-center justify-start gap-5 rounded-2xl border border-border bg-white pl-6 pr-6">
-            <div className="h-[45px] w-[45px] rounded-2xl bg-background-muted"></div>
-            <div>blog</div>
-          </div>
-          <div className="flex h-[70px] cursor-pointer flex-row items-center justify-start gap-5 rounded-2xl border border-border bg-white pl-6 pr-6">
-            <div className="h-[45px] w-[45px] rounded-2xl bg-background-muted"></div>
-            <div>X</div>
-          </div>
-          <div className="flex h-[70px] cursor-pointer flex-row items-center justify-start gap-5 rounded-2xl border border-border bg-white pl-6 pr-6">
-            <div className="h-[45px] w-[45px] rounded-2xl bg-background-muted"></div>
-            <div>http://www.naver.com</div>
-          </div>
+          <LinkLayout />
         </section>
       </div>
     </>
