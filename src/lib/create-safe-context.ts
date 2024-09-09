@@ -9,8 +9,8 @@ import { createContext, useContext } from "react";
  * @example
  * const [useSome, SomeContextProvider] = createSafeContext<SomeContextType>();
  */
-export function createSafeContext<T>(init: T) {
-  const Context = createContext<T>(init);
+export function createSafeContext<T>(init?: T) {
+  const Context = createContext(init);
 
   const useSafeContext = () => {
     const value = useContext(Context);
