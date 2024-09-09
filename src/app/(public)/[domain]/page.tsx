@@ -9,14 +9,14 @@ import { ENV } from "@/constants/env";
 const JuaFont = Jua({ subsets: ["latin"], weight: ["400"] });
 const OrbitFont = Orbit({ subsets: ["latin"], weight: ["400"] });
 
-export default function UserScreenPage() {
+export default function UserScreenPage({ params }: { params: { domain: string } }) {
   const [backgroundColor, setBackgroundColor] = useState("white");
   const [fontType, setFontType] = useState("폰트 A");
   const [fontSize, setFontSize] = useState("text-base");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const domain = "test";
+  const { domain } = params;
 
   const fetchConfig = async () => {
     try {
