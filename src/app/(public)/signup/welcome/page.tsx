@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "회원가입",
 };
 
+/**document가 생성될 때까지 기다렸다가 컴포넌트 실행 */
 const FireWorks = dynamic<any>(
   () => import("@/components/signup/fireworks").then((module) => module.FireWorks),
   { ssr: false },
@@ -18,7 +19,6 @@ const FireWorks = dynamic<any>(
 
 /**GET API: 유저테이블에서 회원가입 한 유저 정보 불러오기 */
 async function getUser(id: number) {
-  console.log("get user info");
   try {
     const response = await fetch(`${ENV.apiUrl}/api/users?id=${id}`, {
       method: "GET",
@@ -45,12 +45,8 @@ export default async function WelcomePage() {
 
   if (userInfo) {
     if (userInfo.user.nickname) {
-      nickname = `${userInfo.user.nickname}님, `;
-    } else {
-      nickname = "";
+      nickname = userInfo.user.nickname;
     }
-  } else {
-    return;
   }
 
   return (
@@ -62,7 +58,7 @@ export default async function WelcomePage() {
           </div>
           <div className="mb-12 mt-8 inline-block h-7">
             <Heading variant="subtitle1" className="font-bold">
-              {nickname}환영합니다!
+              {nickname}님, 환영합니다!
               <FireWorks />
             </Heading>
           </div>
@@ -73,9 +69,11 @@ export default async function WelcomePage() {
               <Text>이제 나만의 페이지를 만들러 가볼까요?</Text>
             </span>
           </div>
-          <Button variant="primary" size="large" className="h-14 rounded-lg">
-            <Link href="/links">시작하기</Link>
-          </Button>
+          <Link href="/links" className="flex flex-col">
+            <Button variant="primary" size="large" className="h-14 rounded-lg">
+              시작하기
+            </Button>
+          </Link>
         </div>
       </main>
     </>

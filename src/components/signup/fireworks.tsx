@@ -5,6 +5,7 @@ import confetti from "canvas-confetti";
 /**동적 페이지 설정 */
 export const dynamic = "force-dynamic";
 
+/**색종이 날림 효과 애니메이션 */
 export function FireWorks() {
   const duration = 15 * 1000;
   const animationEnd = Date.now() + duration;

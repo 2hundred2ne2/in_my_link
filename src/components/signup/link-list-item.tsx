@@ -1,10 +1,30 @@
 import Image from "next/image";
+import { ChangeEvent } from "react";
 
 import { Trash } from "@phosphor-icons/react/dist/ssr";
 
+import { LinkType } from "@/types/link";
+
 import { Card } from "../ui/card";
 
-export function LinkListItem({ id, type, url, onDelete, onChangeUrl }: any) {
+interface LinkListItemProps {
+  /** 링크 id */
+  id: number;
+
+  /** 링크 타입 */
+  type?: LinkType;
+
+  /** 링크 URL */
+  url?: string;
+
+  /**삭제 버튼이 클릭 될 때 호출되는 콜백 함수 */
+  onDelete: (id: number) => void;
+
+  /**URL이 변경될 때 호출되는 콜백 함수 */
+  onChangeUrl: (id: number, e: ChangeEvent<HTMLInputElement>) => void;
+}
+
+export function LinkListItem({ id, type, url, onDelete, onChangeUrl }: LinkListItemProps) {
   const handleDelete = () => {
     onDelete(id);
   };
