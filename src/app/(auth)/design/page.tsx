@@ -5,6 +5,7 @@ import { useState } from "react";
 import { SignOut } from "@phosphor-icons/react/dist/ssr";
 
 import { Logo } from "@/components/logo";
+import { SignOutButton } from "@/components/signout-button";
 import {
   AppHeader,
   AppHeaderLeft,
@@ -31,10 +32,7 @@ export default function DesignPage() {
           <Logo className="text-xl" />
         </AppHeaderCenter>
         <AppHeaderRight>
-          <button type="button" className="-mr-2 inline-flex h-7 w-7 items-center justify-center">
-            <SignOut size={20} />
-            <span className="sr-only">로그아웃</span>
-          </button>
+          <SignOutButton />
         </AppHeaderRight>
       </AppHeader>
 
