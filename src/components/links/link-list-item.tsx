@@ -5,7 +5,14 @@ import { useState } from "react";
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { CaretDown, CaretUp, DotsSixVertical, PencilSimple, Trash } from "@phosphor-icons/react";
+import {
+  ArrowSquareOut,
+  CaretDown,
+  CaretUp,
+  DotsSixVertical,
+  PencilSimple,
+  Trash,
+} from "@phosphor-icons/react";
 import toast from "react-hot-toast";
 
 import { ENV } from "@/constants/env";
@@ -346,6 +353,12 @@ export function LinkListItem({
 
       {/* footer */}
       <div className="flex justify-end py-3 pr-3">
+        <a target="_blank" rel="noopener noreferrer" href={url}>
+          <Button type="button" variant="text" className="min-h-7 min-w-7 rounded-full p-0">
+            <span className="sr-only">링크 바로가기</span>
+            <ArrowSquareOut size={16} />
+          </Button>
+        </a>
         <Button
           type="button"
           variant="text"
