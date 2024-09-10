@@ -227,6 +227,11 @@ export function LinkListItem({
     return username.trim() !== "" ? username : type;
   })();
 
+  // 이미지가 있고 커스텀 로고가 아닌 경우에만 표시
+  const hasImage = Boolean(image);
+  const isCustomLogo = image?.includes("custom-logo");
+  const shouldShowDeleteImageButton = hasImage && !isCustomLogo;
+
   if (!isEdit) {
     return (
       <Card
@@ -295,14 +300,17 @@ export function LinkListItem({
             />
           </button>
           {/* 이미지 삭제 버튼 */}
-          <button
-            type="button"
-            className="absolute -bottom-1 -right-1 inline-flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-danger text-foreground-inverted"
-            onClick={() => onClickDeleteImage(id)}
-          >
-            <span className="sr-only">이미지 삭제</span>
-            <Trash size={14} />
-          </button>
+
+          {shouldShowDeleteImageButton && (
+            <button
+              type="button"
+              className="absolute -bottom-1 -right-1 inline-flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-danger text-foreground-inverted"
+              onClick={() => onClickDeleteImage(id)}
+            >
+              <span className="sr-only">이미지 삭제</span>
+              <Trash size={14} />
+            </button>
+          )}
         </div>
 
         <EditableText
