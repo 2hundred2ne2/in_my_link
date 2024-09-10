@@ -75,7 +75,7 @@ export function LayoutConfigEditor() {
               <button
                 type="button"
                 className={`block h-32 w-full rounded-xl bg-background-muted/90 md:h-36 ${
-                  layout === 1 ? "ring-2 ring-indigo-500" : ""
+                  layout === 1 ? "ring-2 ring-black" : ""
                 }`}
                 onClick={() => handleLayoutChange(1)}
               >
@@ -92,7 +92,7 @@ export function LayoutConfigEditor() {
               <button
                 type="button"
                 className={`block h-32 w-full rounded-xl bg-background-muted/90 md:h-36 ${
-                  layout === 2 ? "ring-2 ring-indigo-500" : ""
+                  layout === 2 ? "ring-2 ring-black" : ""
                 }`}
                 onClick={() => handleLayoutChange(2)}
               >
@@ -109,7 +109,7 @@ export function LayoutConfigEditor() {
               <button
                 type="button"
                 className={`block h-32 w-full rounded-xl bg-background-muted/90 md:h-36 ${
-                  layout === 3 ? "ring-2 ring-indigo-500" : ""
+                  layout === 3 ? "ring-2 ring-black" : ""
                 }`}
                 onClick={() => handleLayoutChange(3)}
               >
@@ -126,7 +126,7 @@ export function LayoutConfigEditor() {
               <button
                 type="button"
                 className={`block h-32 w-full rounded-xl bg-background-muted/90 md:h-36 ${
-                  layout === 4 ? "ring-2 ring-indigo-500" : ""
+                  layout === 4 ? "ring-2 ring-black" : ""
                 }`}
                 onClick={() => handleLayoutChange(4)}
               >
