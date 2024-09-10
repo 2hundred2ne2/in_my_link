@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import { Input } from "@/components/input";
 import { Logo } from "@/components/logo";
@@ -12,11 +12,28 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
+  const emailInputRef = useRef<HTMLInputElement>(null);
+
   const handleLogin = async (event: any) => {
-    event.preventDefault();
-    setError(""); // 이전 오류 메시지 초기화
+    event.preventDefault(); // 기본 동작 방지
+
+    setError("");
+
+    if (email === "") {
+      setError("이메일을 입력해 주세요");
+      emailInputRef.current?.focus();
+      return;
+    }
+
+    if (password === "") {
+      setError("비밀번호를 입력해 주세요");
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
       const response = await fetch("/api/login", {
@@ -30,7 +47,7 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
-        //jwt 토큰 저장
+        // JWT 토큰 저장
         sessionStorage.setItem("jwt", data.token);
         router.push("/links");
       } else {
@@ -39,6 +56,8 @@ export default function LoginPage() {
     } catch (error) {
       console.error("로그인 오류:", error);
       setError("로그인 중 문제가 발생했습니다. 다시 시도해주세요.");
+    } finally {
+      setIsLoading(false); // 로딩 상태 종료
     }
   };
 
@@ -64,7 +83,7 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <Button type="submit" className="mt-2 w-full" size="large">
+            <Button type="submit" className="mt-2 w-full" size="large" loading={isLoading}>
               로그인
             </Button>
           </div>
