@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 
+import jwt from "jsonwebtoken";
 import { RowDataPacket, ResultSetHeader } from "mysql2/promise";
 
+import { ENV } from "@/constants/env";
 import { db } from "@/lib/db";
 import { User } from "@/types/user";
 
@@ -40,10 +42,65 @@ export async function GET(req: Request) {
 
 // 사용자 정보 부분 업데이트 API
 export async function PATCH(req: Request) {
-  const { id, ...fieldsToUpdate } = await req.json();
+  // Authorization 헤더에서 JWT 토큰 추출
+  const authHeader = req.headers.get("authorization");
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return NextResponse.json({ message: "인증 토큰이 없거나 잘못된 형식입니다." }, { status: 401 });
+  }
 
-  if (!id) {
-    return NextResponse.json({ message: "사용자 ID를 제공해 주세요" }, { status: 400 });
+  const token = authHeader.split(" ")[1];
+
+  interface DecodedToken {
+    email?: string;
+    userId?: number;
+    domain?: string;
+  }
+
+  const secret = ENV.jwtSecret;
+  if (!secret) {
+    throw new Error("JWT secret is not defined");
+  }
+
+  let email: string | undefined;
+  let userId: number | undefined;
+  let domain: string | undefined;
+
+  try {
+    const decodedToken = jwt.verify(token, secret) as DecodedToken;
+    if (decodedToken.email && decodedToken.userId) {
+      // 여기서 id 대신 userId 확인
+      email = decodedToken.email;
+      userId = decodedToken.userId;
+      domain = decodedToken.domain;
+    } else {
+      return NextResponse.json({ message: "유효하지 않은 토큰 구조입니다." }, { status: 401 });
+    }
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      console.error("Token verification failed: TokenExpiredError:", error);
+      return NextResponse.json(
+        { message: "토큰이 만료되었습니다. 다시 로그인 해주세요." },
+        { status: 401 },
+      );
+    } else {
+      console.error("Token verification failed:", error);
+      return NextResponse.json({ message: "유효하지 않은 토큰입니다." }, { status: 401 });
+    }
+  }
+
+  if (!email || !userId) {
+    return NextResponse.json(
+      { message: "사용자 이메일 또는 ID를 확인할 수 없습니다." },
+      { status: 400 },
+    );
+  }
+
+  let fieldsToUpdate;
+  try {
+    const body = await req.json();
+    fieldsToUpdate = { ...body };
+  } catch (error) {
+    return NextResponse.json({ message: "잘못된 요청 형식입니다." }, { status: 400 });
   }
 
   if (Object.keys(fieldsToUpdate).length === 0) {
@@ -58,7 +115,8 @@ export async function PATCH(req: Request) {
 
     // 필드 값 배열에 추가
     const values = Object.values(fieldsToUpdate);
-    values.push(id); // ID는 WHERE 절에서 사용
+    console.log(values);
+    values.push(userId); //
 
     // 사용자 정보 업데이트 쿼리
     const updateQuery = `UPDATE user SET ${setClause} WHERE id = ?`;

@@ -9,9 +9,9 @@ import { User } from "@/types/user";
 export async function POST(req: Request) {
   const { email, password, domain } = await req.json();
 
-  if (!email || !password || !domain) {
-    return NextResponse.json({ message: "올바른 정보를 입력해 주세요" }, { status: 400 });
-  }
+  // if (!email || !password || !domain) {
+  //   return NextResponse.json({ message: "올바른 정보를 입력해 주세요" }, { status: 400 });
+  // }
 
   const connection = await db.getConnection(); // 트랜잭션을 시작하기 위해 커넥션 가져오기
 
