@@ -1,42 +1,20 @@
-"use client";
+"use client"; // 클라이언트 측에서 동작하도록 설정
 
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
-import { Input } from "@/components/input";
-import { Logo } from "@/components/logo";
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
+export default function HomePage() {
+  const router = useRouter();
 
-export default function LoginPage() {
-  return (
-    <main className="flex flex-1 items-center justify-center px-3 py-8 md:px-8">
-      <div className="w-full max-w-xs">
-        <Logo className="mb-5" />
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-        <form>
-          <div>
-            <Input type="email" placeholder="이메일" className="w-full" onChange={(e) => ""} />
-            <Input type="password" placeholder="비밀번호" className="w-full" onChange={(e) => ""} />
-          </div>
-          <div>
-            <Button type="submit" className="mt-2 w-full" size="large">
-              로그인
-            </Button>
-          </div>
-        </form>
+    if (!token) {
+      router.push("/login");
+    } else {
+      router.push("/links");
+    }
+  }, [router]);
 
-        <div className="mt-8 text-center">
-          <p className="text-foreground">
-            <Text as="span">처음이신가요?</Text>
-
-            <Link href="/signup" className="ml-3 text-accent">
-              <Text as="span" className="hover:underline">
-                가입하기
-              </Text>
-            </Link>
-          </p>
-        </div>
-      </div>
-    </main>
-  );
+  return <div>Loading...</div>;
 }

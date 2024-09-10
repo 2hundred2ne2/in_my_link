@@ -5,4 +5,10 @@ export const ENV = {
   dbUser: process.env.DB_USER,
   dbPassword: process.env.DB_PASSWORD,
   dbName: process.env.DB_NAME,
+
+  //이메일 인증 보내는 메일주소
+  emailUser: process.env.EMAIL_USER,
+  emailPass: process.env.EMAIL_PASS,
+  //로그인 보안 토큰
+  jwtSecret: process.env.JWT_SECRET || "default-jwt-secret",
 } as const;
