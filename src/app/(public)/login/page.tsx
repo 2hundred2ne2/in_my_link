@@ -11,10 +11,13 @@ import { Text } from "@/components/ui/text";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleLogin = async (event: any) => {
     event.preventDefault();
+    setError(""); // 이전 오류 메시지 초기화
+
     try {
       const response = await fetch("/api/login", {
         method: "POST",
@@ -23,17 +26,19 @@ export default function LoginPage() {
         },
         body: JSON.stringify({ email, password }),
       });
+
       const data = await response.json();
 
       if (response.ok) {
-        console.log(response);
+        //jwt 토큰 저장
         sessionStorage.setItem("jwt", data.token);
-
         router.push("/links");
+      } else {
+        setError(data.message || "로그인에 실패했습니다. 이메일 또는 비밀번호를 확인해주세요.");
       }
     } catch (error) {
       console.error("로그인 오류:", error);
-      alert("로그인 중 문제가 발생했습니다.");
+      setError("로그인 중 문제가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -48,14 +53,14 @@ export default function LoginPage() {
               placeholder="이메일"
               className="w-full"
               value={email}
-              onChange={(e) => setEmail(e.target.value)} // 이메일 상태 업데이트
+              onChange={(e) => setEmail(e.target.value)}
             />
             <Input
               type="password"
               placeholder="비밀번호"
               className="w-full"
               value={password}
-              onChange={(e) => setPassword(e.target.value)} // 비밀번호 상태 업데이트
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <div>
@@ -64,6 +69,12 @@ export default function LoginPage() {
             </Button>
           </div>
         </form>
+
+        {error && (
+          <div className="mt-4 text-center text-red-500">
+            <Text as="p">{error}</Text>
+          </div>
+        )}
 
         <div className="mt-8 text-center">
           <p className="text-foreground">
