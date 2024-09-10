@@ -5,36 +5,46 @@ import { useState } from "react";
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { CaretDown, CaretUp, DotsSixVertical, PencilSimple, Trash } from "@phosphor-icons/react";
+import {
+  ArrowSquareOut,
+  CaretDown,
+  CaretUp,
+  DotsSixVertical,
+  PencilSimple,
+  Trash,
+} from "@phosphor-icons/react";
 import toast from "react-hot-toast";
 
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { EditableText } from "@/components/ui/editable-text";
+import { Text } from "@/components/ui/text";
 import { ENV } from "@/constants/env";
 import { getSnsUrl } from "@/lib/utils";
-import { LinkType } from "@/types/link";
+import { Link } from "@/types/link";
 
-import { Button } from "../ui/button";
-import { Card } from "../ui/card";
-import { EditableText } from "../ui/editable-text";
-import { Text } from "../ui/text";
+import { CustomLinkEditor } from "./custom-link-editor";
+import { LinkImage } from "./link-image";
+import { SocialLinkEditor } from "./social-link-editor";
 
 interface LinkListItemProps {
   /** 링크 id */
-  id: number;
+  id: Link["id"];
 
   /** 링크 제목 */
-  title?: string;
+  title?: Link["title"];
 
   /** 링크 URL */
-  url: string;
+  url: Link["url"];
 
   /** 링크 이미지 */
-  image?: string;
+  image?: Link["image"];
+
+  /** 링크 타입 */
+  type: Link["type"];
 
   /** 편집 모드 여부 */
   isEdit: boolean;
-
-  /** 링크 타입 */
-  type: LinkType;
 
   /** 편집 모드로 전환될 때 호출되는 콜백 함수 */
   onEditStart: (id: number) => void;
@@ -105,7 +115,7 @@ export function LinkListItem({
      */
     transition,
   } = useSortable({
-    id: id,
+    id,
   });
 
   const style = {
@@ -152,56 +162,6 @@ export function LinkListItem({
     } catch (error) {
       console.error("제목 수정 중 오류 발생:", error);
       toast("제목 수정에 실패했어요. 잠시후에 다시 시도해주세요");
-    }
-  };
-
-  const handleChnageUrl = async (value: string) => {
-    const newUrl = value.trim();
-
-    if (newUrl.length === 0) {
-      setErrorMessage({ ...errorMessage, url: "URL을 입력해주세요" });
-      onChangeUrl(id, value);
-      return;
-    }
-
-    if (newUrl.length > 254) {
-      setErrorMessage({ ...errorMessage, url: "입력가능한 길이를 초과했어요" });
-      onChangeUrl(id, value);
-      return;
-    }
-
-    const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
-
-    if (!urlPattern.test(newUrl)) {
-      setErrorMessage({ ...errorMessage, url: "올바른 URL 형식을 입력해주세요" });
-      onChangeUrl(id, value);
-      return;
-    }
-
-    setErrorMessage({ ...errorMessage, url: "" });
-    onChangeUrl(id, newUrl);
-
-    try {
-      const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id,
-          title,
-          image,
-          userId: 1, //FIXME: 인증된 회원 아이디
-          url: newUrl,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("URL 수정에 실패했습니다");
-      }
-    } catch (error) {
-      console.error("링크 수정 중 오류 발생:", error);
-      toast("URL 수정에 실패했어요. 잠시후에 다시 시도해주세요");
     }
   };
 
@@ -256,8 +216,10 @@ export function LinkListItem({
           </div>
         </div>
 
-        <div className="flex min-h-16 w-full items-center justify-center px-3 py-4">
-          <Text className="w-full text-center font-medium">{displayTitle}</Text>
+        <div className="flex min-h-16 w-full items-center justify-center px-20 py-4">
+          <Text as="p" className="overflow-hidden break-words text-center text-sm font-medium">
+            {displayTitle}
+          </Text>
         </div>
 
         <div className="absolute right-3 top-1/2 flex h-full -translate-y-1/2 items-center">
@@ -284,26 +246,7 @@ export function LinkListItem({
     >
       {/* header */}
       <div className="flex items-center py-4 pl-6 pr-3">
-        <div className="relative flex items-center">
-          <button type="button">
-            <Image
-              src={image ?? "/images/custom-logo.png"}
-              alt={type}
-              width={256}
-              height={256}
-              className="inline-block h-8 min-w-8 max-w-8 rounded-xl"
-            />
-          </button>
-          {/* 이미지 삭제 버튼 */}
-          <button
-            type="button"
-            className="absolute -bottom-1 -right-1 inline-flex min-h-[18px] min-w-[18px] items-center justify-center rounded-full bg-danger text-foreground-inverted"
-            onClick={() => onClickDeleteImage(id)}
-          >
-            <span className="sr-only">이미지 삭제</span>
-            <Trash size={14} />
-          </button>
-        </div>
+        <LinkImage src={image} alt={type} onDeleteImage={() => onClickDeleteImage(id)} />
 
         <EditableText
           label="Title"
@@ -327,17 +270,34 @@ export function LinkListItem({
 
       {/* body */}
       <div className="pl-6 pr-3">
-        <EditableText
-          label="URL"
-          value={url}
-          rightIcon={<PencilSimple size={16} className="ml-2 flex-shrink-0" />}
-          errorMessage={errorMessage.url}
-          onChange={handleChnageUrl}
-        />
+        {type === "custom" ? (
+          <CustomLinkEditor
+            id={id}
+            url={url}
+            title={title}
+            image={image}
+            onChangeUrl={(url) => onChangeUrl(id, url)}
+          />
+        ) : (
+          <SocialLinkEditor
+            id={id}
+            type={type}
+            url={url}
+            title={title}
+            image={image}
+            onChangeUrl={(url) => onChangeUrl(id, url)}
+          />
+        )}
       </div>
 
       {/* footer */}
       <div className="flex justify-end py-3 pr-3">
+        <a target="_blank" rel="noopener noreferrer" href={url}>
+          <Button type="button" variant="text" className="min-h-7 min-w-7 rounded-full p-0">
+            <span className="sr-only">링크 바로가기</span>
+            <ArrowSquareOut size={16} />
+          </Button>
+        </a>
         <Button
           type="button"
           variant="text"

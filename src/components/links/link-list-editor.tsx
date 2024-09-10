@@ -144,7 +144,6 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
             {
               type: newLink.type,
               title: newLink.title,
-              image: newLink.image,
               url: newLink.url,
             },
           ],
