@@ -19,7 +19,7 @@ async function getLinks(domain: string): Promise<Link[]> {
   return res.json();
 }
 
-export function LayoutAComponent({ links }: { links: Link[] }) {
+export function LayoutBgColslist({ links }: { links: Link[] }) {
   return (
     <div className="gap-2 pt-6">
       {links.map((link) => (
@@ -45,7 +45,7 @@ export function LayoutAComponent({ links }: { links: Link[] }) {
   );
 }
 
-export function LayoutBComponent({ links }: { links: Link[] }) {
+export function LayoutGridList({ links }: { links: Link[] }) {
   return (
     <div className="grid grid-cols-2 gap-2 pt-6">
       {links.map((link) => (
@@ -71,7 +71,7 @@ export function LayoutBComponent({ links }: { links: Link[] }) {
   );
 }
 
-export function LayoutCComponent({ links }: { links: Link[] }) {
+export function LayoutOnlyLogoList({ links }: { links: Link[] }) {
   return (
     <div className="grid grid-cols-4 gap-4">
       {links.map((link) => (
@@ -83,7 +83,7 @@ export function LayoutCComponent({ links }: { links: Link[] }) {
           className="flex justify-center rounded-lg pt-6"
         >
           <Card variant="default" className="rounded-xl border-none">
-            <img src={link.image} alt={link.title} className="h-12 w-12 rounded-md" />
+            <img src={link.image} alt={link.title} className="h-16 w-16 rounded-md" />
           </Card>
         </a>
       ))}
@@ -91,7 +91,7 @@ export function LayoutCComponent({ links }: { links: Link[] }) {
   );
 }
 
-export function LayoutDComponent({ links }: { links: Link[] }) {
+export function LayoutColslist({ links }: { links: Link[] }) {
   return (
     <div className="gap-2 pt-6">
       {links.map((link) => (
@@ -159,16 +159,16 @@ export function LinkLayout() {
 
   const renderLayoutComponent = () => {
     if (layout === 1) {
-      return <LayoutAComponent links={links} />;
+      return <LayoutBgColslist links={links} />;
     }
     if (layout === 2) {
-      return <LayoutBComponent links={links} />;
+      return <LayoutGridList links={links} />;
     }
     if (layout === 3) {
-      return <LayoutCComponent links={links} />;
+      return <LayoutOnlyLogoList links={links} />;
     }
     if (layout === 4) {
-      return <LayoutDComponent links={links} />;
+      return <LayoutColslist links={links} />;
     }
     return <div>레이아웃을 선택해 주세요</div>;
   };
