@@ -35,7 +35,7 @@ export function LayoutBgColslist({ links }: { links: Link[] }) {
             className="flex h-20 w-80 flex-row items-center justify-normal gap-8 overflow-hidden text-ellipsis whitespace-nowrap rounded-xl pl-4"
           >
             <img src={link.image} alt={link.title} className="h-12 w-12 rounded-md" />
-            <p className="mt-2 overflow-hidden text-ellipsis whitespace-nowrap text-center">
+            <p className="overflow-hidden text-ellipsis whitespace-nowrap text-center">
               {getDisplayTitle(link.title, link.url, link.type)}
             </p>
           </Card>
@@ -61,7 +61,7 @@ export function LayoutGridList({ links }: { links: Link[] }) {
             className="flex h-24 w-52 flex-row items-center justify-normal gap-6 break-all rounded-xl pl-4 pr-4"
           >
             <img src={link.image} alt={link.title} className="h-12 w-12 rounded-md" />
-            <p className="mt-2 overflow-hidden text-ellipsis whitespace-nowrap text-center">
+            <p className="overflow-hidden text-ellipsis whitespace-nowrap text-center">
               {getDisplayTitle(link.title, link.url, link.type)}
             </p>
           </Card>
@@ -104,7 +104,7 @@ export function LayoutColslist({ links }: { links: Link[] }) {
         >
           <div className="flex h-20 w-80 flex-row items-center justify-normal gap-8 rounded-xl bg-none pl-4">
             <img src={link.image} alt={link.title} className="h-12 w-12 rounded-md" />
-            <p className="mt-2 overflow-hidden text-ellipsis whitespace-nowrap text-center">
+            <p className="overflow-hidden text-ellipsis whitespace-nowrap text-center">
               {getDisplayTitle(link.title, link.url, link.type)}
             </p>
           </div>
