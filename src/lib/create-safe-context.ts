@@ -10,17 +10,17 @@ import { createContext, useContext } from "react";
  * const [useSome, SomeContextProvider] = createSafeContext<SomeContextType>();
  */
 export function createSafeContext<T>(init?: T) {
-  const context = createContext(init);
+  const Context = createContext(init);
 
   const useSafeContext = () => {
-    const ctx = useContext(context);
+    const value = useContext(Context);
 
-    if (!ctx) {
+    if (!value) {
       throw new Error("useSafeContext must be used within a Provider");
     }
 
-    return ctx;
+    return value;
   };
 
-  return [useSafeContext, context.Provider] as const;
+  return [useSafeContext, Context.Provider] as const;
 }
