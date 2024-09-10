@@ -154,7 +154,11 @@ export default function ProfilePage() {
               placeholder="닉네임"
               className="w-full"
               value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
+              onChange={(e) => {
+                if (e.target.value.length <= 20) {
+                  setNickname(e.target.value);
+                }
+              }}
             />
             <Text variant="body2" className="mr-1 mt-1 self-end text-foreground-muted">
               {nickname.length}/20
@@ -167,7 +171,11 @@ export default function ProfilePage() {
               resize="none"
               className="min-h-32"
               value={intro}
-              onChange={(e) => setIntro(e.target.value)}
+              onChange={(e) => {
+                if (e.target.value.length <= 150) {
+                  setIntro(e.target.value);
+                }
+              }}
             />
             <Text variant="body2" className="mr-1 mt-1 self-end text-foreground-muted">
               {intro.length}/150
