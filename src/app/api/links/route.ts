@@ -35,7 +35,7 @@ export async function POST(request: Request) {
         userId,
         link.type,
         link.title,
-        link.image,
+        `/images/${link.type}-logo.png`,
         link.url,
         order++,
         new Date(),
@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
       [users[0].id],
     );
 
-    return NextResponse.json(links, { status: 201 });
+    return NextResponse.json(links, { status: 200 });
   } catch (error) {
     console.error("[GET] /api/links: \n", error);
     return NextResponse.json({ message: " Internal Server Error" }, { status: 500 });
