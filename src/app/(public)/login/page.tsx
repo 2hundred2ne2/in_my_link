@@ -1,100 +1,18 @@
-"use client";
+import { Metadata } from "next";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useState, useRef } from "react";
 
-import { Input } from "@/components/input";
+import LoginForm from "@/components/login/login-form";
 import { Logo } from "@/components/logo";
-import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
-
+export const metadata: Metadata = {
+  title: "로그인",
+};
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
-
-  const emailInputRef = useRef<HTMLInputElement>(null);
-
-  const handleLogin = async (event: any) => {
-    event.preventDefault(); // 기본 동작 방지
-
-    setError("");
-
-    if (email === "") {
-      setError("이메일을 입력해 주세요");
-      emailInputRef.current?.focus();
-      return;
-    }
-
-    if (password === "") {
-      setError("비밀번호를 입력해 주세요");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const response = await fetch("/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        // JWT 토큰 저장
-        sessionStorage.setItem("jwt", data.token);
-        router.push("/links");
-      } else {
-        setError(data.message || "로그인에 실패했습니다. 이메일 또는 비밀번호를 확인해주세요.");
-      }
-    } catch (error) {
-      console.error("로그인 오류:", error);
-      setError("로그인 중 문제가 발생했습니다. 다시 시도해주세요.");
-    } finally {
-      setIsLoading(false); // 로딩 상태 종료
-    }
-  };
-
   return (
     <main className="flex flex-1 items-center justify-center px-3 py-8 md:px-8">
       <div className="w-full max-w-xs">
         <Logo className="mb-5" />
-        <form onSubmit={handleLogin}>
-          <div>
-            <Input
-              type="email"
-              placeholder="이메일"
-              className="w-full"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <Input
-              type="password"
-              placeholder="비밀번호"
-              className="w-full"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <div>
-            <Button type="submit" className="mt-2 w-full" size="large" loading={isLoading}>
-              로그인
-            </Button>
-          </div>
-        </form>
-
-        {error && (
-          <div className="mt-4 text-center text-red-500">
-            <Text as="p">{error}</Text>
-          </div>
-        )}
-
+        <LoginForm />
         <div className="mt-8 text-center">
           <p className="text-foreground">
             <Text as="span">처음이신가요?</Text>
