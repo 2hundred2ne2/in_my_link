@@ -26,6 +26,9 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (response.ok) {
+        console.log(response);
+        sessionStorage.setItem("jwt", data.token);
+
         router.push("/links");
       }
     } catch (error) {
@@ -38,20 +41,19 @@ export default function LoginPage() {
     <main className="flex flex-1 items-center justify-center px-3 py-8 md:px-8">
       <div className="w-full max-w-xs">
         <Logo className="mb-5" />
-
         <form onSubmit={handleLogin}>
           <div>
             <Input
               type="email"
               placeholder="이메일"
-              className="mb-4 w-full" // marginBottom을 추가하여 입력 필드 간 간격을 조정
+              className="w-full"
               value={email}
               onChange={(e) => setEmail(e.target.value)} // 이메일 상태 업데이트
             />
             <Input
               type="password"
               placeholder="비밀번호"
-              className="mb-4 w-full" // 마찬가지로 marginBottom 추가
+              className="w-full"
               value={password}
               onChange={(e) => setPassword(e.target.value)} // 비밀번호 상태 업데이트
             />
