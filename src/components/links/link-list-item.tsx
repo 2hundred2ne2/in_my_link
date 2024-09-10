@@ -1,9 +1,14 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { CaretDown, CaretUp, DotsSixVertical, PencilSimple, Trash } from "@phosphor-icons/react";
+import toast from "react-hot-toast";
 
+import { ENV } from "@/constants/env";
 import { getSnsUrl } from "@/lib/utils";
 import { LinkType } from "@/types/link";
 
@@ -64,6 +69,11 @@ export function LinkListItem({
   onClickDeleteImage,
   onClickDelete,
 }: LinkListItemProps) {
+  const [errorMessage, setErrorMessage] = useState({
+    title: "",
+    url: "",
+  });
+
   const {
     /**
      * role, tabIndex="0", aria-roledescription 등 드래그 요소에 적용할 속성들
@@ -109,6 +119,92 @@ export function LinkListItem({
     transition,
   };
 
+  const handleChangeTitle = async (value: string) => {
+    const newTitle = value.trim();
+
+    if (newTitle.length > 99) {
+      setErrorMessage({ ...errorMessage, title: "제목은 100자 이하로 입력해주세요" });
+      onChangeTitle(id, newTitle);
+      return;
+    }
+
+    setErrorMessage({ ...errorMessage, title: "" });
+    onChangeTitle(id, newTitle);
+
+    try {
+      const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id,
+          url,
+          image,
+          userId: 1, //FIXME: 인증된 회원 아이디
+          title: newTitle,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("제목 수정에 실패했습니다");
+      }
+    } catch (error) {
+      console.error("제목 수정 중 오류 발생:", error);
+      toast("제목 수정에 실패했어요. 잠시후에 다시 시도해주세요");
+    }
+  };
+
+  const handleChnageUrl = async (value: string) => {
+    const newUrl = value.trim();
+
+    if (newUrl.length === 0) {
+      setErrorMessage({ ...errorMessage, url: "URL을 입력해주세요" });
+      onChangeUrl(id, value);
+      return;
+    }
+
+    if (newUrl.length > 254) {
+      setErrorMessage({ ...errorMessage, url: "입력가능한 길이를 초과했어요" });
+      onChangeUrl(id, value);
+      return;
+    }
+
+    const urlPattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+
+    if (!urlPattern.test(newUrl)) {
+      setErrorMessage({ ...errorMessage, url: "올바른 URL 형식을 입력해주세요" });
+      onChangeUrl(id, value);
+      return;
+    }
+
+    setErrorMessage({ ...errorMessage, url: "" });
+    onChangeUrl(id, newUrl);
+
+    try {
+      const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id,
+          title,
+          image,
+          userId: 1, //FIXME: 인증된 회원 아이디
+          url: newUrl,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("URL 수정에 실패했습니다");
+      }
+    } catch (error) {
+      console.error("링크 수정 중 오류 발생:", error);
+      toast("URL 수정에 실패했어요. 잠시후에 다시 시도해주세요");
+    }
+  };
+
   /**
    * 1. title이 존재하고 비어있지 않으면 title을 사용
    * 2. title이 없거나 비어있을 때:
@@ -125,7 +221,6 @@ export function LinkListItem({
     if (type === "custom") {
       return url;
     }
-
     // 2.b
     const username = url.replace(getSnsUrl(type), "");
 
@@ -214,8 +309,9 @@ export function LinkListItem({
           label="Title"
           value={title}
           rightIcon={<PencilSimple size={16} className="ml-2 flex-shrink-0" />}
+          errorMessage={errorMessage.title}
           className="font-medium"
-          onChange={(value) => onChangeTitle(id, value)}
+          onChange={handleChangeTitle}
         />
 
         <Button
@@ -235,7 +331,8 @@ export function LinkListItem({
           label="URL"
           value={url}
           rightIcon={<PencilSimple size={16} className="ml-2 flex-shrink-0" />}
-          onChange={(value) => onChangeUrl(id, value)}
+          errorMessage={errorMessage.url}
+          onChange={handleChnageUrl}
         />
       </div>
 

@@ -1,3 +1,5 @@
+import { Metadata } from "next";
+
 import { Camera } from "@phosphor-icons/react/dist/ssr";
 
 import { Input } from "@/components/input";
@@ -10,6 +12,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { TextArea } from "@/components/ui/textarea";
+
+export const metadata: Metadata = {
+  title: "내 프로필",
+};
 
 export default function ProfilePage() {
   return (

@@ -1,10 +1,54 @@
+import { Metadata } from "next";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
 import { Heading } from "@/components/ui/heading";
 import { Text } from "@/components/ui/text";
+import { ENV } from "@/constants/env";
 
-export default function WelcomePage() {
+export const metadata: Metadata = {
+  title: "회원가입",
+};
+
+/**document가 생성될 때까지 기다렸다가 컴포넌트 실행 */
+const FireWorks = dynamic<any>(
+  () => import("@/components/signup/fireworks").then((module) => module.FireWorks),
+  { ssr: false },
+);
+
+/**GET API: 유저테이블에서 회원가입 한 유저 정보 불러오기 */
+async function getUser(id: number) {
+  try {
+    const response = await fetch(`${ENV.apiUrl}/api/users?id=${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error("유저 정보를 불러오는데 실패했어요");
+    }
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export default async function WelcomePage() {
+  const TEMP_USER_ID = 1;
+  const userInfo = await getUser(TEMP_USER_ID);
+  let nickname = "";
+
+  if (userInfo) {
+    if (userInfo.user.nickname) {
+      nickname = userInfo.user.nickname;
+    }
+  }
+
   return (
     <>
       <main className="min-h-dvh pb-[68px] pt-16">
@@ -14,7 +58,8 @@ export default function WelcomePage() {
           </div>
           <div className="mb-12 mt-8 inline-block h-7">
             <Heading variant="subtitle1" className="font-bold">
-              닉네임님, 환영합니다!
+              {nickname}님, 환영합니다!
+              <FireWorks />
             </Heading>
           </div>
         </div>
@@ -24,9 +69,11 @@ export default function WelcomePage() {
               <Text>이제 나만의 페이지를 만들러 가볼까요?</Text>
             </span>
           </div>
-          <Button variant="primary" size="large" className="h-14 rounded-lg">
-            <Link href="/links">시작하기</Link>
-          </Button>
+          <Link href="/links" className="flex flex-col">
+            <Button variant="primary" size="large" className="h-14 rounded-lg">
+              시작하기
+            </Button>
+          </Link>
         </div>
       </main>
     </>
