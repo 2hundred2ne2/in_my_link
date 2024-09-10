@@ -1,8 +1,6 @@
-import { randomBytes } from "crypto";
-
 import { S3Client } from "@aws-sdk/client-s3";
 import { createPresignedPost } from "@aws-sdk/s3-presigned-post";
-//import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from "uuid";
 
 import { ENV } from "@/constants/env";
 
@@ -12,8 +10,8 @@ export async function POST(request: Request) {
   const bucketName = ENV.awsBucketName as string;
 
   // uuid 함수 호출로 고유 파일명 생성
-  //const uniqueFilename = `${uuidv4()}`;
-  const uniqueFilename = randomBytes(16).toString("hex"); // 16바이트의 랜덤 값을 hex로 변환
+  const uniqueFilename = `${uuidv4()}`;
+
   try {
     const client = new S3Client({ region: ENV.awsRegion });
     const { url, fields } = await createPresignedPost(client, {
