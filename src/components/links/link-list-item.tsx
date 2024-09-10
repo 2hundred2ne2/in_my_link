@@ -268,8 +268,10 @@ export function LinkListItem({
           </div>
         </div>
 
-        <div className="flex min-h-16 w-full items-center justify-center px-3 py-4">
-          <Text className="w-full text-center font-medium">{displayTitle}</Text>
+        <div className="flex min-h-16 w-full items-center justify-center px-20 py-4">
+          <Text as="p" className="overflow-hidden break-words text-center text-sm font-medium">
+            {displayTitle}
+          </Text>
         </div>
 
         <div className="absolute right-3 top-1/2 flex h-full -translate-y-1/2 items-center">
