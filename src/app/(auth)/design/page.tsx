@@ -6,6 +6,7 @@ import { FontConfigEditor } from "@/components/design/font-config-editor";
 import { LayoutConfigEditor } from "@/components/design/layout-config-editor";
 import { SkinConfigEditor } from "@/components/design/skin-config-editor";
 import { Logo } from "@/components/logo";
+import { SignOutButton } from "@/components/signout-button";
 import {
   AppHeader,
   AppHeaderLeft,
@@ -27,10 +28,7 @@ export default function DesignPage() {
           <Logo className="text-xl" />
         </AppHeaderCenter>
         <AppHeaderRight>
-          <button type="button" className="-mr-2 inline-flex h-7 w-7 items-center justify-center">
-            <SignOut size={20} />
-            <span className="sr-only">로그아웃</span>
-          </button>
+          <SignOutButton />
         </AppHeaderRight>
       </AppHeader>
 
