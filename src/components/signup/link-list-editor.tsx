@@ -7,8 +7,8 @@ import { ChangeEvent, useState } from "react";
 import toast from "react-hot-toast";
 
 import { ENV } from "@/constants/env";
-import { getSnsUrl } from "@/lib/utils";
-import { LinkType } from "@/types/link";
+import { getSnsUrl, getSnsUrlPlus } from "@/lib/utils";
+import { LinkTypePlus } from "@/types/link";
 
 import { Button } from "../ui/button";
 
@@ -23,12 +23,12 @@ export interface AddLinkInputProps {
   url: string;
 
   /** 링크 type*/
-  type: LinkType;
+  type: LinkTypePlus;
 }
 
 export interface IconListType {
   /**아이콘 리스트 SNS type */
-  type: LinkType;
+  type: LinkTypePlus;
 
   /**아이콘 리스트 label */
   iconLabel: string;
@@ -48,6 +48,22 @@ const iconList: IconListType[] = [
   {
     type: "threads",
     iconLabel: "쓰레드",
+  },
+  {
+    type: "x",
+    iconLabel: "X(트위터)",
+  },
+  {
+    type: "tiktok",
+    iconLabel: "틱톡",
+  },
+  {
+    type: "naver",
+    iconLabel: "네이버블로그",
+  },
+  {
+    type: "github",
+    iconLabel: "깃허브",
   },
 ];
 
@@ -141,7 +157,7 @@ export function LinkListEditor() {
     }
   };
 
-  const handleAddLink = (type: LinkType) => {
+  const handleAddLink = (type: LinkTypePlus) => {
     const newLink = {
       id: Date.now(),
       url: "",
@@ -150,9 +166,9 @@ export function LinkListEditor() {
     setLinkInputs([...linkInputs, newLink]);
   };
 
-  const handleChangeUrl = (id: number, type: LinkType, e: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeUrl = (id: number, type: LinkTypePlus, e: ChangeEvent<HTMLInputElement>) => {
     const privateId = e.target.value.trim();
-    const wholeUrl = `${getSnsUrl(type)}${privateId}`;
+    const wholeUrl = `${getSnsUrlPlus(type)}${privateId}`;
 
     setLinkInputs((prev) =>
       prev.map((link) => (link.id === id ? { ...link, url: wholeUrl } : link)),
