@@ -76,7 +76,7 @@ export function SkinConfigEditor() {
                     <button
                       key={index}
                       type="button"
-                      className={`h-14 w-14 flex-shrink-0 rounded-full border transition-transform duration-100 active:scale-[0.96] ${color.bgColor === backgroundColor ? "border-black" : "border-transparent"} focus:outline-none ${color.bgColor}`}
+                      className={`h-14 w-14 flex-shrink-0 rounded-full border transition-transform duration-100 active:scale-[0.96] ${color.bgColor === backgroundColor ? "border-black" : color.bgColor === "bg-background" ? "border-gray-300" : "border-transparent"} focus:outline-none ${color.bgColor}`}
                       onClick={() => backgroundButtonClick(color.bgColor)}
                     >
                       <span className="sr-only">{color.label}</span>

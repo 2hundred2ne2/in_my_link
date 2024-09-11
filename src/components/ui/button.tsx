@@ -94,15 +94,19 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           buttonSizes[size],
           buttonRadii[radius],
           className,
-          isDisabled && "pointer-events-none opacity-50",
+          //isDisabled && "pointer-events-none opacity-50",
+          isDisabled && "pointer-events-none bg-zinc-900 text-white",
           "transition-transform duration-100 active:scale-[0.98]",
         )}
         disabled={isDisabled}
         aria-disabled={isDisabled}
         {...props}
       >
-        {loading && <span className="loader mr-2" />} {/* 로딩 아이콘 추가 */}
-        {children}
+        {loading ? (
+          <span className="loader mr-2 inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent"></span>
+        ) : (
+          children
+        )}
       </button>
     );
   },
