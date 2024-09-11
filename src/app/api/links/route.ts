@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { ResultSetHeader, RowDataPacket } from "mysql2";
 
+import { ENV } from "@/constants/env";
 import { db, trx } from "@/lib/db";
 import { Link } from "@/types/link";
 import { User } from "@/types/user";
@@ -16,8 +18,29 @@ interface MaxOrderResult extends RowDataPacket {
  * @see https://github.com/2hundred2ne2/in_my_link/issues/59
  */
 export async function POST(request: Request) {
+  const authHeader = request.headers.get("authorization");
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return NextResponse.json({ message: "인증 토큰이 없거나 잘못된 형식입니다." }, { status: 401 });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  let userId: number | null = null;
+
   try {
-    const userId = 1; // TODO: 권한 처리
+    const decodedToken = jwt.verify(token, ENV.jwtSecret) as { userId: number };
+    userId = decodedToken.userId;
+  } catch (error) {
+    if (error instanceof TokenExpiredError) {
+      return NextResponse.json(
+        { message: "토큰이 만료되었습니다. 다시 로그인 해주세요." },
+        { status: 401 },
+      );
+    }
+    return NextResponse.json({ message: "유효하지 않은 토큰입니다." }, { status: 401 });
+  }
+
+  try {
     const body = await request.json();
     const { links } = body;
 
