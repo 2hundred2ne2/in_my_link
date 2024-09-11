@@ -16,5 +16,5 @@ export default function HomePage() {
     }
   }, [router]);
 
-  return <div>Loading...</div>;
+  return <></>;
 }

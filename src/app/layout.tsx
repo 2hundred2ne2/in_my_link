@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { Toaster } from "react-hot-toast";
 
 import "./globals.css";
+import { UserProvider } from "@/context/user-context";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://tadak.io"),
@@ -22,7 +23,7 @@ export default function RootLayout({
     <html lang="ko">
       <body>
         <div className="relative mx-auto flex min-h-screen w-full max-w-sm flex-col overflow-x-hidden">
-          {children}
+          <UserProvider>{children}</UserProvider>
           {/* @see https://react-hot-toast.com/docs/toaster */}
           <Toaster
             toastOptions={{
