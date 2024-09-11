@@ -106,7 +106,7 @@ export function FontConfigEditor() {
               variant={fontType === "폰트 A" ? "primary" : "secondary"}
               onClick={() => handleFontTypeChange("폰트 A")}
             >
-              폰트 A
+              기본폰트
             </Button>
             <Button
               type="button"
@@ -114,7 +114,7 @@ export function FontConfigEditor() {
               onClick={() => handleFontTypeChange("폰트 B")}
               className={`flex items-center text-base ${JuaFont.className}`}
             >
-              폰트 B
+              Jua
             </Button>
             <Button
               type="button"
@@ -122,7 +122,7 @@ export function FontConfigEditor() {
               onClick={() => handleFontTypeChange("폰트 C")}
               className={`flex items-center text-sm ${OrbitFont.className}`}
             >
-              폰트 C
+              Orbit
             </Button>
           </div>
         </div>
