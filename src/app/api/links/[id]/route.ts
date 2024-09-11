@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 
+import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
+import { ENV } from "@/constants/env";
 import { db, trx } from "@/lib/db";
 import { Link } from "@/types/link";
 
@@ -11,13 +13,34 @@ interface LinkQueryResult extends RowDataPacket, Pick<Link, "id" | "userId" | "o
  * @see https://github.com/2hundred2ne2/in_my_link/issues/60
  */
 export async function PATCH(request: Request, { params }: { params: { id: string } }) {
+  const authHeader = request.headers.get("authorization");
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return NextResponse.json({ message: "인증 토큰이 없거나 잘못된 형식입니다." }, { status: 401 });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  let userId: number | null = null;
+
   try {
-    // TODO: 권한
+    const decodedToken = jwt.verify(token, ENV.jwtSecret) as { userId: number };
+    userId = decodedToken.userId;
+  } catch (error) {
+    if (error instanceof TokenExpiredError) {
+      return NextResponse.json(
+        { message: "토큰이 만료되었습니다. 다시 로그인 해주세요." },
+        { status: 401 },
+      );
+    }
+    return NextResponse.json({ message: "유효하지 않은 토큰입니다." }, { status: 401 });
+  }
+
+  try {
     const body = await request.json();
     console.debug("Requset Body: \n", body);
 
     const id = params.id;
-    const { userId, title, image, url } = body;
+    const { title, image, url } = body;
 
     const [links] = await db.query<LinkQueryResult[]>(
       "SELECT id, user_id userId, `order` FROM link WHERE id = ?",
@@ -54,9 +77,29 @@ export async function PATCH(request: Request, { params }: { params: { id: string
  * @see https://github.com/2hundred2ne2/in_my_link/issues/63
  */
 export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+  const authHeader = request.headers.get("authorization");
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return NextResponse.json({ message: "인증 토큰이 없거나 잘못된 형식입니다." }, { status: 401 });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  let userId: number | null = null;
+
   try {
-    // TODO: 권한
-    const TEMP_USER_ID = 1;
+    const decodedToken = jwt.verify(token, ENV.jwtSecret) as { userId: number };
+    userId = decodedToken.userId;
+  } catch (error) {
+    if (error instanceof TokenExpiredError) {
+      return NextResponse.json(
+        { message: "토큰이 만료되었습니다. 다시 로그인 해주세요." },
+        { status: 401 },
+      );
+    }
+    return NextResponse.json({ message: "유효하지 않은 토큰입니다." }, { status: 401 });
+  }
+
+  try {
     const id = params.id;
 
     const [links] = await db.query<LinkQueryResult[]>(
@@ -72,7 +115,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
       return NextResponse.json({ message: "링크가 존재하지 않습니다" }, { status: 404 });
     }
 
-    if (foundLink.userId !== TEMP_USER_ID) {
+    if (foundLink.userId !== userId) {
       console.error(`권한이 없습니다`);
       return NextResponse.json({ message: "권한이 없습니다" }, { status: 403 });
     }
@@ -83,7 +126,7 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
       // 삭제된 링크보다 높은 순서를 가진 링크들의 순서를 1씩 감소
       await connection.query(
         "UPDATE link SET `order` = `order` - 1 WHERE user_id = ? AND `order` > ?",
-        [TEMP_USER_ID, foundLink.order],
+        [userId, foundLink.order],
       );
     });
 

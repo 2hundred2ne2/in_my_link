@@ -53,12 +53,12 @@ export function SocialLinkEditor({
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${sessionStorage.getItem("jwt")}`,
         },
         body: JSON.stringify({
           id,
           title,
           image,
-          userId: 1, //FIXME: 인증된 회원 아이디
           url: newUrl,
         }),
       });
