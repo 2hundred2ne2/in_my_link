@@ -1,4 +1,4 @@
-"use client"; // 클라이언트 측에서 동작하도록 설정
+"use client";
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -7,12 +7,12 @@ export default function HomePage() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("jwt");
 
     if (!token) {
       router.push("/login");
     } else {
-      router.push("/links");
+      router.push("/profile");
     }
   }, [router]);
 
