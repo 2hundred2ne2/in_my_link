@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   DndContext,
@@ -22,15 +22,29 @@ import { Plus } from "@phosphor-icons/react";
 import toast from "react-hot-toast";
 
 import { ENV } from "@/constants/env";
+import { useUser } from "@/context/user-context";
 import { getSnsUrl } from "@/lib/utils";
 import { Link, LinkType } from "@/types/link";
 
 import { Button } from "../ui/button";
+import { Skeleton } from "../ui/skeleton";
 
 import { LinkAddModal } from "./link-add-modal";
 import { LinkDeleteModal } from "./link-delete-modal";
 import { LinkListItem } from "./link-list-item";
 import { LinkImageDeleteModal } from "./linke-image-delete-modal";
+
+async function getLinks(domain: string): Promise<Link[]> {
+  const res = await fetch(`${ENV.apiUrl}/api/links?domain=${domain}`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    throw new Error("링크를 불러오는데 실패했어요");
+  }
+
+  return res.json();
+}
 
 interface LinkItem extends Pick<Link, "id" | "type" | "title" | "url" | "image"> {
   isEdit: boolean;
@@ -40,14 +54,12 @@ interface LinkListEditorProps {
   links: Pick<Link, "id" | "type" | "title" | "url" | "image">[];
 }
 
-export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps) {
+export function LinkListEditor() {
+  const user = useUser();
+
   // 링크목록
-  const [links, setLinks] = useState<LinkItem[]>(
-    initialLinks.map((link) => ({
-      ...link,
-      isEdit: false,
-    })),
-  );
+  const [links, setLinks] = useState<LinkItem[]>([]);
+  const [isLinksLoading, setIsLinksLoading] = useState(true);
   // 링크 추가 확인 모달
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   // 링크 삭제 확인 모달
@@ -103,6 +115,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${sessionStorage.getItem("jwt")}`,
         },
         body: JSON.stringify(updatedLinks.map((link) => ({ id: link.id, order: link.order }))),
       });
@@ -138,6 +151,7 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${sessionStorage.getItem("jwt")}`,
         },
         body: JSON.stringify({
           links: [
@@ -203,6 +217,9 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
     try {
       const response = await fetch(`${ENV.apiUrl}/api/links/${id}`, {
         method: "DELETE",
+        headers: {
+          authorization: `Bearer ${sessionStorage.getItem("jwt")}`,
+        },
       });
 
       if (!response.ok) {
@@ -252,7 +269,6 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
         },
         body: JSON.stringify({
           ...link,
-          userId: 1, //FIXME: 인증된 회원 아이디
           image: `/images/custom-logo.png`,
         }),
       });
@@ -272,6 +288,31 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
       setLinks(originalLinks);
     }
   };
+
+  useEffect(() => {
+    const fetchLinks = async () => {
+      setIsLinksLoading(true);
+      if (!user) {
+        return;
+      }
+      const links = await getLinks(user.domain!);
+      setLinks(
+        links.map((link) => ({
+          ...link,
+          isEdit: false,
+        })),
+      );
+    };
+
+    fetchLinks()
+      .catch((error) => {
+        console.log(error);
+        toast("링크를 불러오는데 실패했어요. 잠시후에 다시 시도해주세요");
+      })
+      .finally(() => {
+        setIsLinksLoading(false);
+      });
+  }, [user]);
 
   return (
     <>
@@ -308,41 +349,52 @@ export function LinkListEditor({ links: initialLinks = [] }: LinkListEditorProps
 
       <section className="mb-16 mt-8">
         <h1 className="sr-only">링크 리스트</h1>
-
-        {links.length > 0 && (
-          <DndContext
-            // @see https://github.com/clauderic/dnd-kit/issues/926
-            id="link-list-dnd-context"
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={links.map((link) => link.id)}
-              strategy={verticalListSortingStrategy}
+        {isLinksLoading ? (
+          <div className="flex flex-col gap-2 px-3">
+            <Skeleton className="h-14 w-full rounded-2xl" />
+            <Skeleton className="h-14 w-full rounded-2xl" />
+            <Skeleton className="h-14 w-full rounded-2xl" />
+            <Skeleton className="h-14 w-full rounded-2xl" />
+            <Skeleton className="h-14 w-full rounded-2xl" />
+            <Skeleton className="h-14 w-full rounded-2xl" />
+            <Skeleton className="h-14 w-full rounded-2xl" />
+          </div>
+        ) : (
+          links.length > 0 && (
+            <DndContext
+              // @see https://github.com/clauderic/dnd-kit/issues/926
+              id="link-list-dnd-context"
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
             >
-              <ul className="flex flex-col gap-2 px-3">
-                {links.map((link) => (
-                  <li key={link.id}>
-                    <LinkListItem
-                      id={link.id}
-                      title={link.title}
-                      url={link.url}
-                      image={link.image}
-                      isEdit={link.isEdit}
-                      type={link.type}
-                      onEditStart={handleEditStart}
-                      onEditEnd={handleEditEnd}
-                      onChangeTitle={handleChageTitle}
-                      onChangeUrl={handleChangeUrl}
-                      onClickDeleteImage={(id) => handleDeleteImageClick(id)}
-                      onClickDelete={(id) => handleDeleteClick(id)}
-                    />
-                  </li>
-                ))}
-              </ul>
-            </SortableContext>
-          </DndContext>
+              <SortableContext
+                items={links.map((link) => link.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                <ul className="flex flex-col gap-2 px-3">
+                  {links.map((link) => (
+                    <li key={link.id}>
+                      <LinkListItem
+                        id={link.id}
+                        title={link.title}
+                        url={link.url}
+                        image={link.image}
+                        isEdit={link.isEdit}
+                        type={link.type}
+                        onEditStart={handleEditStart}
+                        onEditEnd={handleEditEnd}
+                        onChangeTitle={handleChageTitle}
+                        onChangeUrl={handleChangeUrl}
+                        onClickDeleteImage={(id) => handleDeleteImageClick(id)}
+                        onClickDelete={(id) => handleDeleteClick(id)}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </SortableContext>
+            </DndContext>
+          )
         )}
       </section>
     </>

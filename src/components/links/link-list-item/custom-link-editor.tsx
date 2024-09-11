@@ -48,6 +48,7 @@ export function CustomLinkEditor({ id, url, title, image, onChangeUrl }: CustomL
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${sessionStorage.getItem("jwt")}`,
         },
         body: JSON.stringify({
           id,
