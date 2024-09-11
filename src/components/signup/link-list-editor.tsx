@@ -23,7 +23,7 @@ export interface AddLinkInputProps {
   url?: string;
 
   /** 링크 type*/
-  type?: LinkType;
+  type: LinkType;
 }
 
 export interface IconListType {
@@ -74,6 +74,7 @@ async function addLinks(id: number, linkInputs: AddLinkInputProps[]) {
 
 export function LinkListEditor() {
   const [linkInputs, setLinkInputs] = useState<AddLinkInputProps[]>([]);
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
   const handleNext = async () => {
@@ -89,15 +90,16 @@ export function LinkListEditor() {
   const handleAddLink = (type: LinkType) => {
     const newLink = {
       id: Date.now(),
-      url: getSnsUrl(type),
+      url: "",
       type,
     };
-
     setLinkInputs([...linkInputs, newLink]);
   };
 
-  const handleChangeUrl = (id: number, e: ChangeEvent<HTMLInputElement>) => {
-    const wholeUrl = e.target.value;
+  const handleChangeUrl = (id: number, type: LinkType, e: ChangeEvent<HTMLInputElement>) => {
+    const privateId = e.target.value.trim();
+    const wholeUrl = `${getSnsUrl(type)}${privateId}`;
+    console.log(wholeUrl);
 
     setLinkInputs((prev) =>
       prev.map((link) => (link.id === id ? { ...link, url: wholeUrl } : link)),
@@ -116,7 +118,7 @@ export function LinkListEditor() {
           {linkInputs.map((item) => (
             <LinkListItem
               key={item.id}
-              type={item.type}
+              itemType={item.type}
               {...item}
               onDelete={handleDelete}
               onChangeUrl={handleChangeUrl}
