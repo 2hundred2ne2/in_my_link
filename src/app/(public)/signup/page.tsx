@@ -32,11 +32,16 @@ export default function SignUpPage() {
 
   const router = useRouter();
 
-  // 이메일 입력 시 중복 확인
   const handleEmailChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newEmail)) {
+      setErrorEmail("유효한 이메일 주소를 입력해주세요.'@'을 포함해야 합니다.");
+      setShowPassword(false);
+      return;
+    }
     if (newEmail) {
       try {
         const response = await fetch("/api/signup/check-email", {
@@ -51,19 +56,19 @@ export default function SignUpPage() {
 
         if (response.ok) {
           setErrorEmail("");
-          setShowPassword(true); // 이메일 중복이 없으면 비밀번호 입력창 표시
+          setShowPassword(true);
         } else {
-          setErrorEmail(result.message); // 중복된 경우 에러 메시지 설정
-          setShowPassword(false); // 중복된 경우 비밀번호 입력창 숨김
+          setErrorEmail(result.message);
+          setShowPassword(false);
         }
       } catch (error) {
         console.error("Error checking email:", error);
         setErrorEmail("이메일 확인 중 오류가 발생했습니다.");
-        setShowPassword(false); // 에러 발생 시 비밀번호 입력창 숨김
+        setShowPassword(false);
       }
     } else {
       setErrorEmail("");
-      setShowPassword(false); // 이메일이 입력되지 않았을 때 비밀번호 입력창 숨김
+      setShowPassword(false);
     }
   };
 
@@ -100,7 +105,6 @@ export default function SignUpPage() {
   const handleEmailCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmailCode(e.target.value);
 
-    // 서버에서 받은 인증번호와 비교
     if (e.target.value === serverVerificationCode) {
       setErrorEmailCode("");
       setShowDomainInput(true); // 인증번호가 일치하면 도메인 입력창 표시

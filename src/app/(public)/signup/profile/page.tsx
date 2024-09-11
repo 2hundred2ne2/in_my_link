@@ -75,7 +75,7 @@ export default function ProfilePage() {
   };
 
   const handleNext = async () => {
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("jwt");
     if (!token) {
       alert("토큰이 없습니다.");
       return;

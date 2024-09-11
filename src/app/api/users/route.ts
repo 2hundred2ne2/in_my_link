@@ -116,7 +116,7 @@ export async function PATCH(req: Request) {
     // 필드 값 배열에 추가
     const values = Object.values(fieldsToUpdate);
     console.log(values);
-    values.push(userId); //
+    values.push(userId);
 
     // 사용자 정보 업데이트 쿼리
     const updateQuery = `UPDATE user SET ${setClause} WHERE id = ?`;
