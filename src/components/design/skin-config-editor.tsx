@@ -8,11 +8,10 @@ import { Heading } from "../ui/heading";
 
 export function SkinConfigEditor() {
   const [backgroundColor, setBackgroundColor] = useState("bg-background");
-  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
+  const [bgImage, setBgImage] = useState("");
   const [isBackgroundloding, setIsBackgroundloding] = useState(true);
 
   const domain = "test";
-
   useEffect(() => {
     setIsBackgroundloding(true);
 
@@ -24,11 +23,10 @@ export function SkinConfigEditor() {
     })
       .then((response) => response.json())
       .then((data) => {
-        // 색상과 배경 이미지 데이터 처리
+        // 색상 데이터 처리
         console.log(data.color);
-        console.log(data.bgImage);
         setBackgroundColor(data.color);
-        setBackgroundImage(data.bgImage);
+        setBgImage(data.bgImage || "");
       })
       .catch((error) => console.error("Error:", error))
       .finally(() => {
@@ -53,22 +51,23 @@ export function SkinConfigEditor() {
       .catch((error) => console.error("Error:", error));
   };
 
-  const updateBackgroundImage = (image: string) => {
+  const handleStickerClick = (imageUrl: string) => {
+    console.log("Selected Sticker URL:", imageUrl); // 스티커 URL을 콘솔에 출력
+
     fetch("/api/skin-config", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ bgImage: image }),
+      body: JSON.stringify({ bgImage: imageUrl }), // bgImage 업데이트
     })
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        setBackgroundImage(image);
+        setBgImage(imageUrl); // 선택된 스티커 URL 상태 설정
       })
       .catch((error) => console.error("Error:", error));
   };
-
   return (
     <>
       <section className="space-y-2 px-3 md:space-y-3">
@@ -112,36 +111,28 @@ export function SkinConfigEditor() {
               <div className="overflow-x-auto">
                 <div className="mt-2 flex min-w-max gap-3">
                   {[
-                    { image: "/images/profile.png", label: "프로필스티커" },
-                    { image: "/images/rainbow.png", label: "무지개스티커" },
-                    { image: "/images/heart.png", label: "하트스티커" },
-                    { image: "/images/party.png", label: "파티스티커" },
+                    { imageUrl: "/images/profile.png", alt: "프로필 스티커" },
+                    { imageUrl: "/images/rainbow.png", alt: "무지개스티커" },
+                    { imageUrl: "/images/heart.png", alt: "하트스티커" },
+                    { imageUrl: "/images/party.png", alt: "파티스티커" },
                   ].map((sticker, index) => (
                     <button
                       key={index}
                       type="button"
-                      className="h-14 w-14 flex-shrink-0 rounded-full border transition-transform duration-100 active:scale-[0.96]"
-                      onClick={() => {
-                        console.log("Selected Sticker Image:", sticker.image); // 이미지 경로 확인용 콘솔 출력
-                        updateBackgroundImage(sticker.image);
-                      }}
-                      style={{ backgroundImage: `url(${sticker.image})`, backgroundSize: "cover" }}
+                      className={`h-14 w-14 flex-shrink-0 rounded-full border transition-transform duration-100 active:scale-[0.96] ${sticker.imageUrl === bgImage ? "border-black" : "border-transparent"}`}
+                      onClick={() => handleStickerClick(sticker.imageUrl)}
                     >
-                      <span className="sr-only">{sticker.label}</span>
+                      <img
+                        src={sticker.imageUrl}
+                        alt={sticker.alt}
+                        className="rounded-full object-cover"
+                      />
+                      <span className="sr-only">{sticker.alt}</span>
                     </button>
                   ))}
                 </div>
               </div>
             </div>
-            {/* 일단 배경 이미지 미리보기 창 띄워놓기.... */}
-            {backgroundImage && (
-              <div
-                className="h-[500px] w-[500px] bg-cover bg-center"
-                style={{ backgroundImage: `url(${backgroundImage})` }}
-              >
-                <p className="text-center text-white">배경 이미지 미리보기</p>
-              </div>
-            )}
           </>
         )}
       </section>

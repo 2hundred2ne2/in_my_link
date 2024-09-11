@@ -34,7 +34,7 @@ export async function GET(request: NextRequest) {
   }
 
   const [skinConfigs] = await db.query<SkinConfig[]>(
-    "SELECT color, bg_image FROM skin_config WHERE user_id = ?",
+    "SELECT color, bg_image AS bgImage FROM skin_config WHERE user_id = ?",
     [users[0].id],
   );
 
