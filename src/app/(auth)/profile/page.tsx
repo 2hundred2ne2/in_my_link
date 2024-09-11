@@ -30,7 +30,7 @@ export default function ProfilePage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [image, setImage] = useState<string | null>(null);
 
-  // 초기값을 가져와서 설정하는 효과 실행 (로그인된 상태라면 값을 가져옴)
+  // 유저 정보 받아와서 상태 업데이트
   useEffect(() => {
     const fetchUserData = async () => {
       if (!user?.userId) {
@@ -47,13 +47,15 @@ export default function ProfilePage() {
 
         if (response.ok) {
           const data = await response.json();
-          setNickname(data.nickname);
-          setIntro(data.intro);
-          setOriginalNickname(data.nickname); // 원래 닉네임 저장
-          setOriginalIntro(data.intro); // 원래 자기소개 저장
-          if (data.image) {
-            setImagePreview(data.image);
-            setImage(data.image);
+          const user = data.user;
+          console.log(user);
+          setNickname(user.nickname || ""); // 받아온 값이 있으면 설정
+          setIntro(user.intro || ""); // 받아온 값이 있으면 설정
+          setOriginalNickname(user.nickname || ""); // 원래 닉네임 저장
+          setOriginalIntro(user.intro || ""); // 원래 자기소개 저장
+          if (user.image) {
+            setImagePreview(user.image || "");
+            setImage(user.image || "");
           }
         } else {
           console.error("사용자 정보를 불러오는 데 실패했습니다.");
@@ -141,7 +143,6 @@ export default function ProfilePage() {
 
       if (response.ok) {
         alert("프로필이 성공적으로 업데이트되었습니다.");
-        router.push("/dashboard"); // 저장 후 대시보드로 이동
       } else {
         alert("프로필 저장에 실패했습니다.");
       }
