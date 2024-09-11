@@ -24,7 +24,6 @@ export default function RootLayout({
       <body>
         <div className="relative mx-auto flex min-h-screen w-full max-w-sm flex-col overflow-x-hidden">
           <UserProvider>{children}</UserProvider>
-          {/* @see https://react-hot-toast.com/docs/toaster */}
           <Toaster
             toastOptions={{
               style: {
