@@ -9,6 +9,7 @@ interface SkinConfig extends RowDataPacket {
   id: number;
   userId: number;
   color: string;
+  bgImage: string;
 }
 
 interface User extends RowDataPacket {
@@ -33,7 +34,7 @@ export async function GET(request: NextRequest) {
   }
 
   const [skinConfigs] = await db.query<SkinConfig[]>(
-    "SELECT color, bgImage FROM skin_config WHERE user_id = ?",
+    "SELECT color, bg_image FROM skin_config WHERE user_id = ?",
     [users[0].id],
   );
 
@@ -59,7 +60,7 @@ export async function PATCH(request: Request) {
       ]);
     }
     if (bgImage) {
-      await db.query("UPDATE skin_config SET bgImage = ?, update_date = NOW() WHERE user_id = ?", [
+      await db.query("UPDATE skin_config SET bg_image = ?, update_date = NOW() WHERE user_id = ?", [
         bgImage,
         TEMP_USER_ID,
       ]);

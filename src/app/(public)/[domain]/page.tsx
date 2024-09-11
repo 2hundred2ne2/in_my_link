@@ -1,5 +1,6 @@
 "use client";
 import { Jua, Orbit } from "next/font/google";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
 import { LinkLayout } from "@/components/linklayout";
@@ -11,6 +12,7 @@ const OrbitFont = Orbit({ subsets: ["latin"], weight: ["400"] });
 
 export default function UserScreenPage({ params }: { params: { domain: string } }) {
   const [backgroundColor, setBackgroundColor] = useState("white");
+  const [backgroundImage, setBackgroundImage] = useState<string | null>(null);
   const [fontType, setFontType] = useState("폰트 A");
   const [fontSize, setFontSize] = useState("text-base");
   const [loading, setLoading] = useState(true);
@@ -27,8 +29,33 @@ export default function UserScreenPage({ params }: { params: { domain: string } 
           "content-Type": "application/json",
         },
       });
+
+      if (!colorResponse.ok) {
+        throw new Error(`Failed to fetch skin config: ${colorResponse.statusText}`);
+      }
+
       const colorData = await colorResponse.json();
-      setBackgroundColor(colorData.color || "white");
+
+      // 값 가져오는지
+      console.log("Full Color Data Response:", colorData);
+
+      const color = colorData.color || "white";
+      const bgImage = colorData.bgImage || null;
+
+      console.log("Color Data:", color);
+      console.log("Background Image URL:", bgImage);
+
+      // 절대경로로 변환해봄
+      const imageUrl = bgImage
+        ? bgImage.startsWith("http")
+          ? bgImage
+          : `${ENV.apiUrl}${bgImage}`
+        : null;
+
+      console.log("Resolved Background Image URL:", imageUrl);
+
+      setBackgroundColor(color);
+      setBackgroundImage(imageUrl);
 
       // 폰트 데이터 api 호출
       const fontReaponse = await fetch(`${ENV.apiUrl}/api/font-config?domain=${domain}`);
@@ -72,11 +99,18 @@ export default function UserScreenPage({ params }: { params: { domain: string } 
   return (
     <>
       <Portal>
-        <div className={`fixed inset-0 z-[-10] ${backgroundColor}`}></div>
+        <div
+          className={`fixed inset-0 z-[-10] ${backgroundColor}`}
+          style={{
+            ...inlineFontStyle,
+            backgroundImage: backgroundImage ? `url(${backgroundImage})` : undefined,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        ></div>
       </Portal>
       <div
         className={`mx-auto flex min-h-dvh max-w-screen-sm flex-col items-center ${fontSizeClass} ${cardFontClass}`}
-        style={inlineFontStyle}
       >
         <section className="my-8 flex flex-col items-center gap-3">
           <button type="button" className="h-[95px] w-[95px] rounded-full bg-slate-600"></button>
