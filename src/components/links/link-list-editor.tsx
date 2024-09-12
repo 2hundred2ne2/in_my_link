@@ -50,10 +50,6 @@ interface LinkItem extends Pick<Link, "id" | "type" | "title" | "url" | "image">
   isEdit: boolean;
 }
 
-interface LinkListEditorProps {
-  links: Pick<Link, "id" | "type" | "title" | "url" | "image">[];
-}
-
 export function LinkListEditor() {
   const user = useUser();
 
@@ -234,6 +230,59 @@ export function LinkListEditor() {
     }
   };
 
+  const handleImageUpload = async (id: number, file: File) => {
+    const currentLink = links.find((link) => link.id === id);
+    if (!currentLink) {
+      return;
+    }
+
+    const originalImageUrl = currentLink.image;
+
+    const tempImageUrl = URL.createObjectURL(file);
+    setLinks((prevLinks) =>
+      prevLinks.map((link) => (link.id === id ? { ...link, image: tempImageUrl } : link)),
+    );
+
+    try {
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ filename: file.name, contentType: file.type }),
+      });
+      if (response.ok) {
+        const { url, fields } = await response.json();
+
+        const formData = new FormData();
+        Object.entries(fields).forEach(([key, value]) => {
+          formData.append(key, value as string);
+        });
+        formData.append("file", file);
+
+        const uploadResponse = await fetch(url, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error("Failed to upload image");
+        }
+
+        const finalImageUrl = `${url}${fields.key}`;
+        setLinks((prevLinks) =>
+          prevLinks.map((link) => (link.id === id ? { ...link, image: finalImageUrl } : link)),
+        );
+      }
+    } catch (error) {
+      console.error("업로드 중 오류 발생:", error);
+      setLinks((prevLinks) =>
+        prevLinks.map((link) => (link.id === id ? { ...link, image: originalImageUrl } : link)),
+      );
+      toast("이미지 변경에 실패했어요. 잠시후에 다시 시도해주세요");
+    }
+  };
+
   const handleDeleteImageClick = (id: number) => {
     setIsImageDeleteModalOpen(true);
     linkToImageDeleteIdRef.current = id;
@@ -386,6 +435,7 @@ export function LinkListEditor() {
                         onEditEnd={handleEditEnd}
                         onChangeTitle={handleChageTitle}
                         onChangeUrl={handleChangeUrl}
+                        onImageUpload={handleImageUpload}
                         onClickDeleteImage={(id) => handleDeleteImageClick(id)}
                         onClickDelete={(id) => handleDeleteClick(id)}
                       />

@@ -1,14 +1,29 @@
 import Image from "next/image";
+import { useRef } from "react";
 
 import { Trash } from "@phosphor-icons/react";
 
 interface LinkImageProps {
   src?: string;
   alt: string;
+  onImageUpload: (file: File) => void;
   onDeleteImage: () => void;
 }
 
-export function LinkImage({ src, alt, onDeleteImage }: LinkImageProps) {
+export function LinkImage({ src, alt, onImageUpload, onDeleteImage }: LinkImageProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      onImageUpload(file);
+    }
+  };
+
   // 이미지가 있고 커스텀 로고가 아닌 경우에만 표시
   const hasImage = Boolean(src);
   const isCustomLogo = src?.includes("custom-logo");
@@ -17,7 +32,14 @@ export function LinkImage({ src, alt, onDeleteImage }: LinkImageProps) {
   return (
     <>
       <div className="relative flex items-center">
-        <button type="button">
+        <input
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          accept="image/*"
+          className="hidden"
+        />
+        <button type="button" onClick={handleImageClick}>
           <Image
             src={src ?? "/images/custom-logo.png"}
             alt={alt}
