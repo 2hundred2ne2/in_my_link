@@ -1,18 +1,17 @@
 "use client";
 import dynamic from "next/dynamic";
-import Image from "next/image";
+import Image from "next/image"; // 이미지 사용을 위해 next/image 추가
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Heading } from "@/components/ui/heading";
 import { ENV } from "@/constants/env";
 import { useUser } from "@/context/user-context";
+import { User } from "@/types/user";
 
-const FireWorks = dynamic(
+const FireWorks = dynamic<any>(
   () => import("@/components/signup/fireworks").then((module) => module.FireWorks),
-  {
-    ssr: false,
-  },
+  { ssr: false },
 );
 
 /**GET API: 유저 테이블에서 회원가입 한 유저 정보 불러오기 */
@@ -38,10 +37,10 @@ async function getUser(id: string) {
 }
 
 export function UserInfo() {
-  const user = useUser(); // useUser 훅에서 user 전체를 가져옴
+  const router = useRouter();
+  const user = useUser() as User | null; // useUser 훅에서 user 전체를 가져옴
   const [nickname, setNickname] = useState<string>("");
   const [profileImage, setProfileImage] = useState<string | null>(null); // 프로필 이미지 상태 추가
-  const router = useRouter(); // useRouter 훅을 컴포넌트 내부로 이동
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -61,10 +60,10 @@ export function UserInfo() {
     fetchUserInfo();
   }, [user]);
 
-  if (!user || !user.userId) {
-    router.push("/login");
-    return null;
-  }
+  // if (!user || !user.userId) {
+  //   router.push("/login");
+  //   return <></>;
+  // }
 
   return (
     <div className="flex flex-col items-center px-12 pt-24">
