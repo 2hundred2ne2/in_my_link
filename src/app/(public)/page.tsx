@@ -12,7 +12,7 @@ export default function HomePage() {
     if (!token) {
       router.push("/login");
     } else {
-      router.push("/profile");
+      router.push("/links");
     }
   }, [router]);
 
