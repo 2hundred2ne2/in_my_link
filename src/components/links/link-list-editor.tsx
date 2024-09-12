@@ -333,6 +333,7 @@ export function LinkListEditor() {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${sessionStorage.getItem("jwt")}`,
         },
         body: JSON.stringify({
           ...link,
