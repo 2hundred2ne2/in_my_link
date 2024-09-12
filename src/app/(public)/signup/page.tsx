@@ -212,7 +212,7 @@ export default function SignUpPage() {
 
         data = await response.json();
         if (response.ok) {
-          localStorage.setItem("token", data.token); // 토큰을 로컬 스토리지에 저장
+          sessionStorage.setItem("jwt", data.token); // 토큰을 로컬 스토리지에 저장
           router.push("/signup/profile");
         } else {
           alert(data.message); // 로그인 실패 시 에러 메시지 표시
