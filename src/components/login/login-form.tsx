@@ -20,13 +20,11 @@ export default function LoginForm() {
 
     setError("");
 
-    // 이메일 입력 확인
     if (email === "") {
       setError("이메일을 입력해 주세요");
       return;
     }
 
-    // 비밀번호 입력 확인
     if (password === "") {
       setError("비밀번호를 입력해 주세요");
       return;
@@ -48,7 +46,7 @@ export default function LoginForm() {
       if (response.ok) {
         // 로그인 성공 시 JWT 토큰 저장 및 페이지 이동
         sessionStorage.setItem("jwt", data.token);
-        router.push("/profile");
+        router.push("/links");
       } else {
         setError(data.message || "로그인에 실패했습니다. 이메일 또는 비밀번호를 확인해주세요.");
       }

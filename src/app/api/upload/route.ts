@@ -29,8 +29,7 @@ export async function POST(request: Request) {
       },
       Expires: 600, // URL 만료 시간 설정 (초 단위, 600초 = 10분)
     });
-
-    return Response.json({ url, fields }); // 성공 시 presigned URL 및 필드 반환
+    return Response.json({ url, uniqueFilename, fields }); // 성공 시 presigned URL 및 필드 반환
   } catch (err) {
     console.log("presigned URL 생성 중 오류 발생:", err);
     return Response.json({ error: "presigned URL 생성 중 오류 발생" });

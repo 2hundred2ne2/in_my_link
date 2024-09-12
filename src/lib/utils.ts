@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-import { LinkType } from "@/types/link";
+import { LinkType, LinkTypePlus } from "@/types/link";
 
 /**
  * 여러 클래스를 하나로 합칩니다
@@ -24,6 +24,27 @@ export function getSnsUrl(type: LinkType) {
       return "https://www.facebook.com/";
     case "threads":
       return "https://www.threads.net/";
+    default:
+      return "";
+  }
+}
+
+export function getSnsUrlPlus(type: LinkTypePlus) {
+  switch (type) {
+    case "instagram":
+      return "https://www.instagram.com/";
+    case "facebook":
+      return "https://www.facebook.com/";
+    case "threads":
+      return "https://www.threads.net/";
+    case "x":
+      return "https://x.com/";
+    case "tiktok":
+      return "tiktok.com/";
+    case "naver":
+      return "https://blog.naver.com/";
+    case "github":
+      return "https://github.com/";
     default:
       return "";
   }

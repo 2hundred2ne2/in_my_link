@@ -90,7 +90,7 @@ export default function ProfilePage() {
       });
 
       if (response.ok) {
-        const { url, fields } = await response.json();
+        const { url, uniqueFilename, fields } = await response.json();
 
         const formData = new FormData();
         Object.entries(fields).forEach(([key, value]) => {
@@ -104,7 +104,7 @@ export default function ProfilePage() {
         });
 
         if (uploadResponse.ok) {
-          setImage(url);
+          setImage(url + uniqueFilename);
         } else {
           alert("프로필 사진 업로드에 실패했습니다.");
         }
@@ -137,7 +137,7 @@ export default function ProfilePage() {
         body: JSON.stringify({
           nickname,
           intro,
-          image, // 업로드된 프로필 이미지 URL 추가
+          image,
         }),
       });
 
