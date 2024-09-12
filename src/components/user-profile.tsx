@@ -20,7 +20,7 @@ export function UserProfile({ image, nickname, intro }: UserProfileProps) {
             </span>
           )}
         </div>
-        <Heading className="mt-4">Nickname</Heading>
+        <Heading className="mt-4">{nickname}</Heading>
         {intro && <p className="mt-1.5 text-sm text-foreground">{intro}</p>}
       </div>
     </>

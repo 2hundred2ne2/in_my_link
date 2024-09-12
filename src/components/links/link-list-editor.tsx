@@ -270,6 +270,24 @@ export function LinkListEditor() {
         }
 
         const finalImageUrl = `${url}${fields.key}`;
+
+        const updateResponse = await fetch(`/api/links/${id}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStorage.getItem("jwt")}`, // 토큰을 헤더에 추가
+          },
+          body: JSON.stringify({
+            title: currentLink.title,
+            image: finalImageUrl,
+            url: currentLink.url,
+          }),
+        });
+
+        if (!updateResponse.ok) {
+          throw new Error("Failed to update link information");
+        }
+
         setLinks((prevLinks) =>
           prevLinks.map((link) => (link.id === id ? { ...link, image: finalImageUrl } : link)),
         );
