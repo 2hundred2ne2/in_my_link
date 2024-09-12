@@ -3,15 +3,20 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 
 import { Heading } from "@/components/ui/heading";
+import { useUser } from "@/context/user-context";
 
 export function LayoutConfigEditor() {
   const [layout, setLayout] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // 로그인된 사용자의 도메인 값을 가져오세요
-  const domain = "test"; // 예시 도메인
+  const user = useUser();
+  const domain = user?.domain;
 
   useEffect(() => {
+    if (!domain) {
+      return;
+    }
+
     const fetchLayout = async () => {
       setIsLoading(true);
 
@@ -35,11 +40,17 @@ export function LayoutConfigEditor() {
   }, [domain]);
 
   const handleLayoutChange = async (newLayout: number) => {
+    if (!domain) {
+      return;
+    } // 사용자가 없으면 업데이트를 중단합니다.
+
+    const token = sessionStorage.getItem("jwt");
     try {
       const response = await fetch(`/api/button-config`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           domain, // 로그인된 사용자의 도메인
@@ -52,7 +63,7 @@ export function LayoutConfigEditor() {
         const data = await response.json();
         console.log("레이아웃 업데이트 성공:", data.message);
       } else {
-        console.error("레이아웃 업데이트 실패");
+        throw new Error("레이아웃 업데이트 실패");
       }
     } catch (error) {
       console.error("레이아웃 업데이트 중 오류 발생:", error);
