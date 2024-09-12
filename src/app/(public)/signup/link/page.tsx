@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 
+import { Logo } from "@/components/logo";
 import { LinkListEditor } from "@/components/signup/link-list-editor";
 import {
   AppHeader,
@@ -16,10 +17,12 @@ export const metadata: Metadata = {
 export default function RegisterLinksPage() {
   return (
     <>
-      <AppHeader>
-        <AppHeaderLeft>Left</AppHeaderLeft>
-        <AppHeaderCenter>Center</AppHeaderCenter>
-        <AppHeaderRight>Right</AppHeaderRight>
+      <AppHeader className="z-10">
+        <AppHeaderLeft />
+        <AppHeaderCenter>
+          <Logo className="text-xl" />
+        </AppHeaderCenter>
+        <AppHeaderRight />
       </AppHeader>
 
       <main className="min-h-dvh pb-[68px] pt-16">
