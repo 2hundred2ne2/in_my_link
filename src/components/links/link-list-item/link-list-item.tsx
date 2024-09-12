@@ -58,6 +58,9 @@ interface LinkListItemProps {
   /** URL이 변경될 때 호출되는 콜백 함수 */
   onChangeUrl: (id: number, value: string) => void;
 
+  /** 이미지 업로드 되었을 때 호출되는 콜백 함수 */
+  onImageUpload: (id: number, file: File) => void;
+
   /** 이미지 삭제를 누를때 호출되는 콜백 함수 */
   onClickDeleteImage: (id: number) => void;
 
@@ -76,6 +79,7 @@ export function LinkListItem({
   onEditEnd,
   onChangeTitle,
   onChangeUrl,
+  onImageUpload,
   onClickDeleteImage,
   onClickDelete,
 }: LinkListItemProps) {
@@ -247,7 +251,12 @@ export function LinkListItem({
     >
       {/* header */}
       <div className="flex items-center py-4 pl-6 pr-3">
-        <LinkImage src={image} alt={type} onDeleteImage={() => onClickDeleteImage(id)} />
+        <LinkImage
+          src={image}
+          alt={type}
+          onImageUpload={(file) => onImageUpload(id, file)}
+          onDeleteImage={() => onClickDeleteImage(id)}
+        />
 
         <EditableText
           label="Title"
