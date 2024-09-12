@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-import { LinkType } from "@/types/link";
+import { LinkTypePlus } from "@/types/link";
 
 import { Text } from "../ui/text";
 
@@ -8,7 +8,7 @@ import { IconListType } from "./link-list-editor";
 
 export interface LinkAddButtonsProps {
   /**SNS 아이콘이 클릭 될 때 호출되는 콜백 함수 */
-  onAdd: (type: LinkType) => void;
+  onAdd: (type: LinkTypePlus) => void;
 
   /**아이콘 리스트 객체 배열 */
   iconList: IconListType[];

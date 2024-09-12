@@ -1,4 +1,13 @@
 export type LinkType = "instagram" | "facebook" | "threads" | "custom";
+export type LinkTypePlus =
+  | "instagram"
+  | "facebook"
+  | "threads"
+  | "custom"
+  | "x"
+  | "tiktok"
+  | "naver"
+  | "github";
 
 export interface Link {
   id: number;
