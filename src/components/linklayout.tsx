@@ -2,14 +2,18 @@
 import { useEffect, useState } from "react";
 
 import { ENV } from "@/constants/env";
+import { useUser } from "@/context/user-context";
 import { getSnsUrl } from "@/lib/utils";
 import { Link, LinkType } from "@/types/link";
 
 import { Card } from "./ui/card";
 
-async function getLinks(domain: string): Promise<Link[]> {
+async function getLinks(domain: string, token: string): Promise<Link[]> {
   const res = await fetch(`${ENV.apiUrl}/api/links?domain=${domain}`, {
     cache: "no-store",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 
   if (!res.ok) {
@@ -135,27 +139,32 @@ function getDisplayTitle(title: string | undefined, url: string, type: LinkType)
 export function LinkLayout() {
   const [layout, setLayout] = useState<number | null>(null);
   const [links, setLinks] = useState<Link[]>([]); // 링크 데이터를 저장할 상태
+  const user = useUser();
+  const domain = user?.domain;
+  const token = sessionStorage.getItem("jwt");
 
   useEffect(() => {
     const fetchLayoutAndLinks = async () => {
-      try {
-        const domain = "test"; // 여기에 실제 사용자의 도메인을 넣어주세요.
+      if (!domain || !token) {
+        return;
+      }
 
-        //레이아웃 정보 가져오기
+      try {
+        // 레이아웃 정보 가져오기
         const response = await fetch(`/api/button-config?domain=${domain}`);
         const data = await response.json();
         setLayout(data.layout);
 
-        //링크 정보 가져오기
-        const fetchedLinks = await getLinks(domain);
+        // 링크 정보 가져오기
+        const fetchedLinks = await getLinks(domain, token);
         setLinks(fetchedLinks); // links 상태에 저장
       } catch (error) {
-        console.error("Error fetching layout:", error);
+        console.error("Error fetching layout and links:", error);
       }
     };
 
     fetchLayoutAndLinks();
-  }, []);
+  }, [domain, token]);
 
   const renderLayoutComponent = () => {
     if (layout === 1) {

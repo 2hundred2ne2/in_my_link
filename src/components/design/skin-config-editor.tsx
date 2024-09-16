@@ -8,6 +8,7 @@ import { Heading } from "../ui/heading";
 
 export function SkinConfigEditor() {
   const [backgroundColor, setBackgroundColor] = useState("bg-background");
+  const [bgImage, setBgImage] = useState("");
   const [isBackgroundloding, setIsBackgroundloding] = useState(true);
 
   const domain = "test";
@@ -25,6 +26,7 @@ export function SkinConfigEditor() {
         // 색상 데이터 처리
         console.log(data.color);
         setBackgroundColor(data.color);
+        setBgImage(data.bgImage || "");
       })
       .catch((error) => console.error("Error:", error))
       .finally(() => {
@@ -33,7 +35,6 @@ export function SkinConfigEditor() {
   }, [domain]); // domain이 변경될 때마다 색상 데이터를 재호출합니다
 
   const backgroundButtonClick = (color: string) => {
-    //setActiveBackgroundButtonIndex(index);
     // 여기에 fetch 호출을 추가하면 됩니다.
     fetch("/api/skin-config", {
       method: "PATCH",
@@ -46,6 +47,24 @@ export function SkinConfigEditor() {
       .then((data) => {
         console.log(data);
         setBackgroundColor(color);
+      })
+      .catch((error) => console.error("Error:", error));
+  };
+
+  const handleStickerClick = (imageUrl: string) => {
+    console.log("Selected Sticker URL:", imageUrl); // 스티커 URL을 콘솔에 출력
+
+    fetch("/api/skin-config", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ bgImage: imageUrl }), // bgImage 업데이트
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setBgImage(imageUrl); // 선택된 스티커 URL 상태 설정
       })
       .catch((error) => console.error("Error:", error));
   };
@@ -85,45 +104,35 @@ export function SkinConfigEditor() {
                 </div>
               </div>
             </div>
-            {/* <div>
-                    <Heading variant="subtitle2" order={2} className="font-medium">
-                      스티커
-                    </Heading>
-                    <div className="overflow-x-auto">
-                      <div className="mt-2 flex min-w-max gap-3">
-                        <button
-                          type="button"
-                          className="h-14 w-14 flex-shrink-0 rounded-full border bg-background transition-transform duration-100 active:scale-[0.96]"
-                        >
-                          <span className="sr-only">기본</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="h-14 w-14 flex-shrink-0 rounded-full bg-background-muted transition-transform duration-100 active:scale-[0.96]"
-                        >
-                          <span className="sr-only">약함</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="h-14 w-14 flex-shrink-0 rounded-full bg-green-100 transition-transform duration-100 active:scale-[0.96]"
-                        >
-                          <span className="sr-only">파스텔 그린</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="h-14 w-14 flex-shrink-0 rounded-full bg-pink-100 transition-transform duration-100 active:scale-[0.96]"
-                        >
-                          <span className="sr-only">파스텔 핑크</span>
-                        </button>
-                        <button
-                          type="button"
-                          className="h-14 w-14 flex-shrink-0 rounded-full bg-blue-100 transition-transform duration-100 active:scale-[0.96]"
-                        >
-                          <span className="sr-only">파스텔 블루</span>
-                        </button>
-                      </div>
-                    </div>
-                  </div> */}
+            <div>
+              <Heading variant="subtitle2" order={2} className="font-medium">
+                스티커
+              </Heading>
+              <div className="overflow-x-auto">
+                <div className="mt-2 flex min-w-max gap-3">
+                  {[
+                    { imageUrl: "/images/profile.png", alt: "프로필 스티커" },
+                    { imageUrl: "/images/rainbow.png", alt: "무지개스티커" },
+                    { imageUrl: "/images/heart.png", alt: "하트스티커" },
+                    { imageUrl: "/images/party.png", alt: "파티스티커" },
+                  ].map((sticker, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      className={`h-14 w-14 flex-shrink-0 rounded-full border transition-transform duration-100 active:scale-[0.96] ${sticker.imageUrl === bgImage ? "border-black" : "border-transparent"}`}
+                      onClick={() => handleStickerClick(sticker.imageUrl)}
+                    >
+                      <img
+                        src={sticker.imageUrl}
+                        alt={sticker.alt}
+                        className="rounded-full object-cover"
+                      />
+                      <span className="sr-only">{sticker.alt}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
           </>
         )}
       </section>
