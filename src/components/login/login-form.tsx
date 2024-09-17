@@ -16,6 +16,7 @@ export default function LoginForm() {
   const emailInputRef = useRef<HTMLInputElement>(null);
 
   const handleLogin = async (event: any) => {
+    sessionStorage.removeItem("jwt");
     event.preventDefault();
 
     setError("");
@@ -46,7 +47,10 @@ export default function LoginForm() {
       if (response.ok) {
         // 로그인 성공 시 JWT 토큰 저장 및 페이지 이동
         sessionStorage.setItem("jwt", data.token);
-        router.push("/links");
+        const token = sessionStorage.getItem("jwt");
+        if (token) {
+          router.push("/links");
+        }
       } else {
         setError(data.message || "로그인에 실패했습니다. 이메일 또는 비밀번호를 확인해주세요.");
       }
