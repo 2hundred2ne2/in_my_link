@@ -95,7 +95,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
           buttonRadii[radius],
           className,
           //isDisabled && "pointer-events-none opacity-50",
-          isDisabled && "pointer-events-none bg-zinc-900 text-white",
+          //isDisabled && "pointer-events-none bg-zinc-900 text-white",
+          isDisabled
+            ? "pointer-events-none bg-background-disabled text-foreground-disabled" // Tailwind에서 정의된 disabled 색상 사용
+            : "transition-transform duration-100 active:scale-[0.98]",
           "transition-transform duration-100 active:scale-[0.98]",
         )}
         disabled={isDisabled}
