@@ -1,11 +1,13 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Camera } from "@phosphor-icons/react/dist/ssr";
 
 import { Input } from "@/components/input";
+import { Logo } from "@/components/logo";
 import {
   AppHeader,
   AppHeaderLeft,
@@ -108,9 +110,11 @@ export default function ProfilePage() {
 
   return (
     <>
-      <AppHeader>
+      <AppHeader className="z-10">
         <AppHeaderLeft></AppHeaderLeft>
-        <AppHeaderCenter></AppHeaderCenter>
+        <AppHeaderCenter>
+          <Logo className="text-xl" />
+        </AppHeaderCenter>
         <AppHeaderRight></AppHeaderRight>
       </AppHeader>
 
@@ -187,6 +191,12 @@ export default function ProfilePage() {
           <Button variant="primary" size="large" onClick={handleNext} disabled={uploading}>
             다음
           </Button>
+
+          <Link href="/signup/link" className="flex flex-col">
+            <Button variant="text" size="large">
+              건너뛰기
+            </Button>
+          </Link>
         </div>
       </main>
     </>
