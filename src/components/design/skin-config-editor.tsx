@@ -1,19 +1,31 @@
 "use client";
+
 import { useState, useEffect } from "react";
 
 import { Skeleton } from "@/components/ui/skeleton";
 import { ENV } from "@/constants/env";
+import { useUser } from "@/context/user-context";
 
 import { Heading } from "../ui/heading";
 
 export function SkinConfigEditor() {
+  // 훅은 항상 컴포넌트의 최상위에서 호출되어야 함
   const [backgroundColor, setBackgroundColor] = useState("bg-background");
   const [bgImage, setBgImage] = useState("");
-  const [isBackgroundloding, setIsBackgroundloding] = useState(true);
+  const [isBackgroundLoading, setIsBackgroundLoading] = useState(true);
 
-  const domain = "test";
+  const user = useUser(); // useUser 훅은 항상 컴포넌트 최상단에서 호출되어야 함
+
+  const domain = user?.domain; // user가 있을 경우에만 domain을 설정
+  const id = user?.userId;
+
   useEffect(() => {
-    setIsBackgroundloding(true);
+    // user와 domain이 있을 때만 데이터 로드
+    if (!domain) {
+      return;
+    }
+
+    setIsBackgroundLoading(true);
 
     fetch(`${ENV.apiUrl}/api/skin-config?domain=${domain}`, {
       method: "GET",
@@ -23,56 +35,57 @@ export function SkinConfigEditor() {
     })
       .then((response) => response.json())
       .then((data) => {
-        // 색상 데이터 처리
-        console.log(data.color);
         setBackgroundColor(data.color);
         setBgImage(data.bgImage || "");
       })
       .catch((error) => console.error("Error:", error))
       .finally(() => {
-        setIsBackgroundloding(false);
+        setIsBackgroundLoading(false);
       });
-  }, [domain]); // domain이 변경될 때마다 색상 데이터를 재호출합니다
+  }, [domain]); // domain이 변경될 때만 데이터를 다시 불러옴
 
   const backgroundButtonClick = (color: string) => {
-    // 여기에 fetch 호출을 추가하면 됩니다.
     fetch("/api/skin-config", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        authorization: `Bearer ${sessionStorage.getItem("jwt")}`,
       },
-      body: JSON.stringify({ color }), // 필요한 데이터로 수정하세요
+      body: JSON.stringify({ color, id }),
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setBackgroundColor(color);
       })
       .catch((error) => console.error("Error:", error));
   };
 
   const handleStickerClick = (imageUrl: string) => {
-    console.log("Selected Sticker URL:", imageUrl); // 스티커 URL을 콘솔에 출력
-
     fetch("/api/skin-config", {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
+        authorization: `Bearer ${sessionStorage.getItem("jwt")}`,
       },
-      body: JSON.stringify({ bgImage: imageUrl }), // bgImage 업데이트
+      body: JSON.stringify({ bgImage: imageUrl, id }),
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
-        setBgImage(imageUrl); // 선택된 스티커 URL 상태 설정
+        setBgImage(imageUrl);
       })
       .catch((error) => console.error("Error:", error));
   };
+
+  // user가 없으면 아무것도 렌더링하지 않음
+  if (!user) {
+    return null;
+  }
+
   return (
     <>
       <section className="space-y-2 px-3 md:space-y-3">
         <h1 className="sr-only">스킨 편집</h1>
-        {isBackgroundloding ? (
+        {isBackgroundLoading ? (
           <>
             <Skeleton className="h-6 w-32" />
             <Skeleton className="h-14 w-full" />
@@ -95,7 +108,13 @@ export function SkinConfigEditor() {
                     <button
                       key={index}
                       type="button"
-                      className={`h-14 w-14 flex-shrink-0 rounded-full border transition-transform duration-100 active:scale-[0.96] ${color.bgColor === backgroundColor ? "border-black" : color.bgColor === "bg-background" ? "border-gray-300" : "border-transparent"} focus:outline-none ${color.bgColor}`}
+                      className={`h-14 w-14 flex-shrink-0 rounded-full border transition-transform duration-100 active:scale-[0.96] ${
+                        color.bgColor === backgroundColor
+                          ? "border-black"
+                          : color.bgColor === "bg-background"
+                            ? "border-gray-300"
+                            : "border-transparent"
+                      } focus:outline-none ${color.bgColor}`}
                       onClick={() => backgroundButtonClick(color.bgColor)}
                     >
                       <span className="sr-only">{color.label}</span>
@@ -119,7 +138,9 @@ export function SkinConfigEditor() {
                     <button
                       key={index}
                       type="button"
-                      className={`h-14 w-14 flex-shrink-0 rounded-full border transition-transform duration-100 active:scale-[0.96] ${sticker.imageUrl === bgImage ? "border-black" : "border-transparent"}`}
+                      className={`h-14 w-14 flex-shrink-0 rounded-full border transition-transform duration-100 active:scale-[0.96] ${
+                        sticker.imageUrl === bgImage ? "border-black" : "border-transparent"
+                      }`}
                       onClick={() => handleStickerClick(sticker.imageUrl)}
                     >
                       <img
