@@ -158,12 +158,12 @@ export function SignupForm() {
       const result = await response.json();
 
       if (response.ok) {
-        setErrorDomain(""); // 중복이 없으면 에러 없도록 설정
-        return true; // 도메인 중복 없을 시 true 반환
+        setErrorDomain("");
+        return true;
       } else {
-        setErrorDomain(result.message); // 중복이 있을 경우 에러 표시
+        setErrorDomain(result.message);
         setIsDomainValid(false);
-        return false; // 중복일 경우 false 반환
+        return false;
       }
     } catch (error) {
       console.error("Error checking domain:", error);
@@ -199,21 +199,18 @@ export function SignupForm() {
   // 1분 타이머 기능
   useEffect(() => {
     if (timer > 0 && !isVerificationValid) {
-      // 타이머가 0보다 크고, 인증번호가 유효하지 않을 때만 타이머 실행
       const timeoutId = setTimeout(() => setTimer(timer - 1), 1000);
       return () => clearTimeout(timeoutId);
     } else if (timer === 0) {
-      // 타이머가 0이 되면 인증번호 무효화
       setShowEmailCode(false);
       setServerVerificationCode(null); // 인증번호 무효화
     }
   }, [timer, isVerificationValid]);
 
-  // 폼 제출 처리
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const isDomainAvailable = await checkDomainAvailability(); // 도메인 유효성 체크
+    const isDomainAvailable = await checkDomainAvailability();
 
     if (
       !email ||
@@ -248,13 +245,13 @@ export function SignupForm() {
 
         data = await response.json();
         if (response.ok) {
-          sessionStorage.setItem("jwt", data.token); // 토큰을 세션 스토리지에 저장
-          router.push("/signup/profile");
+          sessionStorage.setItem("jwt", data.token);
+          window.location.href = "/signup/profile";
         } else {
-          alert(data.message); // 로그인 실패 시 에러 메시지 표시
+          alert(data.message);
         }
       } else {
-        alert(data.message); // 회원가입 실패 시 에러 메시지 표시
+        alert(data.message);
       }
     } catch (error) {
       console.error("회원가입 중 오류 발생:", error);
@@ -334,7 +331,7 @@ export function SignupForm() {
             type="text"
             placeholder="inmylink.com/"
             value={domain}
-            onChange={handleDomainChange} // 실시간 도메인 입력 처리
+            onChange={handleDomainChange}
             status={errorDomain ? "error" : "default"}
             errorMessage={errorDomain}
             className="w-full"

@@ -49,7 +49,7 @@ export default function LoginForm() {
         sessionStorage.setItem("jwt", data.token);
         const token = sessionStorage.getItem("jwt");
         if (token) {
-          router.push("/links");
+          window.location.href = "/links";
         }
       } else {
         setError(data.message || "로그인에 실패했습니다. 이메일 또는 비밀번호를 확인해주세요.");
