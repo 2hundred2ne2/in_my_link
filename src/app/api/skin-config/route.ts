@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { RowDataPacket } from "mysql2/promise";
 
+import { ENV } from "@/constants/env";
 import { db } from "@/lib/db";
 
 // TODO: 분리
@@ -46,23 +48,44 @@ export async function GET(request: NextRequest) {
 * @see https://github.com/2hundred2ne2/in_my_link/issues/84
 */
 export async function PATCH(request: Request) {
+  const authHeader = request.headers.get("authorization");
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return NextResponse.json({ message: "인증 토큰이 없거나 잘못된 형식입니다." }, { status: 401 });
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  let userId: number | null = null;
+
+  try {
+    const decodedToken = jwt.verify(token, ENV.jwtSecret) as { userId: number };
+    userId = decodedToken.userId;
+  } catch (error) {
+    if (error instanceof TokenExpiredError) {
+      return NextResponse.json(
+        { message: "토큰이 만료되었습니다. 다시 로그인 해주세요." },
+        { status: 401 },
+      );
+    }
+    return NextResponse.json({ message: "유효하지 않은 토큰입니다." }, { status: 401 });
+  }
   try {
     // TODO: 권한 확인
-    const TEMP_USER_ID = 1;
-
     const body = await request.json();
-    const { color, bgImage } = body;
+    console.debug("Requset Body: \n", body);
+
+    const { color, bgImage, id } = body;
 
     if (color) {
       await db.query("UPDATE skin_config SET color = ?, update_date = NOW() WHERE user_id = ?", [
         color,
-        TEMP_USER_ID,
+        id,
       ]);
     }
     if (bgImage) {
       await db.query("UPDATE skin_config SET bg_image = ?, update_date = NOW() WHERE user_id = ?", [
         bgImage,
-        TEMP_USER_ID,
+        id,
       ]);
     }
 
