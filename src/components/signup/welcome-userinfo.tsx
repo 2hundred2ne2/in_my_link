@@ -1,7 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
 import Image from "next/image"; // 이미지 사용을 위해 next/image 추가
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { Heading } from "@/components/ui/heading";
@@ -37,7 +36,6 @@ async function getUser(id: string) {
 }
 
 export function UserInfo() {
-  const router = useRouter();
   const user = useUser() as User | null; // useUser 훅에서 user 전체를 가져옴
   const [nickname, setNickname] = useState<string>("");
   const [profileImage, setProfileImage] = useState<string | null>(null); // 프로필 이미지 상태 추가
