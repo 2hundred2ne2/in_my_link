@@ -1,5 +1,4 @@
-export type LinkType = "instagram" | "facebook" | "threads" | "custom";
-export type LinkTypePlus =
+export type LinkType =
   | "instagram"
   | "facebook"
   | "threads"

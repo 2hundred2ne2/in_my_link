@@ -3,7 +3,7 @@ import { ChangeEvent } from "react";
 
 import { Trash } from "@phosphor-icons/react/dist/ssr";
 
-import { LinkType, LinkTypePlus } from "@/types/link";
+import { LinkType } from "@/types/link";
 
 import { Card } from "../ui/card";
 
@@ -12,7 +12,7 @@ interface LinkListItemProps {
   id: number;
 
   /** 링크 타입 */
-  itemType: LinkTypePlus;
+  itemType: LinkType;
 
   /** 링크 URL */
   url?: string;
@@ -21,7 +21,7 @@ interface LinkListItemProps {
   onDelete: (id: number) => void;
 
   /**URL이 변경될 때 호출되는 콜백 함수 */
-  onChangeUrl: (id: number, type: LinkTypePlus, e: ChangeEvent<HTMLInputElement>) => void;
+  onChangeUrl: (id: number, type: LinkType, e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 export function LinkListItem({ id, itemType, onDelete, onChangeUrl }: LinkListItemProps) {

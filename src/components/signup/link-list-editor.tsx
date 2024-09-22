@@ -8,8 +8,8 @@ import toast from "react-hot-toast";
 
 import { ENV } from "@/constants/env";
 import { useUser } from "@/context/user-context"; // useUser 훅 사용
-import { getSnsUrlPlus } from "@/lib/utils"; // getSnsUrlPlus 함수 사용
-import { LinkTypePlus } from "@/types/link"; // LinkTypePlus 타입
+import { getSnsUrl } from "@/lib/utils"; // getSnsUrl 함수 사용
+import { LinkType } from "@/types/link"; // LinkTypePlus 타입
 import { User } from "@/types/user";
 
 import { Button } from "../ui/button";
@@ -21,12 +21,12 @@ import { LinkListItem } from "./link-list-item";
 export interface AddLinkInputProps {
   id: number;
   url: string;
-  type: LinkTypePlus;
+  type: LinkType;
 }
 
 // IconListType 타입 정의
 export interface IconListType {
-  type: LinkTypePlus;
+  type: LinkType;
   iconLabel: string;
 }
 
@@ -127,7 +127,7 @@ export function LinkListEditor() {
     }
   };
 
-  const handleAddLink = (type: LinkTypePlus) => {
+  const handleAddLink = (type: LinkType) => {
     const newLink = {
       id: Date.now(),
       url: "",
@@ -136,9 +136,9 @@ export function LinkListEditor() {
     setLinkInputs([...linkInputs, newLink]);
   };
 
-  const handleChangeUrl = (id: number, type: LinkTypePlus, e: ChangeEvent<HTMLInputElement>) => {
+  const handleChangeUrl = (id: number, type: LinkType, e: ChangeEvent<HTMLInputElement>) => {
     const privateId = e.target.value.trim();
-    const wholeUrl = `${getSnsUrlPlus(type)}${privateId}`;
+    const wholeUrl = `${getSnsUrl(type)}${privateId}`;
 
     setLinkInputs((prev) =>
       prev.map((link) => (link.id === id ? { ...link, url: wholeUrl } : link)),
